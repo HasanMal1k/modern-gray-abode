@@ -2,7 +2,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import HeroModel from "./HeroModel";
+import MouseFollower from "./MouseFollower";
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,6 +13,9 @@ const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden grain-effect">
+      {/* Mouse follower */}
+      <MouseFollower />
+      
       {/* Background image with overlay */}
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/70 via-black/50 to-background z-10"></div>
       
@@ -26,13 +29,6 @@ const HeroSection = () => {
               transform: "scale(1.05)",
             }}
           />
-        </div>
-      </div>
-      
-      {/* Interactive 3D Element */}
-      <div className="absolute inset-0 w-full h-full z-[15] pointer-events-none">
-        <div className="relative w-full h-full pointer-events-auto">
-          <HeroModel />
         </div>
       </div>
       
