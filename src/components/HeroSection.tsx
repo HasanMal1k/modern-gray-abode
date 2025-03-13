@@ -2,6 +2,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Hero3D from "./Hero3D";
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,7 +12,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden grain-effect">
       {/* Background image with overlay */}
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/70 via-black/50 to-background z-10"></div>
       
@@ -21,10 +22,17 @@ const HeroSection = () => {
           <div 
             className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop')] bg-center bg-no-repeat bg-cover"
             style={{ 
-              filter: "grayscale(100%) brightness(0.7) contrast(110%)",
+              filter: "grayscale(90%) sepia(20%) brightness(0.7) contrast(110%)",
               transform: "scale(1.05)",
             }}
           />
+        </div>
+      </div>
+      
+      {/* Interactive 3D Element */}
+      <div className="absolute inset-0 w-full h-full z-[15] pointer-events-none">
+        <div className="relative w-full h-full pointer-events-auto">
+          <Hero3D />
         </div>
       </div>
       
@@ -35,7 +43,7 @@ const HeroSection = () => {
             <p className="inline-block text-sm tracking-wider uppercase text-white/80 mb-6 py-1 px-3 border border-white/10 backdrop-blur-sm rounded-full">Premium Real Estate</p>
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight md:leading-tight lg:leading-tight text-balance mb-6">
               <span className="block">Luxury Living</span>
-              <span className="block text-balance text-white/80">Reimagined</span>
+              <span className="block text-balance text-accent/90">Reimagined</span>
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8">
               Discover exceptional properties that define modern luxury and sophistication in prime locations.
@@ -45,7 +53,7 @@ const HeroSection = () => {
           <div className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
             <Link
               to="/properties"
-              className="px-8 py-3 rounded-md bg-white text-black font-medium hover:bg-white/90 transition-all duration-300 text-sm"
+              className="px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
             >
               Explore Properties
             </Link>
