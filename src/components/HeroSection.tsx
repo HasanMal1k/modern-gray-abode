@@ -2,7 +2,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Hero3D from "./Hero3D";
+import HeroModel from "./HeroModel";
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,7 +32,7 @@ const HeroSection = () => {
       {/* Interactive 3D Element */}
       <div className="absolute inset-0 w-full h-full z-[15] pointer-events-none">
         <div className="relative w-full h-full pointer-events-auto">
-          <Hero3D />
+          <HeroModel />
         </div>
       </div>
       
