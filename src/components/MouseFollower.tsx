@@ -85,41 +85,25 @@ const MouseFollower = () => {
     opacity: isVisible ? 1 : 0,
   };
 
-  // Morphed styles when hovering interactive elements
-  const morphedStyle = targetElement ? {
-    transform: `translate(${targetElement.x + targetElement.width / 2}px, ${targetElement.y + targetElement.height / 2}px)`,
-    width: `${targetElement.width + 10}px`,
-    height: `${targetElement.height + 10}px`,
-    borderRadius: `${targetElement.height > 40 ? '12px' : '20px'}`,
-  } : {};
-
   return (
     <>
-      {/* Main cursor */}
+      {/* Main neon orange cursor */}
       <div 
-        className="fixed w-5 h-5 bg-accent/20 rounded-full pointer-events-none z-[9999] backdrop-blur-sm border border-accent/40"
-        style={baseCircleStyle}
-      />
-      
-      {/* Background follower (slower) */}
-      <div 
-        className={`fixed w-8 h-8 rounded-full pointer-events-none z-[9998] transition-all duration-300 ${isHovering ? 'bg-accent/10' : 'bg-white/5'}`}
+        className={`fixed w-4 h-4 pointer-events-none z-[9999] transition-transform duration-300 rounded-full ${isHovering ? 'scale-150 bg-[#F97316]/80' : 'bg-[#F97316]/90'}`}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px) scale(1.5)`,
-          marginTop: '-4px',
-          marginLeft: '-4px',
-          opacity: isVisible ? 0.5 : 0,
-          transitionProperty: 'opacity, background-color',
+          ...baseCircleStyle,
+          boxShadow: '0 0 10px 2px rgba(249, 115, 22, 0.5), 0 0 20px 6px rgba(249, 115, 22, 0.3)',
+          transition: 'transform 0.2s ease-out, opacity 0.2s ease-out, background-color 0.2s ease-out'
         }}
       />
       
-      {/* Morphing element for hover state */}
+      {/* Subtle glow effect */}
       <div 
-        className={`fixed pointer-events-none z-[9997] transition-all duration-300 ${isHovering ? 'bg-accent/10 border border-accent/20' : 'bg-transparent'}`}
-        style={{ 
+        className={`fixed w-6 h-6 pointer-events-none z-[9998] bg-[#F97316]/20 rounded-full`}
+        style={{
           ...baseCircleStyle,
-          ...morphedStyle,
-          transitionProperty: 'width, height, transform, border-radius',
+          transform: `translate(${position.x}px, ${position.y}px) scale(${isHovering ? 1.5 : 1})`,
+          transition: 'transform 0.3s ease-out, opacity 0.3s ease-out'
         }}
       />
     </>
