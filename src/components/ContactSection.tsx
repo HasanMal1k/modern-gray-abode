@@ -181,8 +181,8 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Office Address</h4>
-                    <p className="text-muted-foreground">1234 Luxury Avenue, Prestige Heights</p>
-                    <p className="text-muted-foreground">CA 90210, United States</p>
+                    <p className="text-muted-foreground">1/5 Owel-Linkso Road, Lekki Penninsula II, Lekki</p>
+                    <p className="text-muted-foreground">106104, Lagos, Nigeria</p>
                   </div>
                 </div>
                 
@@ -192,8 +192,8 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Phone Number</h4>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                    <p className="text-muted-foreground">+1 (555) 987-6543</p>
+                    <p className="text-muted-foreground">+234 806 642 9700</p>
+                    {/* <p className="text-muted-foreground">+1 (555) 987-6543</p> */}
                   </div>
                 </div>
                 
@@ -203,8 +203,8 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Email Address</h4>
-                    <p className="text-muted-foreground">contact@estatenoir.com</p>
-                    <p className="text-muted-foreground">sales@estatenoir.com</p>
+                    <p className="text-muted-foreground">106104, Lagos, Nigeria</p>
+                    {/* <p className="text-muted-foreground">sales@estatenoir.com</p> */}
                   </div>
                 </div>
               </div>
