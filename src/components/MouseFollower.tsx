@@ -21,7 +21,11 @@ const MouseFollower = () => {
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
+    // Add a style to hide the default cursor on the whole page
+    document.body.style.cursor = 'none';
+    
     const handleMouseMove = (e: MouseEvent) => {
+      // Set the position directly to the mouse coordinates without any offset
       setPosition({ x: e.clientX, y: e.clientY });
       
       if (!isVisible && e.clientY > 0) {
@@ -71,7 +75,9 @@ const MouseFollower = () => {
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
+    // Clean up the cursor style when component unmounts
     return () => {
+      document.body.style.cursor = '';
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousemove', checkForInteractiveElements);
       document.removeEventListener('mouseleave', handleMouseLeave);
@@ -79,9 +85,9 @@ const MouseFollower = () => {
     };
   }, [isVisible]);
 
-  // Follower styles
+  // Follower styles with accurate positioning
   const baseCircleStyle = {
-    transform: `translate(${position.x}px, ${position.y}px)`,
+    transform: `translate(${position.x}px, ${position.y}px) translate(-50%, -50%)`,
     opacity: isVisible ? 1 : 0,
   };
 
@@ -102,7 +108,7 @@ const MouseFollower = () => {
         className={`fixed w-6 h-6 pointer-events-none z-[9998] bg-[#F97316]/20 rounded-full`}
         style={{
           ...baseCircleStyle,
-          transform: `translate(${position.x}px, ${position.y}px) scale(${isHovering ? 1.5 : 1})`,
+          transform: `translate(${position.x}px, ${position.y}px) translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
           transition: 'transform 0.3s ease-out, opacity 0.3s ease-out'
         }}
       />
