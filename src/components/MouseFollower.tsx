@@ -25,7 +25,7 @@ const MouseFollower = () => {
     document.body.style.cursor = 'none';
     
     const handleMouseMove = (e: MouseEvent) => {
-      // Set the position directly to the mouse coordinates without any offset
+      // Set the position directly to the mouse coordinates
       setPosition({ x: e.clientX, y: e.clientY });
       
       if (!isVisible && e.clientY > 0) {
@@ -85,31 +85,18 @@ const MouseFollower = () => {
     };
   }, [isVisible]);
 
-  // Follower styles with accurate positioning
-  const baseCircleStyle = {
-    transform: `translate(${position.x}px, ${position.y}px) translate(-50%, -50%)`,
-    opacity: isVisible ? 1 : 0,
-  };
-
   return (
     <>
-      {/* Main neon orange cursor */}
+      {/* Single neon orange cursor that expands on hover */}
       <div 
-        className={`fixed w-4 h-4 pointer-events-none z-[9999] transition-transform duration-300 rounded-full ${isHovering ? 'scale-150 bg-[#F97316]/80' : 'bg-[#F97316]/90'}`}
+        className={`fixed pointer-events-none z-[9999] transition-all duration-300 rounded-full ${isHovering ? 'w-6 h-6 bg-[#F97316]/80' : 'w-4 h-4 bg-[#F97316]/90'}`}
         style={{
-          ...baseCircleStyle,
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          transform: 'translate(-50%, -50%)',
           boxShadow: '0 0 10px 2px rgba(249, 115, 22, 0.5), 0 0 20px 6px rgba(249, 115, 22, 0.3)',
-          transition: 'transform 0.2s ease-out, opacity 0.2s ease-out, background-color 0.2s ease-out'
-        }}
-      />
-      
-      {/* Subtle glow effect */}
-      <div 
-        className={`fixed w-6 h-6 pointer-events-none z-[9998] bg-[#F97316]/20 rounded-full`}
-        style={{
-          ...baseCircleStyle,
-          transform: `translate(${position.x}px, ${position.y}px) translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
-          transition: 'transform 0.3s ease-out, opacity 0.3s ease-out'
+          opacity: isVisible ? 1 : 0,
+          transition: 'width 0.2s ease-out, height 0.2s ease-out, opacity 0.2s ease-out, background-color 0.2s ease-out'
         }}
       />
     </>
