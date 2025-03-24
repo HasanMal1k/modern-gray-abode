@@ -104,40 +104,40 @@ const About = () => {
               Built on trust, relationships and a passion to deliver world-class property management services
             </p>
             
-            {/* Image Collage */}
+            {/* Image Collage - Updated with African-focused images */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-w-5xl mx-auto mt-12 mb-8">
               <div className="aspect-square overflow-hidden rounded-lg col-span-2 row-span-2">
                 <img 
-                  src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?q=80&w=2070&auto=format&fit=crop"
-                  alt="Happy family" 
+                  src="https://images.unsplash.com/photo-1496947850313-7743325fa58c?q=80&w=2070&auto=format&fit=crop"
+                  alt="African family at home" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1529739121416-921f4daebc8d?q=80&w=1974&auto=format&fit=crop"
-                  alt="Happy family" 
+                  src="https://images.unsplash.com/photo-1605651202774-7d576e0365f9?q=80&w=1974&auto=format&fit=crop"
+                  alt="Nigerian business meeting" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1559732277-7453b141e3a1?q=80&w=2070&auto=format&fit=crop"
-                  alt="Office handshake" 
+                  src="https://images.unsplash.com/photo-1577368211130-4bbd0181dded?q=80&w=2070&auto=format&fit=crop"
+                  alt="Lagos skyline" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1573497019236-61f323342eb9?q=80&w=2070&auto=format&fit=crop"
-                  alt="Happy couple" 
+                  src="https://images.unsplash.com/photo-1581349437898-cebbe9831942?q=80&w=1974&auto=format&fit=crop"
+                  alt="Young African professionals" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1529739121416-921f4daebc8d?q=80&w=1974&auto=format&fit=crop"
-                  alt="Family moving in" 
+                  src="https://images.unsplash.com/photo-1574110904658-eb5f915c6296?q=80&w=2068&auto=format&fit=crop"
+                  alt="African neighborhood" 
                   className="w-full h-full object-cover"
                 />
               </div>
