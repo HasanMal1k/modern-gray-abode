@@ -5,6 +5,7 @@ import AboutSection from "@/components/AboutSection";
 import ServicesSection from "@/components/ServicesSection";
 import GrayListedSection from "@/components/GrayListedSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import GoogleReviewsSection from "@/components/GoogleReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import PartnersSection from "@/components/PartnersSection";
 import Navbar from "@/components/Navbar";
@@ -47,6 +48,7 @@ const Index = () => {
         <ServicesSection />
         <GrayListedSection />
         <TestimonialsSection />
+        <GoogleReviewsSection />
         <ContactSection />
         <PartnersSection />
       </main>

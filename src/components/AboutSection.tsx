@@ -56,10 +56,10 @@ const AboutSection = () => {
       
       <div className="max-w-7xl mx-auto relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Image Section */}
-          <div className="animate-on-scroll order-2 lg:order-1">
+          {/* Image Section - Made smaller by reducing width and aspect ratio */}
+          <div className="animate-on-scroll order-2 lg:order-1 max-w-md mx-auto lg:mx-0 w-full">
             <div className="relative">
-              <div className="aspect-[4/5] overflow-hidden rounded-xl glass-morphism">
+              <div className="aspect-[3/4] overflow-hidden rounded-xl glass-morphism">
                 <img 
                   src="https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1974&auto=format&fit=crop" 
                   alt="Luxury Real Estate Team" 
