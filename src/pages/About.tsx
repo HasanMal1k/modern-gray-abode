@@ -8,93 +8,56 @@ import { Link } from "react-router-dom";
 const valueData = [
   {
     icon: <Users className="w-6 h-6" />,
-    title: "Client-Centered Approach",
-    description: "We place your needs and aspirations at the heart of everything we do, tailoring our services to your unique vision."
+    title: "Integrity",
+    description: "We conduct our business with the highest ethical standards, ensuring transparency and honesty in all our dealings."
   },
   {
     icon: <Building className="w-6 h-6" />,
-    title: "Architectural Excellence",
-    description: "We celebrate and champion properties that exemplify exceptional design, craftsmanship, and innovation."
+    title: "Professionalism",
+    description: "Our team of experts brings a wealth of knowledge and professionalism to every interaction, providing top-notch service to our clients."
   },
   {
     icon: <Award className="w-6 h-6" />,
-    title: "Integrity & Transparency",
-    description: "We operate with unwavering honesty, ensuring every transaction and interaction is conducted with complete clarity."
+    title: "Personalized Service",
+    description: "We believe in a personalized approach, understanding that each client has unique needs and preferences."
   },
   {
     icon: <Landmark className="w-6 h-6" />,
-    title: "Market Expertise",
-    description: "Our deep understanding of luxury real estate markets allows us to provide unparalleled insights and guidance."
-  },
-  {
-    icon: <Star className="w-6 h-6" />,
-    title: "Exclusive Access",
-    description: "Our network grants you access to premier properties, many of which never reach the public market."
-  },
-  {
-    icon: <TrendingUp className="w-6 h-6" />,
-    title: "Investment Vision",
-    description: "We help you see beyond today, identifying properties with exceptional long-term value and potential."
-  }
-];
-
-const milestoneData = [
-  {
-    year: "2005",
-    title: "Founded in Los Angeles",
-    description: "EstateNoir was established with a vision to redefine luxury real estate services."
-  },
-  {
-    year: "2010",
-    title: "Expanded to New York",
-    description: "Opened our second office in Manhattan to serve the East Coast luxury market."
-  },
-  {
-    year: "2013",
-    title: "International Network",
-    description: "Formed strategic partnerships with premium agencies across Europe and Asia."
-  },
-  {
-    year: "2017",
-    title: "Digital Transformation",
-    description: "Pioneered immersive virtual property tours and AI-driven property matching."
-  },
-  {
-    year: "2020",
-    title: "Sustainability Initiative",
-    description: "Launched our commitment to promoting eco-conscious luxury properties."
-  },
-  {
-    year: "2023",
-    title: "Portfolio Milestone",
-    description: "Surpassed $10 billion in total property transactions across global markets."
+    title: "Local Expertise",
+    description: "With deep roots in the Nigerian market, particularly in Lagos, we leverage our local knowledge to deliver the best results for our clients."
   }
 ];
 
 const teamData = [
   {
-    name: "Alexandra Reynolds",
+    name: "David Ogunleye",
     position: "Founder & CEO",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop",
-    bio: "With over 20 years in luxury real estate, Alexandra founded EstateNoir with a vision to elevate the property experience for discerning clients."
+    image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1974&auto=format&fit=crop",
+    bio: "With over 15 years in luxury real estate, David founded Gray Scale REALTORS with a vision to transform property management in Lagos."
   },
   {
-    name: "Marcus Chen",
-    position: "Chief Design Officer",
-    image: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?q=80&w=2070&auto=format&fit=crop",
-    bio: "A renowned architect turned real estate visionary, Marcus ensures every property in our portfolio meets exceptional design standards."
+    name: "Amara Nwachukwu",
+    position: "Chief Operations Officer",
+    image: "https://images.unsplash.com/photo-1531123414780-f74242c2b052?q=80&w=1974&auto=format&fit=crop",
+    bio: "Amara's exceptional organizational skills and deep understanding of client needs have been instrumental in our company's growth and success."
   },
   {
-    name: "Sophia Daniels",
-    position: "Head of Client Relations",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",
-    bio: "Sophia's background in hospitality shapes our signature concierge approach, ensuring clients receive personalized attention at every step."
-  },
-  {
-    name: "Jonathan Pierce",
-    position: "Investment Director",
+    name: "Emmanuel Adeyemi",
+    position: "Head of Property Management",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
-    bio: "With expertise in global finance, Jonathan provides strategic investment guidance for clients building property portfolios."
+    bio: "Emmanuel brings extensive experience in property maintenance and tenant relations, ensuring our properties are always in pristine condition."
+  },
+  {
+    name: "Ngozi Okafor",
+    position: "Client Relations Director",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
+    bio: "Ngozi's background in hospitality shapes our signature approach, ensuring clients receive personalized attention at every step."
+  },
+  {
+    name: "Oluwaseun Adebanjo",
+    position: "Sales & Marketing Lead",
+    image: "https://images.unsplash.com/photo-1539701938214-0d9736e1c16b?q=80&w=1974&auto=format&fit=crop",
+    bio: "Oluwaseun's innovative marketing strategies and deep network connections have helped position Gray Scale as a leader in the Lagos real estate market."
   }
 ];
 
@@ -130,69 +93,119 @@ const About = () => {
       
       <main className="pt-24">
         {/* Hero Section */}
-        <section className="py-20 px-6 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-background"></div>
+        <section className="py-20 px-6 relative bg-gradient-to-b from-background to-gray-900">
+          <div className="absolute inset-0 bg-black/30 z-0"></div>
           <div className="max-w-7xl mx-auto relative z-10 text-center">
             <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-6 py-1 px-3 border border-white/10 rounded-full">
               About Us
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">Our Story & Vision</h1>
-            <p className="text-muted-foreground max-w-3xl mx-auto text-lg mb-12">
-              EstateNoir was founded on the belief that finding your ideal property should be an extraordinary experience—one that combines expertise, personalization, and a deep appreciation for architectural excellence.
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Premier Property Management<br />Firm in Lagos</h1>
+            <p className="text-muted-foreground max-w-3xl mx-auto text-lg md:text-xl mb-12">
+              Built on trust, relationships and a passion to deliver world-class property management services
             </p>
-            <div className="flex justify-center">
+            
+            {/* Image Collage */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-w-5xl mx-auto mt-12 mb-8">
+              <div className="aspect-square overflow-hidden rounded-lg col-span-2 row-span-2">
+                <img 
+                  src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?q=80&w=2070&auto=format&fit=crop"
+                  alt="Happy family" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="aspect-square overflow-hidden rounded-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1529739121416-921f4daebc8d?q=80&w=1974&auto=format&fit=crop"
+                  alt="Happy family" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="aspect-square overflow-hidden rounded-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1559732277-7453b141e3a1?q=80&w=2070&auto=format&fit=crop"
+                  alt="Office handshake" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="aspect-square overflow-hidden rounded-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1573497019236-61f323342eb9?q=80&w=2070&auto=format&fit=crop"
+                  alt="Happy couple" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="aspect-square overflow-hidden rounded-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1529739121416-921f4daebc8d?q=80&w=1974&auto=format&fit=crop"
+                  alt="Family moving in" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-center mt-8">
               <Link 
                 to="/contact"
                 className="px-8 py-3 rounded-md bg-white text-black font-medium hover:bg-white/90 transition-all duration-300 text-sm"
               >
-                Contact Our Team
+                Schedule a Consultation
               </Link>
             </div>
           </div>
         </section>
         
-        {/* Mission Section */}
-        <section id="mission" className={`py-24 px-6 animate-section ${visibleElements.has("mission") ? "animate-slide-up" : "opacity-0"}`}>
+        {/* Welcome Section */}
+        <section id="welcome" className={`py-20 px-6 bg-white text-black animate-section ${visibleElements.has("welcome") ? "animate-slide-up" : "opacity-0"}`}>
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Welcome to Gray Scale REALTORS (G.S.R.)</h2>
+              <div className="h-1 w-20 bg-accent mx-auto mb-8"></div>
+              <p className="text-gray-700 text-lg max-w-4xl mx-auto">
+                At Gray Scale REALTORS, we are proud of our 360-degree real estate experience. With over 200 successful sales and placements, we understand that finding the perfect tenant for your home is just as crucial as the investment itself. Our mission is to bridge the gap between landlords and tenants in Nigeria by providing a seamless, professional, and personalized property management experience that matches our exceptional sales record.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        {/* Who We Are Section */}
+        <section id="who-we-are" className={`py-24 px-6 animate-section ${visibleElements.has("who-we-are") ? "animate-slide-up" : "opacity-0"}`}>
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
                 <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
-                  Our Philosophy
+                  Our Identity
                 </span>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">Mission & Approach</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">Who We Are</h2>
                 <p className="text-muted-foreground mb-6">
-                  At EstateNoir, we've reimagined the real estate experience. We don't simply match clients with properties—we connect individuals with spaces that resonate with their aspirations, lifestyle, and aesthetic sensibilities.
+                  Founded on the principles of integrity, expertise, and dedication, G.S.R. is a premier property management firm based in Lagos. Our name, Gray Scale, symbolizes our commitment to navigating the complexities of the Nigerian real estate market, where nothing is simply black and white. We embrace the nuances and challenges, delivering tailored solutions that meet each client's unique needs.
                 </p>
-                <p className="text-muted-foreground mb-8">
-                  Our approach is built on three foundational principles: uncompromising quality in every property we represent, personalized service that anticipates your needs, and a commitment to architectural integrity that celebrates design excellence.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="glass-morphism rounded-lg px-6 py-4 text-center">
-                    <h3 className="text-3xl font-bold text-white mb-2">18+</h3>
-                    <p className="text-muted-foreground text-sm">Years of Excellence</p>
+                <div className="mt-10 space-y-8">
+                  <div className="glass-morphism rounded-xl p-6">
+                    <h3 className="text-xl font-bold mb-3">Our Mission</h3>
+                    <p className="text-muted-foreground">
+                      To provide exceptional property management services that ensure peace of mind for landlords and a pleasant living experience for tenants. We aim to create lasting relationships built on trust, reliability, and mutual respect.
+                    </p>
                   </div>
-                  <div className="glass-morphism rounded-lg px-6 py-4 text-center">
-                    <h3 className="text-3xl font-bold text-white mb-2">2500+</h3>
-                    <p className="text-muted-foreground text-sm">Properties Sold</p>
-                  </div>
-                  <div className="glass-morphism rounded-lg px-6 py-4 text-center">
-                    <h3 className="text-3xl font-bold text-white mb-2">98%</h3>
-                    <p className="text-muted-foreground text-sm">Client Satisfaction</p>
+                  <div className="glass-morphism rounded-xl p-6">
+                    <h3 className="text-xl font-bold mb-3">Our Vision</h3>
+                    <p className="text-muted-foreground">
+                      To be Nigeria's leading property management firm, known for our local expertise, personalized service, and unwavering commitment to excellence.
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="relative">
                 <div className="aspect-square overflow-hidden rounded-xl glass-morphism">
                   <img 
-                    src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=2070&auto=format&fit=crop" 
-                    alt="Our mission" 
-                    className="w-full h-full object-cover filter grayscale"
+                    src="https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?q=80&w=2070&auto=format&fit=crop" 
+                    alt="Lagos skyline" 
+                    className="w-full h-full object-cover filter"
                   />
                   <div className="image-shimmer"></div>
                 </div>
                 <div className="absolute -bottom-6 -left-6 p-6 neo-blur rounded-xl w-64">
                   <p className="text-sm text-white/80 italic">
-                    "We don't just sell properties; we curate living experiences that inspire."
+                    "Creating perfect matches between properties and people in Nigeria's vibrant real estate market."
                   </p>
                 </div>
               </div>
@@ -201,74 +214,29 @@ const About = () => {
         </section>
         
         {/* Our Values */}
-        <section id="values" className={`py-24 px-6 animate-section ${visibleElements.has("values") ? "animate-slide-up" : "opacity-0"}`}>
+        <section id="values" className={`py-24 px-6 bg-white text-black animate-section ${visibleElements.has("values") ? "animate-slide-up" : "opacity-0"}`}>
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
+              <span className="inline-block text-sm tracking-wider uppercase text-gray-600 mb-4 py-1 px-3 border border-gray-200 rounded-full">
                 Guiding Principles
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Core Values</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Our Core Values</h2>
+              <div className="h-1 w-20 bg-accent mx-auto mb-8"></div>
+              <p className="text-gray-700 max-w-2xl mx-auto">
                 These principles define our approach to every client relationship and property transaction.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {valueData.map((value, index) => (
-                <div key={index} className="glass-morphism rounded-xl p-8 transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="bg-white/10 rounded-full w-12 h-12 flex items-center justify-center mb-6 text-white">
+                <div key={index} className="bg-gray-50 shadow-md rounded-xl p-8 transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px] border border-gray-100">
+                  <div className="bg-accent/10 text-accent rounded-full w-12 h-12 flex items-center justify-center mb-6">
                     {value.icon}
                   </div>
-                  <h3 className="text-xl font-medium mb-4">{value.title}</h3>
-                  <p className="text-muted-foreground">{value.description}</p>
+                  <h3 className="text-xl font-medium mb-4 text-gray-900">{value.title}</h3>
+                  <p className="text-gray-600">{value.description}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-        
-        {/* Our Journey / Timeline */}
-        <section id="journey" className={`py-24 px-6 animate-section ${visibleElements.has("journey") ? "animate-slide-up" : "opacity-0"}`}>
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
-                Our History
-              </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">The EstateNoir Journey</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                From our founding vision to our current position as leaders in luxury real estate.
-              </p>
-            </div>
-            
-            <div className="relative">
-              {/* Timeline Line */}
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/10 transform md:translate-x-[-0.5px]"></div>
-              
-              {/* Timeline Events */}
-              <div className="space-y-12">
-                {milestoneData.map((milestone, index) => (
-                  <div 
-                    key={index} 
-                    className={`relative flex flex-col md:flex-row ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
-                  >
-                    {/* Timeline Dot */}
-                    <div className="absolute left-4 md:left-1/2 w-8 h-8 bg-background border-2 border-white/20 rounded-full transform translate-x-[-14px] md:translate-x-[-14px] flex items-center justify-center">
-                      <div className="w-3 h-3 bg-white rounded-full"></div>
-                    </div>
-                    
-                    {/* Content */}
-                    <div className={`ml-16 md:ml-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
-                      <div className="glass-morphism rounded-xl p-6">
-                        <span className="inline-block text-sm font-medium bg-white/10 px-3 py-1 rounded-full mb-4">
-                          {milestone.year}
-                        </span>
-                        <h3 className="text-xl font-medium mb-2">{milestone.title}</h3>
-                        <p className="text-muted-foreground">{milestone.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
@@ -280,20 +248,20 @@ const About = () => {
               <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
                 Our Experts
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Meet Our Leadership Team</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Meet Our Team</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Exceptional professionals dedicated to providing unparalleled real estate experiences.
+                Exceptional professionals dedicated to providing unparalleled real estate experiences in Lagos.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {teamData.map((member, index) => (
                 <div key={index} className="glass-morphism rounded-xl overflow-hidden group">
                   <div className="relative h-80 overflow-hidden">
                     <img 
                       src={member.image} 
                       alt={member.name} 
-                      className="w-full h-full object-cover filter grayscale transition-transform duration-700 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="image-shimmer"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
@@ -314,7 +282,7 @@ const About = () => {
                 to="/contact"
                 className="px-8 py-3 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-300 text-white text-sm"
               >
-                Connect With Our Team
+                Work With Our Team
               </Link>
             </div>
           </div>
