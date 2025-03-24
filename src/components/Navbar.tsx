@@ -23,8 +23,10 @@ export const Navbar = () => {
 
   const menuItems = [
     { name: "Home", path: "/" },
-    { name: "Properties", path: "/properties" },
     { name: "About", path: "/about" },
+    { name: "Services", path: "/services" },
+    { name: "Blog", path: "/blog" },
+    { name: "Gray Listed", path: "/gray-listed" },
     { name: "Contact", path: "/contact" },
   ];
 
