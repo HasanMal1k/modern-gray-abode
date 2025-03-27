@@ -84,15 +84,15 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <MouseFollower />
       <Navbar />
       
       <main className="pt-24">
         {/* Hero Section */}
         <div ref={heroRef} className="relative w-full bg-black overflow-hidden">
-          {/* Background Faces Collage - Fixed opacity */}
-          <div className="absolute inset-0 opacity-30">
+          {/* Background Faces Collage - Increased opacity */}
+          <div className="absolute inset-0 opacity-40">
             <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 h-full">
               {[...Array(32)].map((_, index) => (
                 <div key={index} className="bg-cover bg-center" 
@@ -110,10 +110,10 @@ const Contact = () => {
               <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
                 Get In Touch
               </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
                 Contact Grayscale Realtors for Property Management
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">
+              <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto text-balance">
                 Reach out to Grayscale Realtors for all your property management service needs. Whether you prefer email, calls, texts, or chats, we're here to assist you.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -122,7 +122,7 @@ const Contact = () => {
                     Get Free Consultation
                   </Link>
                 </Button>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-white/70">
                   No credit card required.
                 </div>
               </div>
