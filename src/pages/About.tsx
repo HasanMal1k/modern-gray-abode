@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Users, Building, Award, Landmark, Star, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import MouseFollower from "@/components/MouseFollower";
 
 const valueData = [
   {
@@ -89,6 +90,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
+      <MouseFollower />
       <Navbar />
       
       <main className="pt-24">
