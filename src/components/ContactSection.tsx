@@ -59,9 +59,9 @@ const ContactSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-24 px-6 relative overflow-hidden">
+    <section ref={sectionRef} className="py-12 px-4 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16 animate-on-scroll text-center">
+        <div className="mb-10 animate-on-scroll text-center">
           <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
             Get In Touch
           </span>
@@ -193,7 +193,6 @@ const ContactSection = () => {
                   <div>
                     <h4 className="text-white font-medium mb-1">Phone Number</h4>
                     <p className="text-muted-foreground">+234 806 642 9700</p>
-                    {/* <p className="text-muted-foreground">+1 (555) 987-6543</p> */}
                   </div>
                 </div>
                 
@@ -203,8 +202,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Email Address</h4>
-                    <p className="text-muted-foreground">106104, Lagos, Nigeria</p>
-                    {/* <p className="text-muted-foreground">sales@estatenoir.com</p> */}
+                    <p className="text-muted-foreground">sabi@grayscalerealtors.com</p>
                   </div>
                 </div>
               </div>

@@ -91,11 +91,15 @@ const Contact = () => {
       <main className="pt-24">
         {/* Hero Section */}
         <div ref={heroRef} className="relative w-full bg-black overflow-hidden">
-          {/* Background Faces Collage */}
-          <div className="absolute inset-0 opacity-20">
+          {/* Background Faces Collage - Fixed opacity */}
+          <div className="absolute inset-0 opacity-30">
             <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 h-full">
               {[...Array(32)].map((_, index) => (
-                <div key={index} className="bg-cover bg-center" style={{ backgroundImage: `url('/images/smile-${(index % 8) + 1}.jpg')` }}>
+                <div key={index} className="bg-cover bg-center" 
+                  style={{ 
+                    backgroundImage: `url('/images/smile-${(index % 8) + 1}.jpg')`,
+                    backgroundSize: 'cover'
+                  }}>
                 </div>
               ))}
             </div>
