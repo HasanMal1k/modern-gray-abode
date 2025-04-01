@@ -1,41 +1,22 @@
 
-import { useState, useEffect, useRef } from "react";
-import { Send, MapPin, Phone, Mail, Check } from "lucide-react";
+import { useState } from "react";
+import { Send, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [visibleElements, setVisibleElements] = useState<Set<Element>>(new Set());
-  const sectionRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleElements((prev) => new Set(prev).add(entry.target));
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const section = sectionRef.current;
-    if (section) {
-      const elements = section.querySelectorAll('.animate-on-scroll');
-      elements.forEach((el) => observer.observe(el));
-    }
-
-    return () => {
-      if (section) {
-        const elements = section.querySelectorAll('.animate-on-scroll');
-        elements.forEach((el) => observer.unobserve(el));
-      }
-    };
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,176 +40,106 @@ const ContactSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-12 px-4 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-10 animate-on-scroll text-center">
-          <span className="inline-block text-sm tracking-wider uppercase text-white mb-4 py-1 px-3 border border-white/10 rounded-full">
-            Get In Touch
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Contact Us</h2>
-          <p className="text-white/70 max-w-2xl mx-auto text-balance">
-            Whether you're looking to buy, sell, or simply explore the possibilities, our team is ready to assist you.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="animate-on-scroll">
-            <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6 text-white">Send Us a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="name" className="block text-sm text-white/70 mb-2">
-                      Name
-                    </label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      name="name" 
-                      required
-                      className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm text-white/70 mb-2">
-                      Email
-                    </label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
-                      required
-                      className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300"
-                      placeholder="Your email"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm text-white/70 mb-2">
-                    Subject
-                  </label>
-                  <input 
-                    type="text" 
-                    id="subject" 
-                    name="subject" 
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300"
-                    placeholder="What's this about?"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm text-white/70 mb-2">
-                    Message
-                  </label>
-                  <textarea 
-                    id="message" 
-                    name="message" 
-                    rows={4}
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 resize-none"
-                    placeholder="Your message here..."
-                  ></textarea>
-                </div>
-                
-                <div>
-                  <button 
-                    type="submit" 
-                    disabled={isSubmitting || isSuccess}
-                    className={`flex items-center justify-center w-full rounded-md py-2.5 px-4 text-sm font-medium transition-all duration-300 ${
-                      isSuccess 
-                        ? 'bg-white/20 text-white cursor-default'
-                        : 'bg-white text-black hover:bg-white/90'
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Sending...
-                      </span>
-                    ) : isSuccess ? (
-                      <span className="flex items-center">
-                        <Check className="w-4 h-4 mr-2" />
-                        Sent Successfully
-                      </span>
-                    ) : (
-                      <span className="flex items-center">
-                        <Send className="w-4 h-4 mr-2" />
-                        Send Message
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </form>
+    <Card className="bg-[#222]/50 border-white/10 backdrop-blur-lg">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-white">Send Us a Message</CardTitle>
+        <CardDescription className="text-white/70">
+          Fill out the form below and we'll get back to you as soon as possible.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <label htmlFor="name" className="block text-sm text-white/80">
+                Name
+              </label>
+              <Input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                placeholder="Your name"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm text-white/80">
+                Email
+              </label>
+              <Input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                placeholder="Your email"
+              />
             </div>
           </div>
           
-          {/* Contact Information */}
-          <div className="space-y-8 animate-on-scroll">
-            <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6 text-white">Our Contact Information</h3>
-              
-              <div className="space-y-5">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-white/10 p-3 rounded-full">
-                    <MapPin className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Office Address</h4>
-                    <p className="text-white/70">1/5 Owel-Linkso Road, Lekki Penninsula II, Lekki</p>
-                    <p className="text-white/70">106104, Lagos, Nigeria</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="bg-white/10 p-3 rounded-full">
-                    <Phone className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Phone Number</h4>
-                    <p className="text-white/70">+234 806 642 9700</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="bg-white/10 p-3 rounded-full">
-                    <Mail className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Email Address</h4>
-                    <p className="text-white/70">sabi@grayscalerealtors.com</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6 text-white">Office Hours</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-white/70">Monday - Friday</span>
-                  <span className="text-white">9:00 AM - 6:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Saturday</span>
-                  <span className="text-white">10:00 AM - 4:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Sunday</span>
-                  <span className="text-white">By Appointment Only</span>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="subject" className="block text-sm text-white/80">
+              Subject
+            </label>
+            <Input 
+              type="text" 
+              id="subject" 
+              name="subject" 
+              required
+              className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+              placeholder="What's this about?"
+            />
           </div>
-        </div>
-      </div>
-    </section>
+          
+          <div className="space-y-2">
+            <label htmlFor="message" className="block text-sm text-white/80">
+              Message
+            </label>
+            <Textarea 
+              id="message" 
+              name="message" 
+              rows={4}
+              required
+              className="bg-white/5 border-white/10 text-white placeholder:text-white/40 resize-none min-h-[120px]"
+              placeholder="Your message here..."
+            />
+          </div>
+          
+          <div>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting || isSuccess}
+              className={`w-full ${
+                isSuccess 
+                  ? 'bg-green-600/80 text-white hover:bg-green-600/80'
+                  : 'bg-white text-black hover:bg-white/90'
+              } transition-colors duration-300`}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </span>
+              ) : isSuccess ? (
+                <span className="flex items-center justify-center">
+                  <Check className="w-4 h-4 mr-2" />
+                  Sent Successfully
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Message
+                </span>
+              )}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
