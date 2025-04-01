@@ -90,30 +90,30 @@ const Contact = () => {
       
       <main className="pt-24">
         {/* Hero Section */}
-        <div ref={heroRef} className="relative w-full bg-black overflow-hidden">
-          {/* Background Faces Collage - Increased opacity */}
-          <div className="absolute inset-0 opacity-40">
+        <div ref={heroRef} className="relative w-full py-24 overflow-hidden" style={{ backgroundColor: "#111" }}>
+          {/* Background Faces Collage - Fixed visibility */}
+          <div className="absolute inset-0 opacity-15">
             <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 h-full">
               {[...Array(32)].map((_, index) => (
                 <div key={index} className="bg-cover bg-center" 
                   style={{ 
                     backgroundImage: `url('/images/smile-${(index % 8) + 1}.jpg')`,
-                    backgroundSize: 'cover'
+                    opacity: 0.6
                   }}>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-32">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-24">
             <div className="max-w-3xl mx-auto text-center animate-on-scroll">
-              <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
+              <span className="inline-block text-sm tracking-wider uppercase text-white mb-4 py-1 px-3 border border-white/10 rounded-full">
                 Get In Touch
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
                 Contact Grayscale Realtors for Property Management
               </h1>
-              <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto text-balance">
+              <p className="text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto text-balance">
                 Reach out to Grayscale Realtors for all your property management service needs. Whether you prefer email, calls, texts, or chats, we're here to assist you.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -122,7 +122,7 @@ const Contact = () => {
                     Get Free Consultation
                   </Link>
                 </Button>
-                <div className="text-sm text-white/70">
+                <div className="text-sm text-white">
                   No credit card required.
                 </div>
               </div>
@@ -141,8 +141,8 @@ const Contact = () => {
                 <div className="bg-white/10 p-4 rounded-full mb-4">
                   <Phone className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Call Us</h3>
-                <p className="text-muted-foreground mb-4">Speak directly with our team</p>
+                <h3 className="text-xl font-medium mb-2 text-white">Call Us</h3>
+                <p className="text-white/70 mb-4">Speak directly with our team</p>
                 <a href="tel:+2348066429700" className="text-white hover:text-accent transition-colors">
                   +234 806 642 9700
                 </a>
@@ -152,8 +152,8 @@ const Contact = () => {
                 <div className="bg-white/10 p-4 rounded-full mb-4">
                   <Mail className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Email Us</h3>
-                <p className="text-muted-foreground mb-4">Get answers to your queries</p>
+                <h3 className="text-xl font-medium mb-2 text-white">Email Us</h3>
+                <p className="text-white/70 mb-4">Get answers to your queries</p>
                 <a href="mailto:sabi@grayscalerealtors.com" className="text-white hover:text-accent transition-colors">
                   sabi@grayscalerealtors.com
                 </a>
@@ -163,8 +163,8 @@ const Contact = () => {
                 <div className="bg-white/10 p-4 rounded-full mb-4">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-medium mb-2">Business Hours</h3>
-                <p className="text-muted-foreground mb-4">We're available for you</p>
+                <h3 className="text-xl font-medium mb-2 text-white">Business Hours</h3>
+                <p className="text-white/70 mb-4">We're available for you</p>
                 <p className="text-white">Mon-Fri: 9AM-6PM</p>
                 <p className="text-white">Sat: 10AM-4PM</p>
               </div>
@@ -173,7 +173,7 @@ const Contact = () => {
         </section>
         
         {/* Contact Form and FAQ Section */}
-        <section className="py-16">
+        <section className="py-16 bg-background text-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
               <div className="animate-on-scroll" id="contact-form">
@@ -183,8 +183,8 @@ const Contact = () => {
               
               <div className="animate-on-scroll">
                 <div className="mb-10">
-                  <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-3xl font-bold mb-6 text-white">Frequently Asked Questions</h2>
+                  <p className="text-white/70">
                     Find answers to common questions about our property management services.
                   </p>
                 </div>
@@ -192,10 +192,10 @@ const Contact = () => {
                 <Accordion type="single" collapsible className="w-full space-y-4">
                   {faqs.map((faq, index) => (
                     <AccordionItem key={index} value={`faq-${index}`} className="border border-white/10 rounded-lg px-6 py-2">
-                      <AccordionTrigger className="text-left font-medium text-base">
+                      <AccordionTrigger className="text-left font-medium text-base text-white">
                         {faq.question}
                       </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pt-2 text-sm">
+                      <AccordionContent className="text-white/70 pt-2 text-sm">
                         {faq.answer}
                       </AccordionContent>
                     </AccordionItem>
@@ -209,8 +209,8 @@ const Contact = () => {
         {/* CTA Section */}
         <section className="py-16 bg-card/30">
           <div className="max-w-4xl mx-auto px-6 text-center animate-on-scroll">
-            <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-6 text-white">Ready to Get Started?</h2>
+            <p className="text-lg text-white/70 mb-8 max-w-2xl mx-auto">
               Fill out our contact form today to get started with our property management services. Our team is ready to assist you.
             </p>
             <Button asChild size="lg" className="bg-white text-black hover:bg-white/90 px-8">

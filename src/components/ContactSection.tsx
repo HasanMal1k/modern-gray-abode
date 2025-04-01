@@ -62,11 +62,11 @@ const ContactSection = () => {
     <section ref={sectionRef} className="py-12 px-4 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-10 animate-on-scroll text-center">
-          <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
+          <span className="inline-block text-sm tracking-wider uppercase text-white mb-4 py-1 px-3 border border-white/10 rounded-full">
             Get In Touch
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-balance">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Contact Us</h2>
+          <p className="text-white/70 max-w-2xl mx-auto text-balance">
             Whether you're looking to buy, sell, or simply explore the possibilities, our team is ready to assist you.
           </p>
         </div>
@@ -75,11 +75,11 @@ const ContactSection = () => {
           {/* Contact Form */}
           <div className="animate-on-scroll">
             <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6">Send Us a Message</h3>
+              <h3 className="text-xl font-medium mb-6 text-white">Send Us a Message</h3>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="name" className="block text-sm text-muted-foreground mb-2">
+                    <label htmlFor="name" className="block text-sm text-white/70 mb-2">
                       Name
                     </label>
                     <input 
@@ -92,7 +92,7 @@ const ContactSection = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm text-muted-foreground mb-2">
+                    <label htmlFor="email" className="block text-sm text-white/70 mb-2">
                       Email
                     </label>
                     <input 
@@ -107,7 +107,7 @@ const ContactSection = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="subject" className="block text-sm text-muted-foreground mb-2">
+                  <label htmlFor="subject" className="block text-sm text-white/70 mb-2">
                     Subject
                   </label>
                   <input 
@@ -121,7 +121,7 @@ const ContactSection = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="message" className="block text-sm text-muted-foreground mb-2">
+                  <label htmlFor="message" className="block text-sm text-white/70 mb-2">
                     Message
                   </label>
                   <textarea 
@@ -172,7 +172,7 @@ const ContactSection = () => {
           {/* Contact Information */}
           <div className="space-y-8 animate-on-scroll">
             <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6">Our Contact Information</h3>
+              <h3 className="text-xl font-medium mb-6 text-white">Our Contact Information</h3>
               
               <div className="space-y-5">
                 <div className="flex items-start space-x-4">
@@ -181,8 +181,8 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Office Address</h4>
-                    <p className="text-muted-foreground">1/5 Owel-Linkso Road, Lekki Penninsula II, Lekki</p>
-                    <p className="text-muted-foreground">106104, Lagos, Nigeria</p>
+                    <p className="text-white/70">1/5 Owel-Linkso Road, Lekki Penninsula II, Lekki</p>
+                    <p className="text-white/70">106104, Lagos, Nigeria</p>
                   </div>
                 </div>
                 
@@ -192,7 +192,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Phone Number</h4>
-                    <p className="text-muted-foreground">+234 806 642 9700</p>
+                    <p className="text-white/70">+234 806 642 9700</p>
                   </div>
                 </div>
                 
@@ -202,25 +202,25 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Email Address</h4>
-                    <p className="text-muted-foreground">sabi@grayscalerealtors.com</p>
+                    <p className="text-white/70">sabi@grayscalerealtors.com</p>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="glass-morphism rounded-xl p-8">
-              <h3 className="text-xl font-medium mb-6">Office Hours</h3>
+              <h3 className="text-xl font-medium mb-6 text-white">Office Hours</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday</span>
+                  <span className="text-white/70">Monday - Friday</span>
                   <span className="text-white">9:00 AM - 6:00 PM</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday</span>
+                  <span className="text-white/70">Saturday</span>
                   <span className="text-white">10:00 AM - 4:00 PM</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
+                  <span className="text-white/70">Sunday</span>
                   <span className="text-white">By Appointment Only</span>
                 </div>
               </div>
