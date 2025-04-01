@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MouseFollower from "./MouseFollower";
+import HeroBuilding3D from "./HeroBuilding3D";
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,7 +18,7 @@ const HeroSection = () => {
       <MouseFollower />
       
       {/* Background image with overlay */}
-      <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/70 via-black/50 to-background z-10"></div>
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-black/70 via-black/60 to-background z-10"></div>
       
       {/* Background video/image */}
       <div className="absolute inset-0 w-full h-full">
@@ -30,6 +31,11 @@ const HeroSection = () => {
             }}
           />
         </div>
+      </div>
+      
+      {/* 3D Building Model */}
+      <div className="absolute inset-0 w-full h-full z-5">
+        <HeroBuilding3D />
       </div>
       
       {/* Content */}
