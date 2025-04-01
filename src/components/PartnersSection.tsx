@@ -38,29 +38,80 @@ const PARTNERS = [
 
 const PartnersSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const scrollPositionRef = useRef(0);
+  const isMouseOverRef = useRef(false);
   
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
     
-    const scrollWidth = scrollContainer.scrollWidth;
-    const clientWidth = scrollContainer.clientWidth;
+    // Reset scroll position on mount
+    scrollContainer.scrollLeft = 0;
+    scrollPositionRef.current = 0;
     
-    // Only add animation if there's content to scroll
-    if (scrollWidth > clientWidth) {
+    const handleScroll = () => {
+      if (scrollContainer) {
+        scrollPositionRef.current = scrollContainer.scrollLeft;
+      }
+    };
+    
+    const handleMouseEnter = () => {
+      isMouseOverRef.current = true;
+      // Stop animation when mouse is over
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+    
+    const handleMouseLeave = () => {
+      isMouseOverRef.current = false;
+      // Resume animation when mouse leaves
+      if (animationRef.current === null) {
+        startScrollAnimation();
+      }
+    };
+    
+    const startScrollAnimation = () => {
       const scrollAnim = () => {
-        if (!scrollContainer) return;
+        if (!scrollContainer || isMouseOverRef.current) return;
         
-        if (scrollContainer.scrollLeft >= scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
-        } else {
-          scrollContainer.scrollLeft += 1;
+        const scrollWidth = scrollContainer.scrollWidth;
+        const containerWidth = scrollContainer.clientWidth;
+        
+        // Increment scroll position
+        scrollPositionRef.current += 0.5; // Slower scroll speed
+        
+        // Reset when reaching the end
+        if (scrollPositionRef.current >= scrollWidth / 2) {
+          // Smooth reset to beginning
+          scrollPositionRef.current = 0;
         }
+        
+        scrollContainer.scrollLeft = scrollPositionRef.current;
+        animationRef.current = requestAnimationFrame(scrollAnim);
       };
       
-      const interval = setInterval(scrollAnim, 20);
-      return () => clearInterval(interval);
-    }
+      animationRef.current = requestAnimationFrame(scrollAnim);
+    };
+    
+    scrollContainer.addEventListener('scroll', handleScroll);
+    scrollContainer.addEventListener('mouseenter', handleMouseEnter);
+    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
+    
+    // Start the animation
+    startScrollAnimation();
+    
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      scrollContainer.removeEventListener('mouseenter', handleMouseEnter);
+      scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
+      
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, []);
 
   // We duplicate the partners array to create a seamless loop
@@ -86,16 +137,18 @@ const PartnersSection = () => {
           {/* Scrolling container */}
           <div 
             ref={scrollRef}
-            className="flex items-center space-x-12 overflow-x-auto scrollbar-none py-6"
+            className="flex items-center space-x-16 overflow-x-auto scrollbar-none py-6" // Increased spacing between items
             style={{ 
               whiteSpace: 'nowrap',
-              scrollBehavior: 'smooth'
+              scrollBehavior: 'smooth',
+              msOverflowStyle: 'none',  // IE and Edge
+              scrollbarWidth: 'none'    // Firefox
             }}
           >
             {allPartners.map((partner, index) => (
               <div 
                 key={index} 
-                className="flex-shrink-0 w-40 h-20 bg-white rounded-md shadow-sm p-3 flex items-center justify-center"
+                className="flex-shrink-0 w-40 h-20 flex items-center justify-center" // Removed background and shadow
               >
                 <img 
                   src={partner.logo} 

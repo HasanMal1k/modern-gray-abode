@@ -3,7 +3,6 @@ import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MouseFollower from "./MouseFollower";
-import HeroBuilding3D from "./HeroBuilding3D";
 import MiniatureHouses from "./MiniatureHouses";
 
 const HeroSection = () => {
@@ -32,11 +31,6 @@ const HeroSection = () => {
             }}
           />
         </div>
-      </div>
-      
-      {/* 3D Building Model */}
-      <div className="absolute inset-0 w-full h-full z-5">
-        <HeroBuilding3D />
       </div>
       
       {/* Content */}

@@ -1,7 +1,6 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const MiniatureHouses = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,12 +98,13 @@ const MiniatureHouses = () => {
       return houseGroup;
     };
     
-    // Create houses row
+    // Create houses row with more space between them
     const houses: THREE.Group[] = [];
     const houseColors = ["#FDE1D3", "#FFDEE2", "#FEF7CD", "#D3E4FD", "#F2FCE2", "#F1F1F1"];
     
-    for (let i = 0; i < 7; i++) {
-      const posX = (i - 3) * 1.5;
+    for (let i = 0; i < 6; i++) {
+      // Increased spacing between houses from 1.5 to 2.5
+      const posX = (i - 2.5) * 2.5;
       const color = houseColors[i % houseColors.length];
       const scale = 0.4 + Math.random() * 0.3; // Random sizes
       houses.push(createHouse(color, posX, scale));
@@ -169,7 +169,7 @@ const MiniatureHouses = () => {
   return (
     <div 
       ref={containerRef} 
-      className="w-full absolute bottom-14 left-0 h-32 z-20 overflow-hidden"
+      className="w-full absolute bottom-14 left-0 h-36 z-20 overflow-hidden" // Increased height from 32 to 36
     />
   );
 };
