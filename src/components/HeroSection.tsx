@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MouseFollower from "./MouseFollower";
 import HeroBuilding3D from "./HeroBuilding3D";
+import MiniatureHouses from "./MiniatureHouses";
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -68,6 +69,9 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+      
+      {/* Miniature Houses Animation */}
+      <MiniatureHouses />
       
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce cursor-pointer">
