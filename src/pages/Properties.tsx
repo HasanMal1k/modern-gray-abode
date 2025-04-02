@@ -1,9 +1,12 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { BedDouble, Bath, Square, MapPin, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import MouseFollower from "@/components/MouseFollower";
+gsap.registerPlugin(ScrollTrigger);
 
 interface Property {
   id: number;
@@ -175,6 +178,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const propertiesContainerRef = useRef<HTMLDivElement>(null);
 
   // Filter properties based on search term
   const filteredProperties = PROPERTIES.filter(property => 
@@ -185,12 +189,33 @@ const Properties = () => {
 
   useEffect(() => {
     setIsVisible(true);
+
+    // Animate properties once section is in view
+    const container = propertiesContainerRef.current;
+    if (container) {
+      const cards = container.children;
+      
+      gsap.fromTo(cards, 
+        { opacity: 0, y: 50 }, 
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.7, 
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: container,
+            start: "top 80%"
+          }
+        }
+      );
+    }
   }, []);
 
   return (
     <div className="min-h-screen overflow-x-hidden">
       <Navbar />
-      
+      <MouseFollower />
+
       <main className="pt-24">
         {/* Hero Section */}
         <section className="py-16 px-6 bg-gradient-to-b from-black/70 to-background relative">
@@ -241,9 +266,12 @@ const Properties = () => {
             </div>
             
             {/* Properties Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div 
+              ref={propertiesContainerRef} 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               {filteredProperties.map((property) => (
-                <div key={property.id} className="animate-on-scroll animate-scale-in">
+                <div key={property.id}>
                   <PropertyCard property={property} />
                 </div>
               ))}

@@ -1,5 +1,9 @@
-
 import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const PARTNERS = [
   {
@@ -37,81 +41,44 @@ const PARTNERS = [
 ];
 
 const PartnersSection = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const scrollPositionRef = useRef(0);
-  const isMouseOverRef = useRef(false);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-    
-    // Reset scroll position on mount
-    scrollContainer.scrollLeft = 0;
-    scrollPositionRef.current = 0;
-    
-    const handleScroll = () => {
-      if (scrollContainer) {
-        scrollPositionRef.current = scrollContainer.scrollLeft;
-      }
-    };
-    
-    const handleMouseEnter = () => {
-      isMouseOverRef.current = true;
-      // Stop animation when mouse is over
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-    };
-    
-    const handleMouseLeave = () => {
-      isMouseOverRef.current = false;
-      // Resume animation when mouse leaves
-      if (animationRef.current === null) {
-        startScrollAnimation();
-      }
-    };
-    
-    const startScrollAnimation = () => {
-      const scrollAnim = () => {
-        if (!scrollContainer || isMouseOverRef.current) return;
+    // Set up GSAP animation
+    const setupAnimation = () => {
+      if (!scrollerRef.current || !containerRef.current) return;
         
-        const scrollWidth = scrollContainer.scrollWidth;
-        const containerWidth = scrollContainer.clientWidth;
+        // Clone the scroller content to create infinite effect
+        const scrollerContent = scrollerRef.current;
+        const scrollWidth = scrollerContent.offsetWidth;
         
-        // Increment scroll position
-        scrollPositionRef.current += 0.5; // Slower scroll speed
+        // Create animation timeline
+        let scrollTween = gsap.to(scrollerContent, {
+          x: `-=${scrollWidth}`,
+          ease: "none",
+          duration: 100, // Adjust this value to control speed (higher = slower)
+          repeat: -1, // Infinite repeat
+          paused: false,
+        });
         
-        // Reset when reaching the end
-        if (scrollPositionRef.current >= scrollWidth / 2) {
-          // Smooth reset to beginning
-          scrollPositionRef.current = 0;
-        }
+        // Pause animation on hover
+        containerRef.current.addEventListener('mouseenter', () => {
+          scrollTween.pause();
+        });
         
-        scrollContainer.scrollLeft = scrollPositionRef.current;
-        animationRef.current = requestAnimationFrame(scrollAnim);
-      };
-      
-      animationRef.current = requestAnimationFrame(scrollAnim);
+        // Resume animation on mouse leave
+        containerRef.current.addEventListener('mouseleave', () => {
+          scrollTween.play();
+        });
+        
+        // Cleanup on component unmount
+        return () => {
+          scrollTween.kill();
+        };
     };
     
-    scrollContainer.addEventListener('scroll', handleScroll);
-    scrollContainer.addEventListener('mouseenter', handleMouseEnter);
-    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
-    
-    // Start the animation
-    startScrollAnimation();
-    
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
-      scrollContainer.removeEventListener('mouseenter', handleMouseEnter);
-      scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
-      
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
+    setupAnimation();
   }, []);
 
   // We duplicate the partners array to create a seamless loop
@@ -127,36 +94,34 @@ const PartnersSection = () => {
           </p>
         </div>
         
-        <div className="relative">
+        <div className="relative" ref={containerRef}>
           {/* Gradient overlay on the left side */}
           <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
           
           {/* Gradient overlay on the right side */}
           <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-gray-50 to-transparent z-10"></div>
           
-          {/* Scrolling container */}
-          <div 
-            ref={scrollRef}
-            className="flex items-center space-x-16 overflow-x-auto scrollbar-none py-6" // Increased spacing between items
-            style={{ 
-              whiteSpace: 'nowrap',
-              scrollBehavior: 'smooth',
-              msOverflowStyle: 'none',  // IE and Edge
-              scrollbarWidth: 'none'    // Firefox
-            }}
-          >
-            {allPartners.map((partner, index) => (
-              <div 
-                key={index} 
-                className="flex-shrink-0 w-40 h-20 flex items-center justify-center" // Removed background and shadow
-              >
-                <img 
-                  src={partner.logo} 
-                  alt={partner.name} 
-                  className="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition-all duration-300" 
-                />
-              </div>
-            ))}
+          {/* Outer container with hidden overflow */}
+          <div className="overflow-hidden">
+            {/* Inner container for GSAP animation */}
+            <div 
+              ref={scrollerRef}
+              className="flex items-center py-6"
+              style={{ width: "fit-content" }}
+            >
+              {allPartners.map((partner, index) => (
+                <div 
+                  key={index} 
+                  className="flex-shrink-0 w-40 h-20 flex items-center justify-center mx-8"
+                >
+                  <img 
+                    src={partner.logo} 
+                    alt={partner.name} 
+                    className="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition-all duration-300" 
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
