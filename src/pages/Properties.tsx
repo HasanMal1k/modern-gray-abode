@@ -1,254 +1,74 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { BedDouble, Bath, Square, MapPin, Search, Filter, List, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MouseFollower from "@/components/MouseFollower";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-gsap.registerPlugin(ScrollTrigger);
-
-interface Property {
-  id: number;
-  title: string;
-  location: string;
-  price: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  image: string;
-  featured: boolean;
-  type: string;
-  category: string;
-}
-
-// Property categories
-const CATEGORIES = [
-  "All Properties",
-  "Gray Stays~Shortlet Listings",
-  "Homes for Sale",
-  "Off Plan Deals",
-  "Land for Sale/Joint Ventures",
-  "Rentals"
-];
-
-const PROPERTIES: Property[] = [
-  {
-    id: 1,
-    title: "Elegant Penthouse Suite",
-    location: "Downtown Metropolitan",
-    price: "$4,500,000",
-    bedrooms: 3,
-    bathrooms: 3.5,
-    area: 3200,
-    image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?q=80&w=1984&auto=format&fit=crop",
-    featured: true,
-    type: "Penthouse",
-    category: "Homes for Sale"
-  },
-  {
-    id: 2,
-    title: "Modern Waterfront Villa",
-    location: "Coastal Heights",
-    price: "$6,750,000",
-    bedrooms: 5,
-    bathrooms: 4.5,
-    area: 5800,
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop",
-    featured: true,
-    type: "Villa",
-    category: "Homes for Sale"
-  },
-  {
-    id: 3,
-    title: "Contemporary Loft Apartment",
-    location: "Art District",
-    price: "$1,890,000",
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 1800,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop",
-    featured: true,
-    type: "Loft",
-    category: "Rentals"
-  },
-  {
-    id: 4,
-    title: "Minimalist City Townhouse",
-    location: "Historic Quarter",
-    price: "$3,250,000",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 2900,
-    image: "https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=2069&auto=format&fit=crop",
-    featured: true,
-    type: "Townhouse",
-    category: "Off Plan Deals"
-  },
-  {
-    id: 5,
-    title: "Ultra Luxury Beachfront Estate",
-    location: "Oceanfront Drive",
-    price: "$12,900,000",
-    bedrooms: 6,
-    bathrooms: 7.5,
-    area: 8500,
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop",
-    featured: false,
-    type: "Estate",
-    category: "Land for Sale/Joint Ventures"
-  },
-  {
-    id: 6,
-    title: "Downtown Executive Condo",
-    location: "Financial District",
-    price: "$2,350,000",
-    bedrooms: 2,
-    bathrooms: 2.5,
-    area: 1950,
-    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070&auto=format&fit=crop",
-    featured: false,
-    type: "Condo",
-    category: "Off Plan Deals"
-  },
-  {
-    id: 7,
-    title: "Luxury High-Rise Apartment",
-    location: "City Center",
-    price: "$3,150,000",
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 2400,
-    image: "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?q=80&w=2071&auto=format&fit=crop",
-    featured: false,
-    type: "Apartment",
-    category: "Gray Stays~Shortlet Listings"
-  },
-  {
-    id: 8,
-    title: "Historic Mansion Renovation",
-    location: "Heritage District",
-    price: "$8,750,000",
-    bedrooms: 7,
-    bathrooms: 5.5,
-    area: 7200,
-    image: "https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=1974&auto=format&fit=crop",
-    featured: false,
-    type: "Mansion",
-    category: "Rentals"
-  },
-];
-
-const PropertyCard = ({ property }: { property: Property }) => {
-  return (
-    <div className="property-card glass-morphism group">
-      <div className="image-container relative h-64 overflow-hidden">
-        <img 
-          src={property.image} 
-          alt={property.title} 
-          className="w-full h-full object-cover transition-transform duration-700 transform group-hover:scale-110 filter grayscale"
-        />
-        <div className="image-shimmer"></div>
-        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm px-3 py-1 text-xs rounded-full text-white/90">
-          {property.type}
-        </div>
-      </div>
-      <div className="p-6 space-y-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-lg font-medium text-white group-hover:text-white/90 transition-colors truncate">{property.title}</h3>
-            <div className="flex items-center text-muted-foreground gap-1 mt-1">
-              <MapPin className="w-3 h-3" />
-              <span className="text-sm">{property.location}</span>
-            </div>
-          </div>
-          <span className="text-white font-medium">{property.price}</span>
-        </div>
-        
-        <div className="flex items-center justify-between text-muted-foreground border-t border-white/5 pt-4">
-          <div className="flex items-center gap-1">
-            <BedDouble className="w-4 h-4" />
-            <span className="text-sm">{property.bedrooms} <span className="hidden sm:inline">Beds</span></span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Bath className="w-4 h-4" />
-            <span className="text-sm">{property.bathrooms} <span className="hidden sm:inline">Baths</span></span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Square className="w-4 h-4" />
-            <span className="text-sm">{property.area} <span className="hidden sm:inline">Sq Ft</span></span>
-          </div>
-        </div>
-        
-        <Link 
-          to={`/properties/${property.id}`} 
-          className="inline-flex items-center text-sm text-white group-hover:text-white/90 font-medium group"
-        >
-          View Details
-          <svg className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Link>
-      </div>
-    </div>
-  );
-};
+import PropertyFilters from "@/components/PropertyFilters";
+import PropertyGrid from "@/components/PropertyGrid";
+import PropertyDetail from "@/components/PropertyDetail";
+import GrayListedProperty from "@/components/GrayListedProperty";
+import PropertyFilterInfo from "@/components/PropertyFilterInfo";
+import { PROPERTIES, GRAY_LISTED_PROPERTIES } from "@/data/properties.data";
+import { filterProperties } from "@/utils/property.utils";
+import { useToast } from "@/components/ui/use-toast";
 
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Properties");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
+  const [bedroomFilter, setBedroomFilter] = useState<number | null>(null);
+  const [bathroomFilter, setBathroomFilter] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const propertiesContainerRef = useRef<HTMLDivElement>(null);
+  const params = useParams<{ id: string }>();
+  const { toast } = useToast();
 
-  // Filter properties based on search term and category
-  const filteredProperties = PROPERTIES.filter(property => {
-    // First check if property matches search term
-    const matchesSearch = 
-      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.type.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Then check if it matches the selected category
-    const matchesCategory = 
-      selectedCategory === "All Properties" || 
-      property.category === selectedCategory;
-    
-    // Return true only if both conditions are met
-    return matchesSearch && matchesCategory;
-  });
+  // Handle viewing a specific property
+  const propertyId = params.id ? parseInt(params.id) : null;
+  
+  // Check if we're viewing a regular property or a gray listed property
+  const viewingProperty = propertyId ? (
+    PROPERTIES.find(p => p.id === propertyId) ||
+    GRAY_LISTED_PROPERTIES.find(p => p.id === propertyId)
+  ) : null;
+  
+  // Determine if we're viewing a gray listed property specifically
+  const isGrayListed = viewingProperty && 
+    'services' in viewingProperty && 
+    GRAY_LISTED_PROPERTIES.some(p => p.id === propertyId);
+
+  // Filter properties based on all filters
+  const filteredProperties = filterProperties(
+    PROPERTIES,
+    searchTerm,
+    selectedCategory,
+    priceRange,
+    bedroomFilter,
+    bathroomFilter
+  );
+
+  // Reset all filters
+  const resetAllFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All Properties");
+    setPriceRange([0, 10000000]);
+    setBedroomFilter(null);
+    setBathroomFilter(null);
+  };
 
   useEffect(() => {
     setIsVisible(true);
-
-    // Animate properties once section is in view
-    const container = propertiesContainerRef.current;
-    if (container) {
-      const cards = container.children;
-      
-      gsap.fromTo(cards, 
-        { opacity: 0, y: 50 }, 
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.7, 
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: container,
-            start: "top 80%"
-          }
-        }
-      );
-    }
   }, []);
+
+  if (propertyId && isGrayListed) {
+    const grayProperty = GRAY_LISTED_PROPERTIES.find(p => p.id === propertyId);
+    if (grayProperty) {
+      return <GrayListedProperty property={grayProperty} />;
+    }
+  } else if (propertyId && viewingProperty) {
+    return <PropertyDetail property={viewingProperty as any} />;
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden">
@@ -268,41 +88,22 @@ const Properties = () => {
               </p>
             </div>
             
-            {/* Search & Category Filter */}
-            <div className={`max-w-3xl mx-auto transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
-              <div className="glass-morphism rounded-lg p-1 flex flex-col md:flex-row">
-                <div className="flex-1 flex items-center pl-4">
-                  <Search className="w-5 h-5 text-muted-foreground mr-2" />
-                  <input
-                    type="text"
-                    placeholder="Search by location, property type, or features..."
-                    className="w-full bg-transparent border-none text-white focus:outline-none py-3"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div className="md:border-l border-white/10 mx-2 my-1 hidden md:block" />
-                <div className="px-4 py-2 md:w-[220px]">
-                  <Select 
-                    value={selectedCategory} 
-                    onValueChange={setSelectedCategory}
-                  >
-                    <SelectTrigger className="w-full border-none bg-transparent text-white focus:ring-0 focus:ring-offset-0">
-                      <SelectValue placeholder="All Properties" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <button className="bg-white text-black px-6 py-3 rounded-md font-medium text-sm hover:bg-white/90 transition-colors m-1">
-                  Search
-                </button>
-              </div>
+            {/* Search & Filters */}
+            <div className={`transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
+              <PropertyFilters
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                bedroomFilter={bedroomFilter}
+                setBedroomFilter={setBedroomFilter}
+                bathroomFilter={bathroomFilter}
+                setBathroomFilter={setBathroomFilter}
+                isFilterOpen={isFilterOpen}
+                setIsFilterOpen={setIsFilterOpen}
+              />
             </div>
           </div>
         </section>
@@ -310,73 +111,17 @@ const Properties = () => {
         {/* Property Listings */}
         <section className="py-16 px-6">
           <div className="max-w-7xl mx-auto">
-            {/* Filters and Info */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
-              <h2 className="text-2xl font-semibold mb-4 md:mb-0">
-                {filteredProperties.length} {filteredProperties.length === 1 ? 'Property' : 'Properties'} Available
-              </h2>
-              
-              <div className="flex space-x-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center space-x-2 px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white text-sm transition-all duration-300 border border-white/10">
-                    <List className="w-4 h-4" />
-                    <span>Categories</span>
-                    <ChevronDown className="w-4 h-4 ml-1" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-background/95 backdrop-blur-md border border-white/10">
-                    {CATEGORIES.map((category) => (
-                      <DropdownMenuItem 
-                        key={category}
-                        className={`${selectedCategory === category ? 'bg-white/10' : ''}`}
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                
-                <button 
-                  className="flex items-center space-x-2 px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white text-sm transition-all duration-300 border border-white/10"
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
-                >
-                  <Filter className="w-4 h-4" />
-                  <span>Filter Properties</span>
-                </button>
-              </div>
-            </div>
+            {/* Properties Info */}
+            <PropertyFilterInfo
+              filteredProperties={filteredProperties}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              resetAllFilters={resetAllFilters}
+            />
             
             {/* Properties Grid */}
-            <div 
-              ref={propertiesContainerRef} 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {filteredProperties.map((property) => (
-                <div key={property.id}>
-                  <PropertyCard property={property} />
-                </div>
-              ))}
-            </div>
-            
-            {/* Empty State */}
-            {filteredProperties.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-xl text-muted-foreground">No properties match your search criteria.</p>
-                <div className="mt-6 space-x-4">
-                  <button 
-                    onClick={() => setSearchTerm("")}
-                    className="px-6 py-2.5 bg-white/10 hover:bg-white/15 transition-colors text-white text-sm rounded-md"
-                  >
-                    Clear Search
-                  </button>
-                  <button 
-                    onClick={() => setSelectedCategory("All Properties")}
-                    className="px-6 py-2.5 bg-white/10 hover:bg-white/15 transition-colors text-white text-sm rounded-md"
-                  >
-                    Show All Properties
-                  </button>
-                </div>
-              </div>
+            {filteredProperties.length > 0 && (
+              <PropertyGrid properties={filteredProperties} />
             )}
           </div>
         </section>
