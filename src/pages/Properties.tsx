@@ -111,12 +111,22 @@ const Properties = () => {
         {/* Property Listings */}
         <section className="py-16 px-6">
           <div className="max-w-7xl mx-auto">
-            {/* Properties Info */}
+            {/* Properties Info with Categories and Filters */}
             <PropertyFilterInfo
               filteredProperties={filteredProperties}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               resetAllFilters={resetAllFilters}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              isFilterOpen={isFilterOpen}
+              setIsFilterOpen={setIsFilterOpen}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              bedroomFilter={bedroomFilter}
+              setBedroomFilter={setBedroomFilter}
+              bathroomFilter={bathroomFilter}
+              setBathroomFilter={setBathroomFilter}
             />
             
             {/* Properties Grid */}

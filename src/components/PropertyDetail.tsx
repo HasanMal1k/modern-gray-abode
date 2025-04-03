@@ -60,18 +60,19 @@ const PropertyDetail = ({ property }: { property: Property }) => {
       
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
-          {/* Back Button */}
+          {/* Back Button - improved responsiveness */}
           <button 
             onClick={() => navigate(-1)}
-            className="inline-flex items-center text-sm mb-6 hover:text-white/90"
+            className="inline-flex items-center text-sm mb-4 md:mb-6 bg-white/5 hover:bg-white/10 text-white px-3 py-1.5 rounded-md transition-colors"
+            aria-label="Back to properties"
           >
-            <ArrowLeft className="mr-1 w-4 h-4" />
-            Back to Properties
+            <ArrowLeft className="mr-1.5 w-4 h-4" />
+            <span className="whitespace-nowrap">Back to Properties</span>
           </button>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Property Media */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 relative">
               {propertyImages.length > 1 ? (
                 <Carousel className="w-full">
                   <CarouselContent>
