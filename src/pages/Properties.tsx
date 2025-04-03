@@ -1,11 +1,19 @@
+
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { BedDouble, Bath, Square, MapPin, Search, Filter } from "lucide-react";
+import { BedDouble, Bath, Square, MapPin, Search, Filter, List, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MouseFollower from "@/components/MouseFollower";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 gsap.registerPlugin(ScrollTrigger);
 
 interface Property {
@@ -19,7 +27,18 @@ interface Property {
   image: string;
   featured: boolean;
   type: string;
+  category: string;
 }
+
+// Property categories
+const CATEGORIES = [
+  "All Properties",
+  "Gray Stays~Shortlet Listings",
+  "Homes for Sale",
+  "Off Plan Deals",
+  "Land for Sale/Joint Ventures",
+  "Rentals"
+];
 
 const PROPERTIES: Property[] = [
   {
@@ -33,6 +52,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?q=80&w=1984&auto=format&fit=crop",
     featured: true,
     type: "Penthouse",
+    category: "Homes for Sale"
   },
   {
     id: 2,
@@ -45,6 +65,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop",
     featured: true,
     type: "Villa",
+    category: "Homes for Sale"
   },
   {
     id: 3,
@@ -57,6 +78,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop",
     featured: true,
     type: "Loft",
+    category: "Rentals"
   },
   {
     id: 4,
@@ -69,6 +91,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=2069&auto=format&fit=crop",
     featured: true,
     type: "Townhouse",
+    category: "Off Plan Deals"
   },
   {
     id: 5,
@@ -81,6 +104,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop",
     featured: false,
     type: "Estate",
+    category: "Land for Sale/Joint Ventures"
   },
   {
     id: 6,
@@ -93,6 +117,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070&auto=format&fit=crop",
     featured: false,
     type: "Condo",
+    category: "Off Plan Deals"
   },
   {
     id: 7,
@@ -105,6 +130,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?q=80&w=2071&auto=format&fit=crop",
     featured: false,
     type: "Apartment",
+    category: "Gray Stays~Shortlet Listings"
   },
   {
     id: 8,
@@ -117,6 +143,7 @@ const PROPERTIES: Property[] = [
     image: "https://images.unsplash.com/photo-1577495508326-19a1b3cf65b7?q=80&w=1974&auto=format&fit=crop",
     featured: false,
     type: "Mansion",
+    category: "Rentals"
   },
 ];
 
@@ -177,15 +204,27 @@ const PropertyCard = ({ property }: { property: Property }) => {
 
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Properties");
   const [isVisible, setIsVisible] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const propertiesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Filter properties based on search term
-  const filteredProperties = PROPERTIES.filter(property => 
-    property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter properties based on search term and category
+  const filteredProperties = PROPERTIES.filter(property => {
+    // First check if property matches search term
+    const matchesSearch = 
+      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.type.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Then check if it matches the selected category
+    const matchesCategory = 
+      selectedCategory === "All Properties" || 
+      property.category === selectedCategory;
+    
+    // Return true only if both conditions are met
+    return matchesSearch && matchesCategory;
+  });
 
   useEffect(() => {
     setIsVisible(true);
@@ -229,9 +268,9 @@ const Properties = () => {
               </p>
             </div>
             
-            {/* Search Bar */}
+            {/* Search & Category Filter */}
             <div className={`max-w-3xl mx-auto transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
-              <div className="glass-morphism rounded-lg p-1 flex">
+              <div className="glass-morphism rounded-lg p-1 flex flex-col md:flex-row">
                 <div className="flex-1 flex items-center pl-4">
                   <Search className="w-5 h-5 text-muted-foreground mr-2" />
                   <input
@@ -242,7 +281,25 @@ const Properties = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <button className="bg-white text-black px-6 py-3 rounded-md font-medium text-sm hover:bg-white/90 transition-colors">
+                <div className="md:border-l border-white/10 mx-2 my-1 hidden md:block" />
+                <div className="px-4 py-2 md:w-[220px]">
+                  <Select 
+                    value={selectedCategory} 
+                    onValueChange={setSelectedCategory}
+                  >
+                    <SelectTrigger className="w-full border-none bg-transparent text-white focus:ring-0 focus:ring-offset-0">
+                      <SelectValue placeholder="All Properties" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <button className="bg-white text-black px-6 py-3 rounded-md font-medium text-sm hover:bg-white/90 transition-colors m-1">
                   Search
                 </button>
               </div>
@@ -259,10 +316,34 @@ const Properties = () => {
                 {filteredProperties.length} {filteredProperties.length === 1 ? 'Property' : 'Properties'} Available
               </h2>
               
-              <button className="flex items-center space-x-2 px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white text-sm transition-all duration-300 border border-white/10">
-                <Filter className="w-4 h-4" />
-                <span>Filter Properties</span>
-              </button>
+              <div className="flex space-x-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center space-x-2 px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white text-sm transition-all duration-300 border border-white/10">
+                    <List className="w-4 h-4" />
+                    <span>Categories</span>
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-background/95 backdrop-blur-md border border-white/10">
+                    {CATEGORIES.map((category) => (
+                      <DropdownMenuItem 
+                        key={category}
+                        className={`${selectedCategory === category ? 'bg-white/10' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
+                <button 
+                  className="flex items-center space-x-2 px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white text-sm transition-all duration-300 border border-white/10"
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                >
+                  <Filter className="w-4 h-4" />
+                  <span>Filter Properties</span>
+                </button>
+              </div>
             </div>
             
             {/* Properties Grid */}
@@ -281,12 +362,20 @@ const Properties = () => {
             {filteredProperties.length === 0 && (
               <div className="text-center py-16">
                 <p className="text-xl text-muted-foreground">No properties match your search criteria.</p>
-                <button 
-                  onClick={() => setSearchTerm("")}
-                  className="mt-4 px-6 py-2.5 bg-white/10 hover:bg-white/15 transition-colors text-white text-sm rounded-md"
-                >
-                  Clear Search
-                </button>
+                <div className="mt-6 space-x-4">
+                  <button 
+                    onClick={() => setSearchTerm("")}
+                    className="px-6 py-2.5 bg-white/10 hover:bg-white/15 transition-colors text-white text-sm rounded-md"
+                  >
+                    Clear Search
+                  </button>
+                  <button 
+                    onClick={() => setSelectedCategory("All Properties")}
+                    className="px-6 py-2.5 bg-white/10 hover:bg-white/15 transition-colors text-white text-sm rounded-md"
+                  >
+                    Show All Properties
+                  </button>
+                </div>
               </div>
             )}
           </div>
