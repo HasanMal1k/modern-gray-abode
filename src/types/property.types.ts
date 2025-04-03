@@ -9,6 +9,7 @@ export interface Property {
   bathrooms: number;
   area: number;
   image: string;
+  images?: string[]; // Added for carousel support
   featured: boolean;
   type: string;
   category: string;

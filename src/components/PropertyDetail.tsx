@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MouseFollower from "@/components/MouseFollower";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface Property {
   id: number;
@@ -16,6 +18,7 @@ interface Property {
   bathrooms: number;
   area: number;
   image: string;
+  images?: string[];
   featured: boolean;
   type: string;
   category: string;
@@ -47,9 +50,13 @@ const PropertyDetail = ({ property }: { property: Property }) => {
     window.open("https://wa.me/1234567890?text=I'm interested in " + property.title);
   };
 
+  // Images array for carousel - use property.images if available, otherwise use [property.image]
+  const propertyImages = property.images?.length ? property.images : [property.image];
+
   return (
     <div className="min-h-screen">
       <Navbar />
+      <MouseFollower />
       
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
@@ -65,35 +72,55 @@ const PropertyDetail = ({ property }: { property: Property }) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Property Media */}
             <div className="lg:col-span-2">
-              <div className="h-[400px] md:h-[500px] relative overflow-hidden rounded-lg">
-                <img 
-                  src={property.image} 
-                  alt={property.title} 
-                  className="w-full h-full object-cover"
-                />
-                
-                <div className="absolute top-4 right-4 flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="bg-black/50 hover:bg-black/70 backdrop-blur-md border-white/10 text-white rounded-full w-10 h-10 p-0"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className={`bg-black/50 hover:bg-black/70 backdrop-blur-md border-white/10 text-white rounded-full w-10 h-10 p-0 ${isFavorite ? 'text-red-500' : ''}`}
-                    onClick={handleFavorite}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-                  </Button>
+              {propertyImages.length > 1 ? (
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {propertyImages.map((image, index) => (
+                      <CarouselItem key={index} className="h-[400px] md:h-[500px]">
+                        <div className="h-full w-full relative rounded-lg overflow-hidden">
+                          <img 
+                            src={image} 
+                            alt={`${property.title} - Image ${index + 1}`} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-2" />
+                  <CarouselNext className="right-2" />
+                </Carousel>
+              ) : (
+                <div className="h-[400px] md:h-[500px] relative overflow-hidden rounded-lg">
+                  <img 
+                    src={property.image} 
+                    alt={property.title} 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                
-                <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-md text-xs font-medium">
-                  {property.type}
-                </div>
+              )}
+              
+              <div className="absolute top-4 right-4 flex space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-black/50 hover:bg-black/70 backdrop-blur-md border-white/10 text-white rounded-full w-10 h-10 p-0"
+                  onClick={handleShare}
+                >
+                  <Share2 className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className={`bg-black/50 hover:bg-black/70 backdrop-blur-md border-white/10 text-white rounded-full w-10 h-10 p-0 ${isFavorite ? 'text-red-500' : ''}`}
+                  onClick={handleFavorite}
+                >
+                  <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                </Button>
+              </div>
+              
+              <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-md text-xs font-medium">
+                {property.type}
               </div>
             </div>
             

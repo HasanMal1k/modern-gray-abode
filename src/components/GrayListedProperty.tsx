@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MouseFollower from "@/components/MouseFollower";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
@@ -63,6 +64,7 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
   return (
     <div className="min-h-screen">
       <Navbar />
+      <MouseFollower />
       
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
