@@ -164,7 +164,7 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
                 <div className="mb-3">
                   {property.category === "Gray Stays~Shortlet Listings" && (
                     <span className="inline-block bg-accent/20 text-accent rounded-full px-3 py-1 text-xs font-medium">
-                      Gray Stays™
+                      Grayscale™
                     </span>
                   )}
                 </div>
@@ -223,7 +223,7 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
                   <Button className="w-full" onClick={handleWhatsApp}>
                     <Phone className="mr-2 h-4 w-4" /> WhatsApp Contact
                   </Button>
-                  <a href="mailto:info@graystays.com">
+                  <a href="mailto:info@grayscale.com">
                     <Button variant="outline" className="w-full">
                       <MessageSquare className="mr-2 h-4 w-4" /> Email Inquiry
                     </Button>
@@ -233,7 +233,6 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
             </div>
           </div>
           
-          {/* Tabs for Details */}
           <div className="mt-8">
             <Tabs defaultValue="description" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
@@ -313,7 +312,6 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
             </Tabs>
           </div>
           
-          {/* CTA Section */}
           <div className="mt-8 glass-morphism p-6 rounded-lg text-center">
             <h2 className="text-xl font-semibold mb-3">Ready to Book This Property?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
@@ -323,7 +321,7 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
               <Button onClick={handleWhatsApp} size="lg">
                 <Phone className="mr-2 h-4 w-4" /> WhatsApp Contact
               </Button>
-              <a href="mailto:info@graystays.com">
+              <a href="mailto:info@grayscale.com">
                 <Button variant="outline" size="lg">
                   <MessageSquare className="mr-2 h-4 w-4" /> Send Email Inquiry
                 </Button>

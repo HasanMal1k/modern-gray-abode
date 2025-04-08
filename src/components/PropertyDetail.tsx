@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare, View360 } from "lucide-react";
+import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -182,7 +183,7 @@ const PropertyDetail = ({ property }: { property: Property }) => {
                   <Button className="w-full" onClick={handleContact}>
                     <Phone className="mr-2 h-4 w-4" /> WhatsApp Contact
                   </Button>
-                  <a href="mailto:info@graystays.com">
+                  <a href="mailto:info@grayscale.com">
                     <Button variant="outline" className="w-full">
                       <MessageSquare className="mr-2 h-4 w-4" /> Email Inquiry
                     </Button>

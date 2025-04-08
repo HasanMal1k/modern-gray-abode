@@ -28,7 +28,8 @@ const Panorama360Viewer = ({ panoramaUrl }: Panorama360ViewerProps) => {
     // Load the panorama texture
     const loader = new THREE.TextureLoader();
     const texture = loader.load(panoramaUrl);
-    texture.colorSpace = THREE.SRGBColorSpace;
+    // Fix for TypeScript error - using encoding instead of colorSpace for compatibility
+    texture.encoding = THREE.sRGBEncoding;
 
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const sphere = new THREE.Mesh(geometry, material);
