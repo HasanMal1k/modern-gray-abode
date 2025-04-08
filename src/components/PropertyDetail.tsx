@@ -1,13 +1,13 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare } from "lucide-react";
+import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare, View360 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MouseFollower from "@/components/MouseFollower";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Panorama360Viewer from "@/components/Panorama360Viewer";
 
 interface Property {
   id: number;
@@ -22,11 +22,13 @@ interface Property {
   featured: boolean;
   type: string;
   category: string;
+  panorama?: string;
 }
 
 const PropertyDetail = ({ property }: { property: Property }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showPanorama, setShowPanorama] = useState(false);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -50,7 +52,6 @@ const PropertyDetail = ({ property }: { property: Property }) => {
     window.open("https://wa.me/1234567890?text=I'm interested in " + property.title);
   };
 
-  // Images array for carousel - use property.images if available, otherwise use [property.image]
   const propertyImages = property.images?.length ? property.images : [property.image];
 
   return (
@@ -60,7 +61,6 @@ const PropertyDetail = ({ property }: { property: Property }) => {
       
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
-          {/* Back Button - improved responsiveness */}
           <button 
             onClick={() => navigate(-1)}
             className="inline-flex items-center text-sm mb-4 md:mb-6 bg-white/5 hover:bg-white/10 text-white px-3 py-1.5 rounded-md transition-colors"
@@ -71,34 +71,61 @@ const PropertyDetail = ({ property }: { property: Property }) => {
           </button>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Property Media */}
             <div className="lg:col-span-2 relative">
-              {propertyImages.length > 1 ? (
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {propertyImages.map((image, index) => (
-                      <CarouselItem key={index} className="h-[400px] md:h-[500px]">
-                        <div className="h-full w-full relative rounded-lg overflow-hidden">
-                          <img 
-                            src={image} 
-                            alt={`${property.title} - Image ${index + 1}`} 
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-2" />
-                  <CarouselNext className="right-2" />
-                </Carousel>
-              ) : (
-                <div className="h-[400px] md:h-[500px] relative overflow-hidden rounded-lg">
-                  <img 
-                    src={property.image} 
-                    alt={property.title} 
-                    className="w-full h-full object-cover"
-                  />
+              {showPanorama && property.panorama ? (
+                <div className="h-[400px] md:h-[500px] relative rounded-lg overflow-hidden">
+                  <Panorama360Viewer panoramaUrl={property.panorama} />
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md border-white/10 text-white"
+                    onClick={() => setShowPanorama(false)}
+                  >
+                    Exit 360° View
+                  </Button>
                 </div>
+              ) : (
+                <>
+                  {propertyImages.length > 1 ? (
+                    <Carousel className="w-full">
+                      <CarouselContent>
+                        {propertyImages.map((image, index) => (
+                          <CarouselItem key={index} className="h-[400px] md:h-[500px]">
+                            <div className="h-full w-full relative rounded-lg overflow-hidden">
+                              <img 
+                                src={image} 
+                                alt={`${property.title} - Image ${index + 1}`} 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  ) : (
+                    <div className="h-[400px] md:h-[500px] relative overflow-hidden rounded-lg">
+                      <img 
+                        src={property.image} 
+                        alt={property.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  
+                  {property.panorama && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md border-white/10 text-white"
+                      onClick={() => setShowPanorama(true)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2"><circle cx="12" cy="12" r="10"></circle><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.4"></path><path d="M7.8 7.8c-2.3 2.3-2.3 6.1 0 8.4"></path></svg>
+                      View 360°
+                    </Button>
+                  )}
+                </>
               )}
               
               <div className="absolute top-4 right-4 flex space-x-2">
@@ -125,7 +152,6 @@ const PropertyDetail = ({ property }: { property: Property }) => {
               </div>
             </div>
             
-            {/* Property Info */}
             <div className="lg:col-span-1">
               <div className="glass-morphism p-6 rounded-lg h-full flex flex-col">
                 <h1 className="text-2xl font-semibold mb-2">{property.title}</h1>
@@ -166,7 +192,6 @@ const PropertyDetail = ({ property }: { property: Property }) => {
             </div>
           </div>
           
-          {/* Property Description */}
           <div className="mt-8 glass-morphism p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Property Description</h2>
             <p className="text-muted-foreground">
@@ -176,7 +201,6 @@ const PropertyDetail = ({ property }: { property: Property }) => {
             </p>
           </div>
           
-          {/* Map Section */}
           <div className="mt-8 glass-morphism p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Location</h2>
             <div className="h-[300px] rounded-lg bg-white/5 flex items-center justify-center">

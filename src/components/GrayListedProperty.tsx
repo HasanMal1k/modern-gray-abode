@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BedDouble, Bath, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare, Star, PlayCircle, Check } from "lucide-react";
@@ -9,6 +8,7 @@ import Footer from "@/components/Footer";
 import MouseFollower from "@/components/MouseFollower";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Panorama360Viewer from "@/components/Panorama360Viewer";
 
 interface GrayListedPropertyType {
   id: number;
@@ -18,6 +18,7 @@ interface GrayListedPropertyType {
   price: string;
   images: string[];
   video?: string;
+  panorama?: string;
   features?: string[];
   services?: string[];
   highlights?: string[];
@@ -33,6 +34,7 @@ interface GrayListedPropertyType {
 const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showPanorama, setShowPanorama] = useState(false);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -57,7 +59,6 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
   };
 
   const handleVideoPlay = () => {
-    // This would be replaced with actual video player functionality
     toast("Video playback would start here");
   };
 
@@ -80,51 +81,81 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Property Media */}
             <div className="lg:col-span-2">
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {property.images.map((image, index) => (
-                    <CarouselItem key={index} className="h-[400px] md:h-[500px]">
-                      <div className="h-full w-full relative rounded-lg overflow-hidden">
-                        <img 
-                          src={image} 
-                          alt={`${property.title} - Image ${index + 1}`} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                  {property.video && (
-                    <CarouselItem className="h-[400px] md:h-[500px]">
-                      <div className="h-full w-full relative rounded-lg overflow-hidden bg-black/30 flex items-center justify-center cursor-pointer" onClick={handleVideoPlay}>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <PlayCircle className="w-16 h-16 text-white z-10" />
-                        <div className="absolute bottom-4 left-4 text-white font-medium z-10">Watch Video Tour</div>
-                      </div>
-                    </CarouselItem>
-                  )}
-                </CarouselContent>
-                <CarouselPrevious className="left-2" />
-                <CarouselNext className="right-2" />
-              </Carousel>
-              
-              <div className="mt-4 flex justify-end space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white"
-                  onClick={handleShare}
-                >
-                  <Share2 className="mr-2 w-4 h-4" /> Share
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className={`bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white ${isFavorite ? 'text-red-500' : ''}`}
-                  onClick={handleFavorite}
-                >
-                  <Heart className={`mr-2 w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} /> Favorite
-                </Button>
-              </div>
+              {showPanorama && property.panorama ? (
+                <div className="h-[400px] md:h-[500px] relative rounded-lg overflow-hidden">
+                  <Panorama360Viewer panoramaUrl={property.panorama} />
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md border-white/10 text-white"
+                    onClick={() => setShowPanorama(false)}
+                  >
+                    Exit 360° View
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {property.images.map((image, index) => (
+                        <CarouselItem key={index} className="h-[400px] md:h-[500px]">
+                          <div className="h-full w-full relative rounded-lg overflow-hidden">
+                            <img 
+                              src={image} 
+                              alt={`${property.title} - Image ${index + 1}`} 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                      {property.video && (
+                        <CarouselItem className="h-[400px] md:h-[500px]">
+                          <div className="h-full w-full relative rounded-lg overflow-hidden bg-black/30 flex items-center justify-center cursor-pointer" onClick={handleVideoPlay}>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <PlayCircle className="w-16 h-16 text-white z-10" />
+                            <div className="absolute bottom-4 left-4 text-white font-medium z-10">Watch Video Tour</div>
+                          </div>
+                        </CarouselItem>
+                      )}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-2" />
+                    <CarouselNext className="right-2" />
+                  </Carousel>
+                  
+                  <div className="mt-4 flex justify-between items-center">
+                    {property.panorama && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white"
+                        onClick={() => setShowPanorama(true)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2"><circle cx="12" cy="12" r="10"></circle><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.4"></path><path d="M7.8 7.8c-2.3 2.3-2.3 6.1 0 8.4"></path></svg>
+                        View 360°
+                      </Button>
+                    )}
+                    
+                    <div className={`flex justify-${property.panorama ? 'end' : 'between'} space-x-2 ${property.panorama ? 'ml-auto' : 'w-full'}`}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white"
+                        onClick={handleShare}
+                      >
+                        <Share2 className="mr-2 w-4 h-4" /> Share
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className={`bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white ${isFavorite ? 'text-red-500' : ''}`}
+                        onClick={handleFavorite}
+                      >
+                        <Heart className={`mr-2 w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} /> Favorite
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             
             {/* Property Info */}
