@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, X, ChevronDown } from "lucide-react";
+import grayscaleLogo from "../../public/images/Grayscale.png"
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,7 +42,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <h1 className="text-lg md:text-2xl tracking-tighter flex flex-row justify-center items-center gap-2 md:gap-4">
-          <img className="h-9 md:h-14" src="/Grayscale.png" alt="" />
+          <img className="h-9 md:h-14" src={grayscaleLogo} alt="" />
             <div>
               <span className="text-white font-light">Greyscale </span>
               <span className="text-muted-foreground font-bold">Realtors</span>
