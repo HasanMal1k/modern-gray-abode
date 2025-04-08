@@ -40,9 +40,12 @@ export const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <h1 className="text-2xl font-bold tracking-tighter">
-            <span className="text-white">ESTATE</span>
-            <span className="text-muted-foreground">NOIR</span>
+          <h1 className="text-lg md:text-2xl tracking-tighter flex flex-row justify-center items-center gap-2 md:gap-4">
+          <img className="h-9 md:h-14" src="../../public/images/Grayscale.png" alt="" />
+            <div>
+              <span className="text-white font-light">Grey Scale </span>
+              <span className="text-muted-foreground font-bold">Realtors</span>
+            </div>
           </h1>
         </Link>
 
