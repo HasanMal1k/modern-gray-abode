@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -5,20 +6,50 @@ import ContactSection from "@/components/ContactSection";
 import MouseFollower from "@/components/MouseFollower";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Phone, Mail, Clock, MapPin, ChevronRight } from "lucide-react";
+import { Phone, Mail, Clock, MapPin, ChevronRight, Video, Calendar, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import Panorama360Viewer from "@/components/Panorama360Viewer";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
+  const { toast } = useToast();
   const pageRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const contactInfoRef = useRef<HTMLDivElement>(null);
   const contactFormRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const liveViewingRef = useRef<HTMLDivElement>(null);
+  
+  const [showDemo, setShowDemo] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleBookDemo = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setShowDemo(false);
+      toast({
+        title: "Demo Request Received",
+        description: "We'll contact you soon to schedule your LIVE 360° viewing session.",
+      });
+      
+      // Reset form
+      (e.target as HTMLFormElement).reset();
+    }, 1500);
+  };
   
   const faqs = [
     {
@@ -114,6 +145,24 @@ const Contact = () => {
         }
       );
     }
+    
+    // Live 360 Viewing Section Animation
+    const liveViewingElements = liveViewingRef.current?.querySelectorAll('.animate-live-viewing');
+    if (liveViewingElements) {
+      gsap.fromTo(liveViewingElements, 
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.7,
+          stagger: 0.2,
+          scrollTrigger: {
+            trigger: liveViewingRef.current,
+            start: "top 80%"
+          }
+        }
+      );
+    }
   }, []);
 
   return (
@@ -165,6 +214,227 @@ const Contact = () => {
           
           {/* Bottom Gradient Overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#111] to-transparent"></div>
+        </section>
+        
+        {/* LIVE 360° Viewing Section */}
+        <section className="py-16 bg-[#111] relative overflow-hidden" ref={liveViewingRef}>
+          <div className="absolute inset-0 z-0 opacity-20">
+            <Panorama360Viewer panoramaUrl="/images/team-1.jpg" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#111]/80 to-[#111]/95"></div>
+          
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="flex flex-col lg:flex-row items-center gap-12">
+              <div className="w-full lg:w-1/2">
+                <div className="rounded-lg overflow-hidden relative h-[400px] shadow-2xl border border-white/10 animate-live-viewing">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
+                    <div className="text-center px-6">
+                      <Video className="w-16 h-16 mx-auto mb-4 text-white opacity-70" />
+                      <h3 className="text-xl font-semibold text-white mb-2">LIVE 360° STREAM</h3>
+                      <p className="text-white/70 mb-6">Coming Soon - Our exclusive remote viewing technology</p>
+                      <div className="inline-block px-4 py-2 bg-white/10 rounded-full text-white/90 text-sm border border-white/20">
+                        Demo Available for Selected Properties
+                      </div>
+                    </div>
+                  </div>
+                  <Panorama360Viewer panoramaUrl="/images/team-1.jpg" />
+                </div>
+              </div>
+              
+              <div className="w-full lg:w-1/2 animate-live-viewing">
+                <div className="mb-4 inline-block bg-white/10 px-4 py-1 rounded-full text-sm text-white/80">
+                  EXCLUSIVE FEATURE
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                  Experience Properties from Anywhere with LIVE 360° Viewing
+                </h2>
+                <p className="text-white/70 mb-8">
+                  Grayscale Realtors brings you a revolutionary way to view properties without leaving your home. Our remote LIVE 360° viewing service allows you to experience immersive virtual tours of properties you're interested in, guided by our agents in real-time.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-white/10 p-2 rounded-full mt-1">
+                      <Eye className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium text-white">Immersive 360° Experience</h4>
+                      <p className="text-white/70">View every corner of the property in stunning detail with our 360° cameras.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="bg-white/10 p-2 rounded-full mt-1">
+                      <Calendar className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium text-white">Flexible Scheduling</h4>
+                      <p className="text-white/70">Book a viewing session at your convenience, from anywhere in the world.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="bg-white/10 p-2 rounded-full mt-1">
+                      <Phone className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium text-white">Live Interaction</h4>
+                      <p className="text-white/70">Ask questions and get real-time answers from our agents during the viewing.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button size="lg" className="bg-white text-black hover:bg-white/90">
+                      <Calendar className="mr-2 w-4 h-4" /> Schedule a LIVE 360° Viewing
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="sm:max-w-md bg-[#222]/90 backdrop-blur-lg border-white/10">
+                    <SheetHeader>
+                      <SheetTitle className="text-white">Book Your LIVE 360° Viewing</SheetTitle>
+                      <SheetDescription className="text-white/70">
+                        Fill out this form to schedule your personalized remote viewing session.
+                      </SheetDescription>
+                    </SheetHeader>
+                    
+                    <form onSubmit={handleBookDemo} className="space-y-6 mt-6">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <label htmlFor="name" className="text-sm text-white/80">
+                              Full Name
+                            </label>
+                            <Input 
+                              id="name" 
+                              name="name" 
+                              required 
+                              className="bg-white/5 border-white/10 text-white"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <label htmlFor="email" className="text-sm text-white/80">
+                              Email
+                            </label>
+                            <Input 
+                              id="email" 
+                              name="email" 
+                              type="email" 
+                              required 
+                              className="bg-white/5 border-white/10 text-white"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label htmlFor="phone" className="text-sm text-white/80">
+                            Phone Number
+                          </label>
+                          <Input 
+                            id="phone" 
+                            name="phone" 
+                            required 
+                            className="bg-white/5 border-white/10 text-white"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label htmlFor="property" className="text-sm text-white/80">
+                            Property Interest
+                          </label>
+                          <Input 
+                            id="property" 
+                            name="property" 
+                            placeholder="Which property are you interested in?" 
+                            required 
+                            className="bg-white/5 border-white/10 text-white"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label htmlFor="date" className="text-sm text-white/80">
+                            Preferred Date & Time
+                          </label>
+                          <Input 
+                            id="date" 
+                            name="date" 
+                            type="text" 
+                            placeholder="e.g., April 15, 2PM" 
+                            required 
+                            className="bg-white/5 border-white/10 text-white"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label htmlFor="message" className="text-sm text-white/80">
+                            Additional Information
+                          </label>
+                          <Textarea 
+                            id="message" 
+                            name="message" 
+                            className="bg-white/5 border-white/10 text-white min-h-[100px]"
+                          />
+                        </div>
+                      </div>
+                      
+                      <Button type="submit" className="w-full bg-white text-black hover:bg-white/90" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <span className="flex items-center">
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                          </span>
+                        ) : (
+                          <span className="flex items-center">
+                            <Calendar className="mr-2 h-4 w-4" /> Book Viewing Session
+                          </span>
+                        )}
+                      </Button>
+                      
+                      <div className="mt-4 text-sm text-white/60 text-center">
+                        <p>You can also book directly via WhatsApp</p>
+                        <a 
+                          href="https://wa.me/2348066429700" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center text-white hover:text-white/80 mt-2"
+                        >
+                          <Phone className="w-4 h-4 mr-1" /> +234 806 642 9700
+                        </a>
+                      </div>
+                    </form>
+                  </SheetContent>
+                </Sheet>
+                
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="lg" className="ml-0 mt-4 sm:ml-4 sm:mt-0 border-white/20 text-white hover:bg-white/10">
+                      <Video className="mr-2 w-4 h-4" /> Watch Demo
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-xl bg-[#222]/90 backdrop-blur-lg border-white/10">
+                    <DialogHeader>
+                      <DialogTitle className="text-white">LIVE 360° Viewing Demo</DialogTitle>
+                      <DialogDescription className="text-white/70">
+                        Experience a preview of our immersive 360° property viewing technology.
+                      </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="mt-4 rounded-lg overflow-hidden h-[400px] border border-white/10">
+                      <Panorama360Viewer panoramaUrl="/images/team-1.jpg" />
+                    </div>
+                    
+                    <p className="text-white/60 text-sm mt-4">
+                      Note: This is a sample demo. The actual LIVE 360° viewing experience includes real-time interaction with our agents and more detailed property exploration.
+                    </p>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </div>
         </section>
         
         {/* Quick Contact Info Section */}
