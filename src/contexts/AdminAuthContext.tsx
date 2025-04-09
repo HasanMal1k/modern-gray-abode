@@ -1,36 +1,29 @@
-
-// Update the supabase query in AdminAuthContext to use type assertions
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { supabase } from "@/utils/supabase.utils";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import bcrypt from 'bcryptjs';
 import { toast } from 'sonner';
-
-export interface AdminUser {
-  id: string;
-  email: string;
-}
+import { AdminUser } from "@/types/admin.types";
 
 export interface AdminAuthContextProps {
-  user: AdminUser | null;
+  currentUser: AdminUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<AdminUser | void>;
+  login: (email: string, password: string) => Promise<AdminUser | null>;
   logout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextProps | undefined>(undefined);
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AdminUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Check for existing session in localStorage
     const checkAuth = () => {
       const adminUser = localStorage.getItem('admin_user');
       if (adminUser) {
         try {
-          setUser(JSON.parse(adminUser));
+          setCurrentUser(JSON.parse(adminUser));
         } catch (e) {
           localStorage.removeItem('admin_user');
         }
@@ -43,48 +36,55 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   
   const login = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_users' as any)
+      setIsLoading(true);
+      
+      const { data, error } = await supabaseTable('admin_users')
         .select('*')
         .eq('email', email)
         .single();
       
-      if (error || !data) {
-        throw new Error('Invalid email or password');
+      if (error) {
+        toast.error('Invalid email or password');
+        return null;
       }
       
-      const isValidPassword = await bcrypt.compare(password, data.password_hash);
+      const user = assertType<AdminUser>(data);
       
-      if (!isValidPassword) {
-        throw new Error('Invalid email or password');
+      if (!await bcrypt.compare(password, user.password_hash)) {
+        toast.error('Invalid email or password');
+        return null;
       }
       
-      const adminUser: AdminUser = {
-        id: data.id,
-        email: data.email
+      const safeUser = {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at
       };
       
-      setUser(adminUser);
-      localStorage.setItem('admin_user', JSON.stringify(adminUser));
+      setCurrentUser(safeUser);
       
-      return adminUser;
-    } catch (error: any) {
+      sessionStorage.setItem('adminUser', JSON.stringify(safeUser));
+      
+      return safeUser;
+    } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.message || 'Failed to login');
-      return;
+      toast.error('An error occurred during login');
+      return null;
+    } finally {
+      setIsLoading(false);
     }
   };
   
   const logout = async () => {
-    setUser(null);
-    localStorage.removeItem('admin_user');
+    setCurrentUser(null);
+    sessionStorage.removeItem('adminUser');
   };
   
   return (
     <AdminAuthContext.Provider 
       value={{ 
-        user, 
-        isAuthenticated: !!user,
+        currentUser, 
+        isAuthenticated: !!currentUser,
         isLoading,
         login, 
         logout 

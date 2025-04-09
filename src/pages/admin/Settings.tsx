@@ -1,5 +1,7 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabaseTable, updateTable } from "@/utils/supabase.utils";
+import { AdminAuthContext } from '@/contexts/AdminAuthContext';
+import { AdminUser } from '@/types/admin.types';
 import { supabase } from '@/utils/supabase.utils';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Save, Lock, Eye, EyeOff } from 'lucide-react';
@@ -10,7 +12,7 @@ import { toast } from 'sonner';
 import bcrypt from 'bcryptjs';
 
 const Settings = () => {
-  const { user } = useAdminAuth();
+  const { user: currentUser } = useAdminAuth();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,19 +20,37 @@ const Settings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordHash, setPasswordHash] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   
-  const toggleCurrentPasswordVisibility = () => {
-    setShowCurrentPassword(!showCurrentPassword);
+  useEffect(() => {
+    getAdminUser();
+  }, [currentUser?.id]);
+  
+  const getAdminUser = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabaseTable('admin_users')
+        .select('*')
+        .eq('id', currentUser?.id)
+        .single();
+      
+      if (error) {
+        toast.error('Failed to load admin user data');
+        return;
+      }
+      
+      // Save the password hash for use in password change validation
+      const passwordHash = data.password_hash;
+      setPasswordHash(passwordHash);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error getting admin user:', error);
+      setIsLoading(false);
+    }
   };
   
-  const toggleNewPasswordVisibility = () => {
-    setShowNewPassword(!showNewPassword);
-  };
-  
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -53,17 +73,7 @@ const Settings = () => {
     
     try {
       // Check current password
-      const { data: userData, error: userError } = await supabase
-        .from('admin_users' as any)
-        .select('*')
-        .eq('id', user?.id)
-        .single();
-      
-      if (userError || !userData) {
-        throw new Error('Failed to retrieve user information');
-      }
-      
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, userData.password_hash);
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, passwordHash);
       
       if (!isCurrentPasswordValid) {
         toast.error('Current password is incorrect');
@@ -76,10 +86,10 @@ const Settings = () => {
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       
       // Update password
-      const { error: updateError } = await supabase
-        .from('admin_users' as any)
-        .update({ password_hash: hashedPassword } as any)
-        .eq('id', user?.id);
+      const { error: updateError } = await updateTable('admin_users', {
+        password_hash: hashedPassword,
+      })
+      .eq('id', currentUser?.id);
       
       if (updateError) throw updateError;
       
@@ -95,6 +105,18 @@ const Settings = () => {
     }
   };
   
+  const toggleCurrentPasswordVisibility = () => {
+    setShowCurrentPassword(!showCurrentPassword);
+  };
+  
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+  
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-2xl font-bold mb-4">Settings</h1>

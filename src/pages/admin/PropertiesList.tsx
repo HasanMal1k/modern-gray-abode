@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from "@/utils/supabase.utils";
+import { supabaseTable, updateTable, deleteFrom } from "@/utils/supabase.utils";
 import { 
   Building, 
   Plus, 
@@ -55,8 +55,7 @@ const PropertiesList = () => {
   const fetchProperties = async () => {
     setIsLoading(true);
     try {
-      let query = supabase
-        .from('properties' as any)
+      let query = supabaseTable('properties')
         .select('*');
       
       if (categoryFilter && categoryFilter !== 'All Properties') {
@@ -82,10 +81,10 @@ const PropertiesList = () => {
   
   const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
-        .from('properties' as any)
-        .update({ featured: !currentStatus } as any)
-        .eq('id', id);
+      const { error } = await updateTable('properties', { 
+        featured: !currentStatus
+      })
+      .eq('id', id);
       
       if (error) throw error;
       
@@ -106,9 +105,7 @@ const PropertiesList = () => {
     }
     
     try {
-      const { error } = await supabase
-        .from('properties' as any)
-        .delete()
+      const { error } = await deleteFrom('properties')
         .eq('id', id);
       
       if (error) throw error;

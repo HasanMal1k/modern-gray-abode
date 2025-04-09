@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from "@/utils/supabase.utils";
+import { supabaseTable, deleteFrom } from "@/utils/supabase.utils";
 import { 
   FileText, 
   Plus, 
@@ -75,8 +75,7 @@ const BlogList = () => {
       const from = (currentPage - 1) * ITEMS_PER_PAGE;
       const to = from + ITEMS_PER_PAGE - 1;
       
-      let query = supabase
-        .from('blog_posts' as any)
+      let query = supabaseTable('blog_posts')
         .select('*', { count: 'exact' });
       
       // Apply search filter if search query exists
@@ -121,9 +120,7 @@ const BlogList = () => {
     setIsDeleting(true);
     
     try {
-      const { error } = await supabase
-        .from('blog_posts' as any)
-        .delete()
+      const { error } = await deleteFrom('blog_posts')
         .eq('id', postToDelete.id);
       
       if (error) throw error;

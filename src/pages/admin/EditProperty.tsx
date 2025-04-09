@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from "@/utils/supabase.utils";
-import { assertType } from "@/utils/supabase.utils";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { Building } from 'lucide-react';
 import PropertyForm from '@/components/admin/PropertyForm';
 import { PropertyFormData } from '@/types/admin.types';
@@ -18,8 +17,7 @@ const EditProperty = () => {
       if (!id) return;
 
       try {
-        const { data, error } = await supabase
-          .from('properties' as any)
+        const { data, error } = await supabaseTable('properties')
           .select('*')
           .eq('id', id)
           .single();
