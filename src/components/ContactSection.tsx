@@ -38,7 +38,7 @@ const ContactSection = () => {
       // 5. Replace the placeholder values below with your actual credentials
       
       const serviceId = "service_s0np2x5"; // From EmailJS dashboard
-      const templateId = "service_s0np2x5"; // From EmailJS dashboard
+      const templateId = "template_utckalk"; // From EmailJS dashboard
       const publicKey = "Q_9QKuxBC5Y-kinqS"; // From EmailJS dashboard
       
       // EmailJS free plan offers 200 emails per month
