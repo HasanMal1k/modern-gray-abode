@@ -1,9 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { supabaseTable, updateTable } from "@/utils/supabase.utils";
-import { AdminAuthContext } from '@/contexts/AdminAuthContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { AdminUser } from '@/types/admin.types';
 import { supabase } from '@/utils/supabase.utils';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Save, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import bcrypt from 'bcryptjs';
 
 const Settings = () => {
-  const { user: currentUser } = useAdminAuth();
+  const { currentUser } = useAdminAuth();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
