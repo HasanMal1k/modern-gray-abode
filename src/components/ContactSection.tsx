@@ -30,12 +30,18 @@ const ContactSection = () => {
       const name = formData.get('name') as string;
       const email = formData.get('email') as string;
       
-      // Use EmailJS to send the form
-      // Note: You'll need to set up your EmailJS account and create a template
-      // Replace these with your actual EmailJS service ID, template ID, and public key
-      const serviceId = "YOUR_SERVICE_ID"; // Replace with your EmailJS service ID
-      const templateId = "YOUR_TEMPLATE_ID"; // Replace with your EmailJS template ID
-      const publicKey = "YOUR_PUBLIC_KEY"; // Replace with your EmailJS public key
+      // ======== EMAILJS CONFIGURATION ========
+      // 1. Sign up for a free account at https://www.emailjs.com/
+      // 2. Create an email service (connect your Gmail, Outlook, etc.)
+      // 3. Create an email template and note its ID
+      // 4. Get your service ID, template ID and public key from the EmailJS dashboard
+      // 5. Replace the placeholder values below with your actual credentials
+      
+      const serviceId = "YOUR_SERVICE_ID"; // From EmailJS dashboard
+      const templateId = "YOUR_TEMPLATE_ID"; // From EmailJS dashboard
+      const publicKey = "YOUR_PUBLIC_KEY"; // From EmailJS dashboard
+      
+      // EmailJS free plan offers 200 emails per month
       
       // Log for debugging
       console.log("Sending email with data:", Object.fromEntries(formData));
