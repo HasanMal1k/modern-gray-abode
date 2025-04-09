@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/utils/supabase.utils";
-import { assertType } from "@/utils/supabase.utils";
 import { 
   FileText, 
   Plus, 
@@ -78,7 +76,7 @@ const BlogList = () => {
       const to = from + ITEMS_PER_PAGE - 1;
       
       let query = supabase
-        .from('blog_posts')
+        .from('blog_posts' as any)
         .select('*', { count: 'exact' });
       
       // Apply search filter if search query exists
@@ -124,7 +122,7 @@ const BlogList = () => {
     
     try {
       const { error } = await supabase
-        .from('blog_posts')
+        .from('blog_posts' as any)
         .delete()
         .eq('id', postToDelete.id);
       

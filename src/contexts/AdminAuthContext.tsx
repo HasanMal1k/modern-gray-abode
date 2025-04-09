@@ -1,103 +1,104 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+// Update the supabase query in AdminAuthContext to use type assertions
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from "@/utils/supabase.utils";
-import { toast } from 'sonner';
-import { AdminUser } from '@/types/admin.types';
 import bcrypt from 'bcryptjs';
+import { toast } from 'sonner';
 
-interface AdminAuthContextProps {
-  user: AdminUser | null;
-  loading: boolean;
-  isLoading: boolean; // Added for consistency with AdminProtectedRoute
-  isAuthenticated: boolean; // Added for AdminProtectedRoute
-  login: (email: string, password: string) => Promise<AdminUser | null>;
-  logout: () => void;
+export interface AdminUser {
+  id: string;
+  email: string;
 }
 
-export const AdminAuthContext = createContext<AdminAuthContextProps>({
-  user: null,
-  loading: false,
-  isLoading: false,
-  isAuthenticated: false,
-  login: async () => null,
-  logout: () => {},
-});
+export interface AdminAuthContextProps {
+  user: AdminUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<AdminUser | void>;
+  logout: () => Promise<void>;
+}
+
+const AdminAuthContext = createContext<AdminAuthContextProps | undefined>(undefined);
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AdminUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
+  
   useEffect(() => {
-    const adminUser = localStorage.getItem('admin_user');
-    if (adminUser) {
-      setUser(JSON.parse(adminUser));
-    }
-    setLoading(false);
+    // Check for existing session in localStorage
+    const checkAuth = () => {
+      const adminUser = localStorage.getItem('admin_user');
+      if (adminUser) {
+        try {
+          setUser(JSON.parse(adminUser));
+        } catch (e) {
+          localStorage.removeItem('admin_user');
+        }
+      }
+      setIsLoading(false);
+    };
+    
+    checkAuth();
   }, []);
-
+  
   const login = async (email: string, password: string) => {
-    setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('admin_users')
+        .from('admin_users' as any)
         .select('*')
         .eq('email', email)
         .single();
-
-      if (error) {
-        console.error('Login error:', error);
+      
+      if (error || !data) {
         throw new Error('Invalid email or password');
       }
-
-      if (!data) {
+      
+      const isValidPassword = await bcrypt.compare(password, data.password_hash);
+      
+      if (!isValidPassword) {
         throw new Error('Invalid email or password');
       }
-
-      const user = data as any;
-      const passwordMatch = await bcrypt.compare(password, user.password_hash);
-
-      if (!passwordMatch) {
-        throw new Error('Invalid email or password');
-      }
-
-      // Set user information
-      const userData: AdminUser = {
-        id: user.id,
-        email: user.email,
-        created_at: user.created_at
+      
+      const adminUser: AdminUser = {
+        id: data.id,
+        email: data.email
       };
-
-      setUser(userData);
-      localStorage.setItem('admin_user', JSON.stringify(userData));
-      return userData;
+      
+      setUser(adminUser);
+      localStorage.setItem('admin_user', JSON.stringify(adminUser));
+      
+      return adminUser;
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error(error.message || 'Login failed');
-      return null; // Return null instead of throwing to avoid unhandled rejections
-    } finally {
-      setLoading(false);
+      toast.error(error.message || 'Failed to login');
+      return;
     }
   };
-
-  const logout = () => {
+  
+  const logout = async () => {
     setUser(null);
     localStorage.removeItem('admin_user');
   };
-
-  const value: AdminAuthContextProps = {
-    user,
-    loading,
-    isLoading: loading, // Alias for better naming convention
-    isAuthenticated: !!user, // Computed property to check if user is authenticated
-    login,
-    logout,
-  };
-
+  
   return (
-    <AdminAuthContext.Provider value={value}>
-      {!loading && children}
+    <AdminAuthContext.Provider 
+      value={{ 
+        user, 
+        isAuthenticated: !!user,
+        isLoading,
+        login, 
+        logout 
+      }}
+    >
+      {children}
     </AdminAuthContext.Provider>
   );
 };
 
-export const useAdminAuth = () => useContext(AdminAuthContext);
+export const useAdminAuth = () => {
+  const context = useContext(AdminAuthContext);
+  if (context === undefined) {
+    throw new Error('useAdminAuth must be used within an AdminAuthProvider');
+  }
+  return context;
+};

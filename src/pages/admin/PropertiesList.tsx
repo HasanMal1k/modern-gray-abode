@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/utils/supabase.utils";
@@ -57,15 +56,13 @@ const PropertiesList = () => {
     setIsLoading(true);
     try {
       let query = supabase
-        .from('properties')
+        .from('properties' as any)
         .select('*');
       
-      // Apply category filter
       if (categoryFilter && categoryFilter !== 'All Properties') {
         query = query.eq('category', categoryFilter);
       }
       
-      // Apply search filter
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`);
       }
@@ -86,13 +83,12 @@ const PropertiesList = () => {
   const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase
-        .from('properties')
+        .from('properties' as any)
         .update({ featured: !currentStatus } as any)
         .eq('id', id);
       
       if (error) throw error;
       
-      // Update local state
       setProperties(properties.map(property => 
         property.id === id ? { ...property, featured: !currentStatus } : property
       ));
@@ -111,13 +107,12 @@ const PropertiesList = () => {
     
     try {
       const { error } = await supabase
-        .from('properties')
+        .from('properties' as any)
         .delete()
         .eq('id', id);
       
       if (error) throw error;
       
-      // Remove from local state
       setProperties(properties.filter(property => property.id !== id));
       
       toast.success('Property deleted successfully');

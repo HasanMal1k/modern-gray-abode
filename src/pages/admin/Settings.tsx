@@ -54,7 +54,7 @@ const Settings = () => {
     try {
       // Check current password
       const { data: userData, error: userError } = await supabase
-        .from('admin_users')
+        .from('admin_users' as any)
         .select('*')
         .eq('id', user?.id)
         .single();
@@ -63,7 +63,7 @@ const Settings = () => {
         throw new Error('Failed to retrieve user information');
       }
       
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, (userData as any).password_hash);
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, userData.password_hash);
       
       if (!isCurrentPasswordValid) {
         toast.error('Current password is incorrect');
@@ -77,7 +77,7 @@ const Settings = () => {
       
       // Update password
       const { error: updateError } = await supabase
-        .from('admin_users')
+        .from('admin_users' as any)
         .update({ password_hash: hashedPassword } as any)
         .eq('id', user?.id);
       

@@ -1,18 +1,34 @@
 
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
-// Type-safe helper for Supabase table operations
-type TableNames = keyof CustomDatabase['public']['Tables'];
+// Export supabase directly for operations where we need the raw client
+export { supabase };
 
-export function supabaseTable<T extends TableNames>(tableName: T) {
-  // Using type assertion to bypass TypeScript limitations with Supabase types
-  return supabase.from(tableName) as any;
-}
-
-// Helper for type assertions in query responses
+/**
+ * Type assertion helper for supabase queries.
+ * This forces TypeScript to accept the return type we specify.
+ */
 export function assertType<T>(data: any): T {
   return data as T;
 }
 
-// Export supabase directly for operations where we need the raw client
-export { supabase };
+/**
+ * A type-safe wrapper for supabase table operations.
+ * This function bypasses TypeScript's type checking for table names,
+ * which is necessary because the Database type in types.ts is empty.
+ */
+export function supabaseTable(tableName: string) {
+  return supabase.from(tableName as any) as any;
+}
+
+/**
+ * Use this function to perform database operations with explicit typing.
+ * 
+ * Example:
+ * const { data, error } = await fromTable<PropertyType>("properties")
+ *   .select("*")
+ *   .eq("id", propertyId);
+ */
+export function fromTable<T = any>(tableName: string) {
+  return supabase.from(tableName as any) as any;
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
+import { supabase } from "@/utils/supabase.utils";
 import { 
   Building, 
   Save, 
@@ -98,7 +98,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   const fetchPropertyData = async () => {
     try {
       const { data: imageData, error: imageError } = await supabase
-        .from('property_images')
+        .from('property_images' as any)
         .select('*')
         .eq('property_id', propertyId);
       
@@ -106,7 +106,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       setImages(imageData || []);
       
       const { data: featureData, error: featureError } = await supabase
-        .from('property_features')
+        .from('property_features' as any)
         .select('*')
         .eq('property_id', propertyId);
       
@@ -114,7 +114,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       setFeatures(featureData || []);
       
       const { data: serviceData, error: serviceError } = await supabase
-        .from('property_services')
+        .from('property_services' as any)
         .select('*')
         .eq('property_id', propertyId);
       
@@ -122,7 +122,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       setServices(serviceData || []);
       
       const { data: highlightData, error: highlightError } = await supabase
-        .from('property_highlights')
+        .from('property_highlights' as any)
         .select('*')
         .eq('property_id', propertyId);
       
@@ -367,14 +367,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       
       if (propertyId) {
         const { error } = await supabase
-          .from('properties')
+          .from('properties' as any)
           .update(formData as any)
           .eq('id', propertyId);
         
         if (error) throw error;
       } else {
         const { data, error } = await supabase
-          .from('properties')
+          .from('properties' as any)
           .insert([formData] as any)
           .select();
         
@@ -392,7 +392,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             const publicUrl = await uploadImage(image.file, property_id!, i);
             
             const { error } = await supabase
-              .from('property_images')
+              .from('property_images' as any)
               .insert([{
                 property_id,
                 image_url: publicUrl,
@@ -407,7 +407,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           }
         } else if (image.id) {
           const { error } = await supabase
-            .from('property_images')
+            .from('property_images' as any)
             .update({
               is_primary: image.is_primary,
               display_order: image.display_order
@@ -424,7 +424,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .map(f => f.id);
         
         const { error } = await supabase
-          .from('property_features')
+          .from('property_features' as any)
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingFeatureIds.length > 0 ? `(${existingFeatureIds.join(',')})` : '(0)');
@@ -435,14 +435,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const feature of features) {
         if (feature.id) {
           const { error } = await supabase
-            .from('property_features')
+            .from('property_features' as any)
             .update({ feature_name: feature.feature_name } as any)
             .eq('id', feature.id);
           
           if (error) throw error;
         } else {
           const { error } = await supabase
-            .from('property_features')
+            .from('property_features' as any)
             .insert([{
               property_id,
               feature_name: feature.feature_name
@@ -458,7 +458,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .map(s => s.id);
         
         const { error } = await supabase
-          .from('property_services')
+          .from('property_services' as any)
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingServiceIds.length > 0 ? `(${existingServiceIds.join(',')})` : '(0)');
@@ -469,14 +469,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const service of services) {
         if (service.id) {
           const { error } = await supabase
-            .from('property_services')
+            .from('property_services' as any)
             .update({ service_name: service.service_name } as any)
             .eq('id', service.id);
           
           if (error) throw error;
         } else {
           const { error } = await supabase
-            .from('property_services')
+            .from('property_services' as any)
             .insert([{
               property_id,
               service_name: service.service_name
@@ -492,7 +492,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .map(h => h.id);
         
         const { error } = await supabase
-          .from('property_highlights')
+          .from('property_highlights' as any)
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingHighlightIds.length > 0 ? `(${existingHighlightIds.join(',')})` : '(0)');
@@ -503,14 +503,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const highlight of highlights) {
         if (highlight.id) {
           const { error } = await supabase
-            .from('property_highlights')
+            .from('property_highlights' as any)
             .update({ highlight_text: highlight.highlight_text } as any)
             .eq('id', highlight.id);
           
           if (error) throw error;
         } else {
           const { error } = await supabase
-            .from('property_highlights')
+            .from('property_highlights' as any)
             .insert([{
               property_id,
               highlight_text: highlight.highlight_text
