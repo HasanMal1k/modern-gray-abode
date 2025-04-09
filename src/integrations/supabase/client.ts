@@ -115,3 +115,10 @@ export interface CustomDatabase {
     };
   };
 }
+
+// Helper function for type assertion with Supabase tables
+export function fromTable<T extends keyof CustomDatabase['public']['Tables']>(
+  tableName: T
+) {
+  return tableName as unknown as T;
+}

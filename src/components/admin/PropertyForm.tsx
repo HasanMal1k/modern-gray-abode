@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { 
   Building, 
   Save, 
@@ -97,46 +97,30 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   
   const fetchPropertyData = async () => {
     try {
-      const { data: imageData, error: imageError } = await supabase
-        .from('property_images')
+      const { data: imageData, error: imageError } = await supabaseTable('property_images')
         .select('*')
-        .eq('property_id', propertyId) as { 
-          data: CustomDatabase['public']['Tables']['property_images']['Row'][] | null; 
-          error: any;
-        };
+        .eq('property_id', propertyId);
       
       if (imageError) throw imageError;
       setImages(imageData || []);
       
-      const { data: featureData, error: featureError } = await supabase
-        .from('property_features')
+      const { data: featureData, error: featureError } = await supabaseTable('property_features')
         .select('*')
-        .eq('property_id', propertyId) as {
-          data: CustomDatabase['public']['Tables']['property_features']['Row'][] | null;
-          error: any;
-        };
+        .eq('property_id', propertyId);
       
       if (featureError) throw featureError;
       setFeatures(featureData || []);
       
-      const { data: serviceData, error: serviceError } = await supabase
-        .from('property_services')
+      const { data: serviceData, error: serviceError } = await supabaseTable('property_services')
         .select('*')
-        .eq('property_id', propertyId) as {
-          data: CustomDatabase['public']['Tables']['property_services']['Row'][] | null;
-          error: any;
-        };
+        .eq('property_id', propertyId);
       
       if (serviceError) throw serviceError;
       setServices(serviceData || []);
       
-      const { data: highlightData, error: highlightError } = await supabase
-        .from('property_highlights')
+      const { data: highlightData, error: highlightError } = await supabaseTable('property_highlights')
         .select('*')
-        .eq('property_id', propertyId) as {
-          data: CustomDatabase['public']['Tables']['property_highlights']['Row'][] | null;
-          error: any;
-        };
+        .eq('property_id', propertyId);
       
       if (highlightError) throw highlightError;
       setHighlights(highlightData || []);
@@ -378,16 +362,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       let property_id = propertyId;
       
       if (propertyId) {
-        const { error } = await supabase
-          .from('properties')
-          .update(formData as any)
+        const { error } = await supabaseTable('properties')
+          .update(assertType(formData))
           .eq('id', propertyId);
         
         if (error) throw error;
       } else {
-        const { data, error } = await supabase
-          .from('properties')
-          .insert([formData as any])
+        const { data, error } = await supabaseTable('properties')
+          .insert(assertType([formData]))
           .select();
         
         if (error) throw error;
@@ -435,8 +417,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .filter(f => f.id)
           .map(f => f.id);
         
-        const { error } = await supabase
-          .from('property_features')
+        const { error } = await supabaseTable('property_features')
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingFeatureIds.length > 0 ? `(${existingFeatureIds.join(',')})` : '(0)');
@@ -446,15 +427,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       
       for (const feature of features) {
         if (feature.id) {
-          const { error } = await supabase
-            .from('property_features')
+          const { error } = await supabaseTable('property_features')
             .update({ feature_name: feature.feature_name } as any)
             .eq('id', feature.id);
           
           if (error) throw error;
         } else {
-          const { error } = await supabase
-            .from('property_features')
+          const { error } = await supabaseTable('property_features')
             .insert([{
               property_id,
               feature_name: feature.feature_name
@@ -469,8 +448,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .filter(s => s.id)
           .map(s => s.id);
         
-        const { error } = await supabase
-          .from('property_services')
+        const { error } = await supabaseTable('property_services')
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingServiceIds.length > 0 ? `(${existingServiceIds.join(',')})` : '(0)');
@@ -480,15 +458,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       
       for (const service of services) {
         if (service.id) {
-          const { error } = await supabase
-            .from('property_services')
+          const { error } = await supabaseTable('property_services')
             .update({ service_name: service.service_name } as any)
             .eq('id', service.id);
           
           if (error) throw error;
         } else {
-          const { error } = await supabase
-            .from('property_services')
+          const { error } = await supabaseTable('property_services')
             .insert([{
               property_id,
               service_name: service.service_name
@@ -503,8 +479,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
           .filter(h => h.id)
           .map(h => h.id);
         
-        const { error } = await supabase
-          .from('property_highlights')
+        const { error } = await supabaseTable('property_highlights')
           .delete()
           .eq('property_id', propertyId)
           .not('id', 'in', existingHighlightIds.length > 0 ? `(${existingHighlightIds.join(',')})` : '(0)');
@@ -514,15 +489,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       
       for (const highlight of highlights) {
         if (highlight.id) {
-          const { error } = await supabase
-            .from('property_highlights')
+          const { error } = await supabaseTable('property_highlights')
             .update({ highlight_text: highlight.highlight_text } as any)
             .eq('id', highlight.id);
           
           if (error) throw error;
         } else {
-          const { error } = await supabase
-            .from('property_highlights')
+          const { error } = await supabaseTable('property_highlights')
             .insert([{
               property_id,
               highlight_text: highlight.highlight_text

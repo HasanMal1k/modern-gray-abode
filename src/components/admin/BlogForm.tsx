@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { 
   Save, 
   XCircle, 
@@ -178,16 +178,14 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
       }
       
       if (postId) {
-        const { error } = await supabase
-          .from('blog_posts')
-          .update(formData as any)
+        const { error } = await supabaseTable('blog_posts')
+          .update(assertType(formData))
           .eq('id', postId);
         
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from('blog_posts')
-          .insert([formData as any]);
+        const { error } = await supabaseTable('blog_posts')
+          .insert(assertType([formData]));
         
         if (error) throw error;
       }

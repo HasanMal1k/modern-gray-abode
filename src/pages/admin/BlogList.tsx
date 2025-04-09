@@ -1,52 +1,19 @@
-
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { useNavigate, Link } from 'react-router-dom';
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { 
   FileText, 
-  PlusCircle, 
+  Plus, 
   Search, 
-  Edit, 
+  Pencil, 
   Trash2, 
-  ChevronLeft, 
-  ChevronRight, 
-  Eye,
-  Calendar,
-  CheckCircle,
-  XCircle
+  Check, 
+  X 
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  published: boolean;
-  author: string | null;
-  published_at: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import { BlogPost } from '@/types/blog.types';
 
 const BlogList = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -63,14 +30,12 @@ const BlogList = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    fetchPosts();
+    fetchBlogPosts();
   }, []);
 
   useEffect(() => {
-    // Apply filters
     let result = posts;
     
-    // Search filter
     if (searchTerm) {
       result = result.filter(post => 
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -79,7 +44,6 @@ const BlogList = () => {
       );
     }
     
-    // Published status filter
     if (publishFilter !== 'all') {
       result = result.filter(post => 
         publishFilter === 'published' ? post.published : !post.published
@@ -88,46 +52,41 @@ const BlogList = () => {
     
     setFilteredPosts(result);
     setTotalPages(Math.ceil(result.length / itemsPerPage));
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [searchTerm, publishFilter, posts]);
 
-  const fetchPosts = async () => {
-    setIsLoading(true);
+  const fetchBlogPosts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
+      setIsLoading(true);
+      const { data, error } = await supabaseTable('blog_posts')
         .select('*')
-        .order('created_at', { ascending: false }) as {
-          data: CustomDatabase['public']['Tables']['blog_posts']['Row'][] | null;
-          error: any;
-        };
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       
-      setPosts(data || []);
-      setFilteredPosts(data || []);
-      setTotalPages(Math.ceil((data?.length || 0) / itemsPerPage));
+      const typedData = assertType<BlogPost[]>(data);
+      setPosts(typedData);
+      setFilteredPosts(typedData);
+      
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast.error('Failed to load blog posts');
-    } finally {
       setIsLoading(false);
     }
   };
 
   const togglePublished = async (id: string, published: boolean) => {
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
+      const { error } = await supabaseTable('blog_posts')
+        .update(assertType({
           published: !published,
           published_at: !published ? new Date().toISOString() : null
-        } as any)
+        }))
         .eq('id', id);
       
       if (error) throw error;
       
-      // Update local state
       setPosts(posts.map(post => 
         post.id === id ? { 
           ...post, 
@@ -153,14 +112,12 @@ const BlogList = () => {
     
     setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from('blog_posts')
+      const { error } = await supabaseTable('blog_posts')
         .delete()
-        .eq('id', postToDelete) as { error: any };
+        .eq('id', postToDelete);
       
       if (error) throw error;
       
-      // Update local state
       setPosts(posts.filter(post => post.id !== postToDelete));
       toast.success('Blog post deleted successfully');
     } catch (error) {
@@ -173,7 +130,6 @@ const BlogList = () => {
     }
   };
 
-  // Pagination
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -193,7 +149,7 @@ const BlogList = () => {
         </div>
         <Link to="/admin/blog/add">
           <Button className="bg-orange-500 hover:bg-orange-600">
-            <PlusCircle className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" />
             Add Post
           </Button>
         </Link>
@@ -264,7 +220,7 @@ const BlogList = () => {
               ) : (
                 <Link to="/admin/blog/add">
                   <Button className="bg-orange-500 hover:bg-orange-600">
-                    <PlusCircle className="mr-2 h-4 w-4" />
+                    <Plus className="mr-2 h-4 w-4" />
                     Add Blog Post
                   </Button>
                 </Link>
@@ -327,9 +283,9 @@ const BlogList = () => {
                           title={post.published ? "Unpublish" : "Publish"}
                         >
                           {post.published ? (
-                            <XCircle className="h-4 w-4" />
+                            <X className="h-4 w-4" />
                           ) : (
-                            <CheckCircle className="h-4 w-4" />
+                            <Check className="h-4 w-4" />
                           )}
                         </Button>
                         <Link 
@@ -341,7 +297,7 @@ const BlogList = () => {
                         </Link>
                         <Link to={`/admin/blog/edit/${post.id}`}>
                           <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                            <Edit className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                           </Button>
                         </Link>
                         <Button 
@@ -361,7 +317,6 @@ const BlogList = () => {
           )}
         </div>
 
-        {/* Pagination */}
         {filteredPosts.length > 0 && (
           <div className="flex items-center justify-between p-4 border-t">
             <div className="text-sm text-gray-500">
@@ -392,7 +347,6 @@ const BlogList = () => {
         )}
       </div>
 
-      {/* Delete confirmation dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase, fromTable } from "@/integrations/supabase/client";
 import { Building } from 'lucide-react';
 import PropertyForm from '@/components/admin/PropertyForm';
 import { PropertyFormData } from '@/types/admin.types';
@@ -19,7 +19,7 @@ const EditProperty = () => {
 
       try {
         const { data, error } = await supabase
-          .from('properties')
+          .from(fromTable('properties'))
           .select('*')
           .eq('id', id)
           .single() as {

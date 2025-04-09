@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase, fromTable } from "@/integrations/supabase/client";
 import { FileText } from 'lucide-react';
 import BlogForm from '@/components/admin/BlogForm';
 import { BlogPostFormData } from '@/types/admin.types';
@@ -19,7 +19,7 @@ const EditBlogPost = () => {
 
       try {
         const { data, error } = await supabase
-          .from('blog_posts')
+          .from(fromTable('blog_posts'))
           .select('*')
           .eq('id', id)
           .single() as {

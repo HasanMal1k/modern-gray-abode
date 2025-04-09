@@ -25,7 +25,7 @@ const AdminLogin = () => {
     }
 
     const success = await login(email, password);
-    if (success) {
+    if (success === true) {  // Check for exact true value
       navigate(from, { replace: true });
     }
   };
