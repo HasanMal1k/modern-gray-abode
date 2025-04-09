@@ -6,7 +6,7 @@ type TableNames = keyof CustomDatabase['public']['Tables'];
 
 export function supabaseTable<T extends TableNames>(tableName: T) {
   // Using type assertion to bypass TypeScript limitations with Supabase types
-  return supabase.from(tableName as string) as any;
+  return supabase.from(tableName) as any;
 }
 
 // Helper for type assertions in query responses

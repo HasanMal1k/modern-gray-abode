@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from "@/utils/supabase.utils";
 import { toast } from 'sonner';
@@ -7,14 +8,18 @@ import bcrypt from 'bcryptjs';
 interface AdminAuthContextProps {
   user: AdminUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<AdminUser | void>;
+  isLoading: boolean; // Added for consistency with AdminProtectedRoute
+  isAuthenticated: boolean; // Added for AdminProtectedRoute
+  login: (email: string, password: string) => Promise<AdminUser | null>;
   logout: () => void;
 }
 
 export const AdminAuthContext = createContext<AdminAuthContextProps>({
   user: null,
   loading: false,
-  login: async () => {},
+  isLoading: false,
+  isAuthenticated: false,
+  login: async () => null,
   logout: () => {},
 });
 
@@ -68,7 +73,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error.message || 'Login failed');
-      throw error;
+      return null; // Return null instead of throwing to avoid unhandled rejections
     } finally {
       setLoading(false);
     }
@@ -82,6 +87,8 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const value: AdminAuthContextProps = {
     user,
     loading,
+    isLoading: loading, // Alias for better naming convention
+    isAuthenticated: !!user, // Computed property to check if user is authenticated
     login,
     logout,
   };

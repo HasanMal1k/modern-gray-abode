@@ -1,56 +1,80 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '@/utils/supabase.utils';
-import { Building, Plus, Pencil, Trash2, Search, Star } from 'lucide-react';
+import { supabase } from "@/utils/supabase.utils";
+import { 
+  Building, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Search,
+  Star,
+  StarOff,
+  FileText,
+  Eye,
+  Filter
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Property } from '@/types/property.types';
+import { format } from 'date-fns';
+import { CATEGORIES } from '@/types/property.types';
+import { 
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+
+interface Property {
+  id: string;
+  title: string;
+  location: string;
+  price: string;
+  price_numeric: number;
+  bedrooms: number;
+  bathrooms: number;
+  category: string;
+  featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 const PropertiesList = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Properties');
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('All Properties');
+  
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     fetchProperties();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [properties, searchQuery, selectedCategory]);
-
+  }, [searchQuery, categoryFilter]);
+  
   const fetchProperties = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      const query = supabase
+      let query = supabase
         .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
       
-      if (searchQuery) {
-        query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`);
+      // Apply category filter
+      if (categoryFilter && categoryFilter !== 'All Properties') {
+        query = query.eq('category', categoryFilter);
       }
       
-      const { data, error } = await query;
+      // Apply search filter
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
       
       if (error) throw error;
-      setProperties(data as any || []);
+      
+      setProperties(data as Property[]);
     } catch (error) {
       console.error('Error fetching properties:', error);
       toast.error('Failed to load properties');
@@ -58,223 +82,238 @@ const PropertiesList = () => {
       setIsLoading(false);
     }
   };
-
-  const applyFilters = () => {
-    let filtered = [...properties];
-
-    if (searchQuery) {
-      filtered = filtered.filter(property =>
-        property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        property.location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  
+  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .update({ featured: !currentStatus } as any)
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setProperties(properties.map(property => 
+        property.id === id ? { ...property, featured: !currentStatus } : property
+      ));
+      
+      toast.success(`Property ${!currentStatus ? 'marked as featured' : 'removed from featured'}`);
+    } catch (error) {
+      console.error('Error updating property:', error);
+      toast.error('Failed to update property');
     }
-
-    if (selectedCategory !== 'All Properties') {
-      filtered = filtered.filter(property => property.category === selectedCategory);
-    }
-
-    setFilteredProperties(filtered);
   };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
-
-  const handleDeleteProperty = async (propertyId: string) => {
-    if (!window.confirm('Are you sure you want to delete this property?')) {
+  
+  const handleDeleteProperty = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
       return;
     }
-
+    
     try {
-      setIsLoading(true);
       const { error } = await supabase
         .from('properties')
         .delete()
-        .eq('id', propertyId);
-
+        .eq('id', id);
+      
       if (error) throw error;
-
-      setProperties(properties.filter(property => property.id !== propertyId));
+      
+      // Remove from local state
+      setProperties(properties.filter(property => property.id !== id));
+      
       toast.success('Property deleted successfully');
     } catch (error) {
       console.error('Error deleting property:', error);
       toast.error('Failed to delete property');
-    } finally {
-      setIsLoading(false);
     }
   };
-
-  const toggleFeaturedProperty = async (property: Property) => {
-    try {
-      setIsLoading(true);
-      const { error } = await supabase
-        .from('properties')
-        .update({ featured: !property.featured } as any)
-        .eq('id', property.id);
-
-      if (error) throw error;
-
-      setProperties(properties.map(p =>
-        p.id === property.id ? { ...p, featured: !p.featured } : p
-      ));
-      toast.success(`Property ${property.featured ? 'unfeatured' : 'featured'} successfully`);
-    } catch (error) {
-      console.error('Error toggling featured property:', error);
-      toast.error('Failed to update featured status');
-    } finally {
-      setIsLoading(false);
-    }
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-full p-8">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mb-4"></div>
-          <p className="text-gray-500">Loading properties...</p>
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
     <div>
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
           <div className="flex items-center gap-2">
             <Building className="h-6 w-6 text-orange-500" />
             <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
           </div>
-          <Button onClick={() => navigate('/admin/properties/add')}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Property
-          </Button>
+          <p className="text-gray-600 mt-1">Manage your property listings</p>
         </div>
-        <p className="text-gray-600 mt-1">Manage your property listings</p>
+        
+        <Button 
+          className="bg-orange-500 hover:bg-orange-600"
+          onClick={() => navigate('/admin/properties/new')}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Property
+        </Button>
       </div>
-
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-        <div className="flex items-center w-full md:w-auto">
-          <Input
-            type="search"
-            placeholder="Search properties..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="md:w-80"
-          />
-          <Search className="h-5 w-5 absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        </div>
-
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <Filter className="h-4 w-4" />
-                Category
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleCategoryChange('All Properties')}>
-                All Properties
-              </DropdownMenuItem>
-              {CATEGORIES.map((category) => (
-                <DropdownMenuItem key={category} onClick={() => handleCategoryChange(category)}>
-                  {category}
+      
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search properties..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  {categoryFilter}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setCategoryFilter('All Properties')}>
+                  All Properties
                 </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 rounded-md shadow-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Title
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Featured
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredProperties.map((property) => (
-              <tr key={property.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {property.title}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {property.location}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {property.category}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {property.price}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button
-                    onClick={() => toggleFeaturedProperty(property)}
-                    className="flex items-center"
+                {CATEGORIES.filter(cat => cat !== 'All Properties').map((category) => (
+                  <DropdownMenuItem 
+                    key={category}
+                    onClick={() => setCategoryFilter(category)}
                   >
-                    {property.featured ? (
-                      <>
-                        <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                        Featured
-                      </>
-                    ) : (
-                      <>
-                        <StarOff className="h-4 w-4 text-gray-400 mr-1" />
-                        Not Featured
-                      </>
-                    )}
-                  </button>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end gap-2">
-                    <Link to={`/properties/${property.id}`} className="text-orange-500 hover:text-orange-700">
-                      <Eye className="h-4 w-4" />
-                    </Link>
-                    <Link to={`/admin/properties/edit/${property.id}`} className="text-blue-500 hover:text-blue-700">
-                      <Pencil className="h-4 w-4" />
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteProperty(property.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {filteredProperties.length === 0 && (
-        <div className="flex items-center justify-center p-8">
-          <p className="text-gray-500">No properties found.</p>
+                    {category}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      )}
+        
+        {isLoading ? (
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            {properties.length > 0 ? (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3">Property</th>
+                    <th className="px-6 py-3">Price</th>
+                    <th className="px-6 py-3">Location</th>
+                    <th className="px-6 py-3">Details</th>
+                    <th className="px-6 py-3">Category</th>
+                    <th className="px-6 py-3">Featured</th>
+                    <th className="px-6 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {properties.map((property) => (
+                    <tr key={property.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="font-medium text-gray-900">{property.title}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-gray-900 font-medium">{property.price}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-gray-500">{property.location}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2 text-gray-500">
+                          <span>{property.bedrooms} bed</span>
+                          <span>•</span>
+                          <span>{property.bathrooms} bath</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="secondary">{property.category}</Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleToggleFeatured(property.id, property.featured)}
+                          className={property.featured ? "text-yellow-500" : "text-gray-400"}
+                        >
+                          {property.featured ? (
+                            <Star className="h-5 w-5 fill-yellow-500" />
+                          ) : (
+                            <StarOff className="h-5 w-5" />
+                          )}
+                          <span className="sr-only">
+                            {property.featured ? 'Remove from featured' : 'Add to featured'}
+                          </span>
+                        </Button>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/admin/properties/edit/${property.id}`)}
+                          >
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
+                            onClick={() => handleDeleteProperty(property.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center py-12">
+                <Building className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No properties found</h3>
+                <p className="text-gray-500 mb-4">
+                  {searchQuery || categoryFilter !== 'All Properties' 
+                    ? 'Try adjusting your search or filter criteria'
+                    : 'Get started by creating your first property listing'}
+                </p>
+                {searchQuery || categoryFilter !== 'All Properties' ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setCategoryFilter('All Properties');
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                ) : (
+                  <Button
+                    className="bg-orange-500 hover:bg-orange-600"
+                    onClick={() => navigate('/admin/properties/new')}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Property
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
