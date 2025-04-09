@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import { Send, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import emailjs from '@emailjs/browser';
 import {
   Card,
   CardContent,
@@ -24,28 +25,36 @@ const ContactSection = () => {
     setIsSubmitting(true);
     
     try {
-      // Get form data
+      // Get form data for display purposes
       const formData = new FormData(e.currentTarget);
       const name = formData.get('name') as string;
       const email = formData.get('email') as string;
-      const subject = formData.get('subject') as string;
-      const message = formData.get('message') as string;
       
-      // For email sending, you'd typically use a service like EmailJS, FormSpree, or your own backend API
-      // This is a simulation - you would replace this with your actual email sending code
+      // Use EmailJS to send the form
+      // Note: You'll need to set up your EmailJS account and create a template
+      // Replace these with your actual EmailJS service ID, template ID, and public key
+      const serviceId = "YOUR_SERVICE_ID"; // Replace with your EmailJS service ID
+      const templateId = "YOUR_TEMPLATE_ID"; // Replace with your EmailJS template ID
+      const publicKey = "YOUR_PUBLIC_KEY"; // Replace with your EmailJS public key
       
-      // Example with EmailJS API (client-side)
-      // Replace this with your actual email sending code when you have the service set up
-      console.log("Sending email with data:", { name, email, subject, message });
+      // Log for debugging
+      console.log("Sending email with data:", Object.fromEntries(formData));
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Send the email using EmailJS
+      const result = await emailjs.sendForm(
+        serviceId,
+        templateId,
+        e.currentTarget,
+        publicKey
+      );
+      
+      console.log("EmailJS result:", result.text);
       
       // Handle successful submission
       setIsSuccess(true);
       toast({
         title: "Message Sent",
-        description: `Thank you ${name}! Your inquiry has been sent to our team. We'll respond to ${email} shortly.`,
+        description: `Thank you ${name}! Your message has been sent to our team. We'll respond to ${email} shortly.`,
       });
       
       // Reset form after 3 seconds
