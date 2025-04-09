@@ -4,12 +4,17 @@ import { Link } from "react-router-dom";
 import { Property } from "@/types/property.types";
 
 const PropertyCard = ({ property }: { property: Property }) => {
+  // Use the first image from images array or fallback to the image property
+  const imageUrl = property.images && property.images.length > 0 
+    ? property.images[0] 
+    : (property.image || "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?q=80&w=1984&auto=format&fit=crop");
+  
   return (
     <Link to={`/properties/${property.id}`} className="block">
       <div className="property-card glass-morphism group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
         <div className="image-container relative h-64 overflow-hidden">
           <img 
-            src={property.image} 
+            src={imageUrl} 
             alt={property.title} 
             className="w-full h-full object-cover transition-transform duration-700 transform group-hover:scale-110 filter grayscale"
           />

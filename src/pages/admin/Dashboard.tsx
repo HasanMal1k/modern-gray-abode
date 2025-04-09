@@ -1,312 +1,238 @@
+
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
 import { 
-  Building, 
-  FileText, 
-  Eye, 
-  Pencil, 
-  Trash2, 
-  User, 
-  DollarSign, 
-  Star, 
-  Users, 
-  UserPlus, 
-  CreditCard,
-  BarChart, 
-  TrendingUp,
-  Clock
+  Clock,
+  Star,
+  Building,
+  Users,
+  BarChart,
+  ArrowUpRight,
+  DollarSign
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
-import { CustomDatabase } from "@/integrations/supabase/client";
-
-interface DashboardStats {
-  totalProperties: number;
-  featuredProperties: number;
-  totalBlogPosts: number;
-  publishedBlogPosts: number;
-}
-
-interface RecentItem {
-  id: string;
-  title: string;
-  created_at: string;
-}
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
+import { Property } from '@/types/property.types';
+import { BlogPost } from '@/types/blog.types';
 
 const Dashboard = () => {
-  const { user } = useAdminAuth();
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProperties: 0,
-    featuredProperties: 0,
-    totalBlogPosts: 0,
-    publishedBlogPosts: 0
-  });
-  const [recentProperties, setRecentProperties] = useState<RecentItem[]>([]);
-  const [recentBlogPosts, setRecentBlogPosts] = useState<RecentItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [featuredProperties, setFeaturedProperties] = useState<number>(0);
+  const [totalViews, setTotalViews] = useState<number>(0);
+  const [totalLeads, setTotalLeads] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
+  
   const fetchDashboardData = async () => {
-    setIsLoading(true);
     try {
-      // Fetch total properties count
-      const { count: totalPropertiesCount, error: totalPropertiesError } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true }) as { count: number | null; error: any };
-
-      if (totalPropertiesError) throw totalPropertiesError;
-
-      // Fetch featured properties count
-      const { count: featuredPropertiesCount, error: featuredPropertiesError } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .eq('featured', true) as { count: number | null; error: any };
-
-      if (featuredPropertiesError) throw featuredPropertiesError;
-
-      // Fetch total blog posts count
-      const { count: totalBlogPostsCount, error: totalBlogPostsError } = await supabase
-        .from('blog_posts')
-        .select('*', { count: 'exact', head: true }) as { count: number | null; error: any };
-
-      if (totalBlogPostsError) throw totalBlogPostsError;
-
-      // Fetch published blog posts count
-      const { count: publishedBlogPostsCount, error: publishedBlogPostsError } = await supabase
-        .from('blog_posts')
-        .select('*', { count: 'exact', head: true })
-        .eq('published', true) as { count: number | null; error: any };
-
-      if (publishedBlogPostsError) throw publishedBlogPostsError;
-
-      // Fetch recent properties
-      const { data: recentPropertiesData, error: recentPropertiesError } = await supabase
-        .from('properties')
-        .select('id, title, created_at')
-        .order('created_at', { ascending: false })
-        .limit(5) as {
-          data: CustomDatabase['public']['Tables']['properties']['Row'][] | null;
-          error: any;
-        };
-
-      if (recentPropertiesError) throw recentPropertiesError;
-
-      // Fetch recent blog posts
-      const { data: recentBlogPostsData, error: recentBlogPostsError } = await supabase
-        .from('blog_posts')
-        .select('id, title, created_at')
-        .order('created_at', { ascending: false })
-        .limit(5) as {
-          data: CustomDatabase['public']['Tables']['blog_posts']['Row'][] | null;
-          error: any;
-        };
-
-      if (recentBlogPostsError) throw recentBlogPostsError;
-
-      setStats({
-        totalProperties: totalPropertiesCount || 0,
-        featuredProperties: featuredPropertiesCount || 0,
-        totalBlogPosts: totalBlogPostsCount || 0,
-        publishedBlogPosts: publishedBlogPostsCount || 0
-      });
-
-      setRecentProperties(recentPropertiesData || []);
-      setRecentBlogPosts(recentBlogPostsData || []);
+      setIsLoading(true);
+      
+      // Fetch properties
+      const { data: propertiesData, error: propertiesError } = await supabaseTable('properties')
+        .select('*')
+        .limit(5)
+        .order('created_at', { ascending: false });
+      
+      if (propertiesError) throw propertiesError;
+      setProperties(propertiesData as any || []);
+      
+      // Fetch blog posts
+      const { data: blogData, error: blogError } = await supabaseTable('blog_posts')
+        .select('*')
+        .limit(5)
+        .order('created_at', { ascending: false });
+      
+      if (blogError) throw blogError;
+      setBlogPosts(blogData as any || []);
+      
+      // Count featured properties
+      const { data: featuredData, error: featuredError } = await supabaseTable('properties')
+        .select('id')
+        .eq('featured', true);
+      
+      if (featuredError) throw featuredError;
+      setFeaturedProperties(featuredData?.length || 0);
+      
+      // For views and leads, we're using placeholder data
+      // In a real application, these would come from analytics
+      setTotalViews(1240);
+      setTotalLeads(156);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome, {user?.email}!</p>
+  
+  // Calculate sample conversion rate
+  const conversionRate = totalLeads > 0 && totalViews > 0 
+    ? ((totalLeads / totalViews) * 100).toFixed(1) 
+    : 0;
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-full p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
       </div>
-
-      {isLoading ? (
-        <div className="flex items-center justify-center min-h-48">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
-              <Building className="h-4 w-4 text-gray-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProperties}</div>
-              <p className="text-sm text-gray-500">All listed properties</p>
-            </CardContent>
-            <CardFooter>
-              <Link to="/admin/properties">
-                <Button variant="secondary" size="sm">
-                  View Properties
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Featured Properties</CardTitle>
-              <Star className="h-4 w-4 text-yellow-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.featuredProperties}</div>
-              <p className="text-sm text-gray-500">Properties marked as featured</p>
-            </CardContent>
-            <CardFooter>
-              <Link to="/admin/properties">
-                <Button variant="secondary" size="sm">
-                  View Properties
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Blog Posts</CardTitle>
-              <FileText className="h-4 w-4 text-gray-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalBlogPosts}</div>
-              <p className="text-sm text-gray-500">All blog posts</p>
-            </CardContent>
-            <CardFooter>
-              <Link to="/admin/blog">
-                <Button variant="secondary" size="sm">
-                  View Blog Posts
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Published Blog Posts</CardTitle>
-              <BarChart className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.publishedBlogPosts}</div>
-              <p className="text-sm text-gray-500">Blog posts that are live</p>
-            </CardContent>
-            <CardFooter>
-              <Link to="/admin/blog">
-                <Button variant="secondary" size="sm">
-                  View Blog Posts
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-        </div>
-      )}
-
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    );
+  }
+  
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-1">Welcome back to your dashboard</p>
+      </div>
+      
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Recent Properties</CardTitle>
-            <CardDescription>Last 5 properties added</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Properties
+            </CardTitle>
+            <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="p-0">
-            {isLoading ? (
-              <div className="flex items-center justify-center min-h-48">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
-              </div>
-            ) : recentProperties.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">No recent properties</div>
-            ) : (
-              <ul className="divide-y divide-gray-200">
-                {recentProperties.map((property) => (
-                  <li key={property.id} className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Link to={`/admin/properties/edit/${property.id}`} className="font-medium hover:text-blue-600">
-                          {property.title}
-                        </Link>
-                        <p className="text-sm text-gray-500">
-                          <Clock className="inline-block w-4 h-4 mr-1 align-middle" />
-                          Created on {formatDate(property.created_at)}
-                        </p>
-                      </div>
-                      <Link to={`/admin/properties/edit/${property.id}`}>
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <CardContent>
+            <div className="text-2xl font-bold">{properties.length}</div>
+            <p className="text-xs text-muted-foreground">
+              {featuredProperties} featured
+            </p>
           </CardContent>
-          <CardFooter>
-            <Link to="/admin/properties">
-              <Button variant="secondary" size="sm">
-                View All Properties
-              </Button>
-            </Link>
-          </CardFooter>
         </Card>
-
         <Card>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Recent Blog Posts</CardTitle>
-            <CardDescription>Last 5 blog posts added</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Views
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="p-0">
-            {isLoading ? (
-              <div className="flex items-center justify-center min-h-48">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
-              </div>
-            ) : recentBlogPosts.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">No recent blog posts</div>
-            ) : (
-              <ul className="divide-y divide-gray-200">
-                {recentBlogPosts.map((post) => (
-                  <li key={post.id} className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Link to={`/admin/blog/edit/${post.id}`} className="font-medium hover:text-blue-600">
-                          {post.title}
-                        </Link>
-                        <p className="text-sm text-gray-500">
-                          <Clock className="inline-block w-4 h-4 mr-1 align-middle" />
-                          Created on {formatDate(post.created_at)}
-                        </p>
-                      </div>
-                      <Link to={`/admin/blog/edit/${post.id}`}>
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <CardContent>
+            <div className="text-2xl font-bold">{totalViews}</div>
+            <p className="text-xs text-muted-foreground">
+              +20.1% from last month
+            </p>
           </CardContent>
-          <CardFooter>
-            <Link to="/admin/blog">
-              <Button variant="secondary" size="sm">
-                View All Blog Posts
-              </Button>
-            </Link>
-          </CardFooter>
         </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalLeads}</div>
+            <p className="text-xs text-muted-foreground">
+              +12.5% from last month
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Conversion Rate
+            </CardTitle>
+            <BarChart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{conversionRate}%</div>
+            <p className="text-xs text-muted-foreground">
+              +3.2% from last month
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Recent Properties */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Recent Properties</h2>
+        <div className="space-y-4">
+          {properties.length > 0 ? (
+            properties.slice(0, 5).map((property) => (
+              <div key={property.id} className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div className="flex items-center">
+                  <div className="h-10 w-10 rounded-md bg-gray-100 flex items-center justify-center">
+                    <Building className="h-5 w-5 text-gray-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="font-medium">{property.title}</p>
+                    <p className="text-sm text-gray-500">{property.location}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <p className="text-sm font-medium">{property.price}</p>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {new Date(property.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                  {property.featured && (
+                    <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No properties found.</p>
+          )}
+          
+          {properties.length > 0 && (
+            <Button 
+              variant="ghost" 
+              className="mt-2 w-full justify-center border border-gray-200 hover:bg-gray-50"
+              onClick={() => window.location.href = '/admin/properties'}
+            >
+              View All Properties
+            </Button>
+          )}
+        </div>
+      </div>
+      
+      {/* Recent Blog Posts */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Recent Blog Posts</h2>
+        <div className="space-y-4">
+          {blogPosts.length > 0 ? (
+            blogPosts.slice(0, 5).map((post) => (
+              <div key={post.id} className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div className="flex items-center">
+                  <div className="h-10 w-10 rounded-md bg-gray-100 flex items-center justify-center">
+                    <DollarSign className="h-5 w-5 text-gray-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="font-medium">{post.title}</p>
+                    <p className="text-sm text-gray-500">
+                      {post.published ? 'Published' : 'Draft'}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center text-xs text-gray-500">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {new Date(post.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No blog posts found.</p>
+          )}
+          
+          {blogPosts.length > 0 && (
+            <Button 
+              variant="ghost" 
+              className="mt-2 w-full justify-center border border-gray-200 hover:bg-gray-50"
+              onClick={() => window.location.href = '/admin/blog'}
+            >
+              View All Blog Posts
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

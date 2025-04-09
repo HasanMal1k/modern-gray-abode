@@ -25,18 +25,18 @@ const Properties = () => {
   const { toast } = useToast();
 
   // Handle viewing a specific property
-  const propertyId = params.id ? parseInt(params.id) : null;
+  const propertyId = params.id || null;
   
   // Check if we're viewing a regular property or a gray listed property
   const viewingProperty = propertyId ? (
     PROPERTIES.find(p => p.id === propertyId) ||
-    GRAY_LISTED_PROPERTIES.find(p => p.id === propertyId)
+    GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId)
   ) : null;
   
   // Determine if we're viewing a gray listed property specifically
   const isGrayListed = viewingProperty && 
     'services' in viewingProperty && 
-    GRAY_LISTED_PROPERTIES.some(p => p.id === propertyId);
+    GRAY_LISTED_PROPERTIES.some(p => p.id.toString() === propertyId);
 
   // Filter properties based on all filters
   const filteredProperties = filterProperties(
@@ -62,7 +62,7 @@ const Properties = () => {
   }, []);
 
   if (propertyId && isGrayListed) {
-    const grayProperty = GRAY_LISTED_PROPERTIES.find(p => p.id === propertyId);
+    const grayProperty = GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId);
     if (grayProperty) {
       return <GrayListedProperty property={grayProperty} />;
     }

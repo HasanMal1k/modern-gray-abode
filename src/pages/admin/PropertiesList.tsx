@@ -25,27 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-
-interface Property {
-  id: string;
-  title: string;
-  subtitle?: string;
-  location: string;
-  price: string;
-  price_numeric: number;
-  bedrooms: number;
-  bathrooms: number;
-  area?: number;
-  type?: string;
-  category: string;
-  description?: string;
-  featured: boolean;
-  power_supply?: string;
-  style?: string;
-  video_url?: string;
-  created_at: string;
-  updated_at: string;
-}
+import { Property } from '@/types/property.types';
 
 const PropertiesList = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -72,7 +52,7 @@ const PropertiesList = () => {
 
       if (error) throw error;
 
-      setProperties(data || []);
+      setProperties(data as Property[] || []);
     } catch (error) {
       console.error('Error fetching properties:', error);
       toast.error('Failed to load properties');
@@ -133,7 +113,7 @@ const PropertiesList = () => {
     try {
       setIsLoading(true);
       const { error } = await supabaseTable('properties')
-        .update({ featured: !property.featured })
+        .update({ featured: !property.featured } as any)
         .eq('id', property.id);
 
       if (error) throw error;

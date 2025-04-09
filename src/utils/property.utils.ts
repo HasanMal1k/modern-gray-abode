@@ -24,7 +24,7 @@ export const filterProperties = (
     const matchesSearch = 
       property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.type.toLowerCase().includes(searchTerm.toLowerCase());
+      (property.type && property.type.toLowerCase().includes(searchTerm.toLowerCase()));
     
     // Check if it matches the selected category
     const matchesCategory = 
@@ -32,7 +32,7 @@ export const filterProperties = (
       property.category === selectedCategory;
     
     // Check price range
-    const priceValue = property.priceNumeric;
+    const priceValue = property.price_numeric;
     const matchesPrice = priceValue >= priceRange[0] && priceValue <= priceRange[1];
     
     // Check bedroom filter
