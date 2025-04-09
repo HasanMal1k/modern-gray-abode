@@ -3,6 +3,7 @@ export interface AdminUser {
   id: string;
   email: string;
   created_at: string;
+  password_hash?: string;
 }
 
 export interface PropertyFormData {

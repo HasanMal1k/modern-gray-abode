@@ -12,3 +12,6 @@ export function supabaseTable<T extends TableNames>(tableName: T) {
 export function assertType<T>(data: any): T {
   return data as T;
 }
+
+// Export supabase directly for operations where we need the raw client
+export { supabase };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
 import { 
   FileText, 
   Plus, 
@@ -8,12 +8,33 @@ import {
   Pencil, 
   Trash2, 
   Check, 
-  X 
+  X,
+  Eye,
+  Calendar,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { BlogPost } from '@/types/blog.types';
+import { 
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const BlogList = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);

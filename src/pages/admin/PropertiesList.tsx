@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase, fromTable } from "@/integrations/supabase/client";
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { 
   Building, 
   Plus, 
-  Search,
-  Star,
-  StarOff,
-  Eye,
+  Search, 
   Pencil, 
-  Trash2,
-  Filter
+  Trash2, 
+  Filter, 
+  X, 
+  Check, 
+  Star, 
+  StarOff,
+  Eye
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { CATEGORIES } from '@/types/property.types';
 
@@ -63,8 +60,7 @@ const PropertiesList = () => {
   const fetchProperties = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
+      const { data, error } = await supabaseTable('properties')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -111,8 +107,7 @@ const PropertiesList = () => {
 
     try {
       setIsLoading(true);
-      const { error } = await supabase
-        .from('properties')
+      const { error } = await supabaseTable('properties')
         .delete()
         .eq('id', propertyId);
 
@@ -131,8 +126,7 @@ const PropertiesList = () => {
   const toggleFeaturedProperty = async (property: Property) => {
     try {
       setIsLoading(true);
-      const { error } = await supabase
-        .from('properties')
+      const { error } = await supabaseTable('properties')
         .update({ featured: !property.featured })
         .eq('id', property.id);
 

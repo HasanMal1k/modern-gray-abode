@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase, CustomDatabase, fromTable } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { Building } from 'lucide-react';
 import PropertyForm from '@/components/admin/PropertyForm';
 import { PropertyFormData } from '@/types/admin.types';
@@ -18,19 +18,15 @@ const EditProperty = () => {
       if (!id) return;
 
       try {
-        const { data, error } = await supabase
-          .from(fromTable('properties'))
+        const { data, error } = await supabaseTable('properties')
           .select('*')
           .eq('id', id)
-          .single() as {
-            data: CustomDatabase['public']['Tables']['properties']['Row'] | null;
-            error: any;
-          };
+          .single();
 
         if (error) throw error;
         if (!data) throw new Error('Property not found');
 
-        setProperty(data as PropertyFormData);
+        setProperty(assertType<PropertyFormData>(data));
       } catch (err: any) {
         console.error('Error fetching property:', err);
         setError(err.message);

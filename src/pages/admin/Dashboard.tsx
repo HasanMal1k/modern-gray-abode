@@ -1,22 +1,23 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase, CustomDatabase } from "@/integrations/supabase/client";
-import {
-  Building,
-  FileText,
-  StarIcon,
-  BarChart3,
-  Clock,
-  PlusCircle
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { 
+  Building, 
+  FileText, 
+  Eye, 
+  Pencil, 
+  Trash2, 
+  User, 
+  DollarSign, 
+  Star, 
+  Users, 
+  UserPlus, 
+  CreditCard,
+  BarChart, 
+  TrendingUp
 } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 

@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
 import { 
   Save, 
   XCircle, 

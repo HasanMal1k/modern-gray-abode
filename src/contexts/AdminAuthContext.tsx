@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { AdminUser } from '@/types/admin.types';
@@ -6,6 +7,7 @@ import bcrypt from 'bcryptjs';
 
 interface AdminAuthContextProps {
   user: AdminUser | null;
+  isAuthenticated: boolean; // Add this property
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
@@ -53,7 +55,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
       }
       
       const typedUser = assertType<AdminUser>(data);
-      const passwordMatch = await bcrypt.compare(password, typedUser.password_hash);
+      const passwordMatch = await bcrypt.compare(password, typedUser.password_hash || '');
       
       if (!passwordMatch) {
         toast.error('Invalid email or password');
@@ -102,7 +104,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
       }
       
       const typedUser = assertType<AdminUser>(userData);
-      const passwordMatch = await bcrypt.compare(currentPassword, typedUser.password_hash);
+      const passwordMatch = await bcrypt.compare(currentPassword, typedUser.password_hash || '');
       
       if (!passwordMatch) {
         toast.error('Invalid current password');
@@ -137,6 +139,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
 
   const value: AdminAuthContextProps = {
     user,
+    isAuthenticated: !!user, // Add this property
     login,
     logout,
     updatePassword,

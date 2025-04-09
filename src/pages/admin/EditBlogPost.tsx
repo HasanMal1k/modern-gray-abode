@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase, CustomDatabase, fromTable } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { supabaseTable, assertType } from "@/utils/supabase.utils";
 import { FileText } from 'lucide-react';
 import BlogForm from '@/components/admin/BlogForm';
 import { BlogPostFormData } from '@/types/admin.types';
@@ -18,19 +18,15 @@ const EditBlogPost = () => {
       if (!id) return;
 
       try {
-        const { data, error } = await supabase
-          .from(fromTable('blog_posts'))
+        const { data, error } = await supabaseTable('blog_posts')
           .select('*')
           .eq('id', id)
-          .single() as {
-            data: CustomDatabase['public']['Tables']['blog_posts']['Row'] | null;
-            error: any;
-          };
+          .single();
 
         if (error) throw error;
         if (!data) throw new Error('Blog post not found');
 
-        setPost(data as BlogPostFormData);
+        setPost(assertType<BlogPostFormData>(data));
       } catch (err: any) {
         console.error('Error fetching blog post:', err);
         setError(err.message);
