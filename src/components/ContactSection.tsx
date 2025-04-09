@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Send, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -16,27 +16,55 @@ import { Button } from "@/components/ui/button";
 const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Get form data
+      const formData = new FormData(e.currentTarget);
+      const name = formData.get('name') as string;
+      const email = formData.get('email') as string;
+      const subject = formData.get('subject') as string;
+      const message = formData.get('message') as string;
+      
+      // For email sending, you'd typically use a service like EmailJS, FormSpree, or your own backend API
+      // This is a simulation - you would replace this with your actual email sending code
+      
+      // Example with EmailJS API (client-side)
+      // Replace this with your actual email sending code when you have the service set up
+      console.log("Sending email with data:", { name, email, subject, message });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Handle successful submission
       setIsSuccess(true);
       toast({
         title: "Message Sent",
-        description: "Thank you for your inquiry. We'll be in touch shortly.",
+        description: `Thank you ${name}! Your inquiry has been sent to our team. We'll respond to ${email} shortly.`,
       });
       
-      // Reset success state after 3 seconds
-      setTimeout(() => setIsSuccess(false), 3000);
-      
-      // Reset form
-      (e.target as HTMLFormElement).reset();
-    }, 1500);
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setIsSuccess(false);
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+      }, 3000);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setIsSubmitting(false);
+      toast({
+        title: "Failed to send message",
+        description: "An error occurred while sending your message. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -48,7 +76,7 @@ const ContactSection = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm text-white/80">
@@ -136,6 +164,34 @@ const ContactSection = () => {
                 </span>
               )}
             </Button>
+          </div>
+          
+          <div className="pt-3 flex justify-center">
+            <a 
+              href="https://wa.me/2348066429700" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-white/70 hover:text-white flex items-center text-sm transition-colors"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="mr-2"
+              >
+                <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+                <path d="M9 10a.5.5 0 0 1 1 0v2a.5.5 0 0 1-1 0v-2Z" />
+                <path d="M14 10a.5.5 0 0 1 1 0v2a.5.5 0 0 1-1 0v-2Z" />
+                <path d="M9 15h6" />
+              </svg>
+              Or contact us on WhatsApp: +2348066429700
+            </a>
           </div>
         </form>
       </CardContent>

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -33,22 +32,35 @@ const Contact = () => {
   const [showDemo, setShowDemo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleBookDemo = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleBookDemo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const formData = new FormData(e.currentTarget);
+      const name = formData.get('name') as string;
+      const email = formData.get('email') as string;
+      
+      console.log("Booking demo with data:", Object.fromEntries(formData));
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       setIsSubmitting(false);
       setShowDemo(false);
       toast({
         title: "Demo Request Received",
-        description: "We'll contact you soon to schedule your LIVE 360° viewing session.",
+        description: `Thank you ${name}! We'll contact you at ${email} soon to schedule your LIVE 360° viewing session.`,
       });
       
-      // Reset form
       (e.target as HTMLFormElement).reset();
-    }, 1500);
+    } catch (error) {
+      console.error("Error booking demo:", error);
+      setIsSubmitting(false);
+      toast({
+        title: "Failed to book demo",
+        description: "An error occurred while submitting your request. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    }
   };
   
   const faqs = [
@@ -78,7 +90,6 @@ const Contact = () => {
     const page = pageRef.current;
     if (!page) return;
 
-    // Hero Section Animation
     const heroElements = heroRef.current?.querySelectorAll('.animate-hero');
     if (heroElements) {
       gsap.fromTo(heroElements, 
@@ -93,7 +104,6 @@ const Contact = () => {
       );
     }
 
-    // Contact Info Cards Animation
     const contactInfoCards = contactInfoRef.current?.querySelectorAll('.animate-card');
     if (contactInfoCards) {
       gsap.fromTo(contactInfoCards, 
@@ -111,7 +121,6 @@ const Contact = () => {
       );
     }
 
-    // Contact Form and FAQ Animation
     const contactFormElements = contactFormRef.current?.querySelectorAll('.animate-section');
     if (contactFormElements) {
       gsap.fromTo(contactFormElements, 
@@ -129,7 +138,6 @@ const Contact = () => {
       );
     }
 
-    // CTA Section Animation
     const ctaElements = ctaRef.current?.querySelectorAll('.animate-cta');
     if (ctaElements) {
       gsap.fromTo(ctaElements, 
@@ -146,7 +154,6 @@ const Contact = () => {
       );
     }
     
-    // Live 360 Viewing Section Animation
     const liveViewingElements = liveViewingRef.current?.querySelectorAll('.animate-live-viewing');
     if (liveViewingElements) {
       gsap.fromTo(liveViewingElements, 
@@ -171,9 +178,7 @@ const Contact = () => {
       <Navbar />
       
       <main className="pt-24">
-        {/* Hero Section */}
         <section className="relative w-full py-20 lg:py-32" ref={heroRef}>
-          {/* Background Overlay */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative w-full max-w-6xl h-full flex items-center">
@@ -212,11 +217,9 @@ const Contact = () => {
             </div>
           </div>
           
-          {/* Bottom Gradient Overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#111] to-transparent"></div>
         </section>
         
-        {/* LIVE 360° Viewing Section */}
         <section className="py-16 bg-[#111] relative overflow-hidden" ref={liveViewingRef}>
           <div className="absolute inset-0 z-0 opacity-20">
             <Panorama360Viewer panoramaUrl="/images/team-1.jpg" />
@@ -437,7 +440,6 @@ const Contact = () => {
           </div>
         </section>
         
-        {/* Quick Contact Info Section */}
         <section className="py-16 bg-[#151515]" ref={contactInfoRef}>
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -449,7 +451,7 @@ const Contact = () => {
                   <h3 className="text-xl font-medium mb-2 text-white">Call Us</h3>
                   <p className="text-white/70 mb-4">Speak directly with our team</p>
                   <a href="tel:+2348066429700" className="text-white hover:text-white/80 transition-colors">
-                    +234 806 642 9700
+                    +2348066429700
                   </a>
                 </CardContent>
               </Card>
@@ -474,15 +476,14 @@ const Contact = () => {
                   </div>
                   <h3 className="text-xl font-medium mb-2 text-white">Office Location</h3>
                   <p className="text-white/70 mb-4">Visit us in person</p>
-                  <p className="text-white">1/5 Owel-Linkso Road, Lekki</p>
-                  <p className="text-white">Lagos, Nigeria</p>
+                  <p className="text-white">1/5 Owel-Linkso Road, Lekki Penninsula II</p>
+                  <p className="text-white">Lekki, Nigeria</p>
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
         
-        {/* Contact Form and FAQ Section */}
         <section className="py-16 bg-[#111] text-white" id="contact-form" ref={contactFormRef}>
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -533,7 +534,6 @@ const Contact = () => {
           </div>
         </section>
         
-        {/* CTA Section */}
         <section className="py-16 bg-[#151515]" ref={ctaRef}>
           <div className="max-w-4xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-bold mb-6 text-white animate-cta">Ready to Get Started?</h2>

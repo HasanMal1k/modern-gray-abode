@@ -16,8 +16,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tighter">
-            <span className="text-white">ESTATE</span>
-            <span className="text-muted-foreground">NOIR</span>
+            <span className="text-white">Grayscale</span>
+            <span className="text-muted-foreground">Realtors</span>
           </h2>
           <p className="text-muted-foreground text-sm max-w-md">
             Premium properties crafted for discerning individuals. We connect extraordinary homes with extraordinary people.
@@ -74,15 +74,15 @@ const Footer = () => {
           <ul className="space-y-3">
             <li className="flex items-start text-sm">
               <MapPin className="mr-3 w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-              <span className="text-muted-foreground">1234 Luxury Avenue, Prestige Heights, CA 90210</span>
+              <span className="text-muted-foreground">1/5 Owel-Linkso Road, Lekki Penninsula II, Lekki</span>
             </li>
             <li className="flex items-center text-sm">
               <Phone className="mr-3 w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">+1 (555) 123-4567</span>
+              <span className="text-muted-foreground">+2348066429700</span>
             </li>
             <li className="flex items-center text-sm">
               <Mail className="mr-3 w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">contact@estatenoir.com</span>
+              <span className="text-muted-foreground">sabi@grayscalerealtors.com</span>
             </li>
           </ul>
         </div>
@@ -91,7 +91,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-white/5">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} EstateNoir. All rights reserved.
+            &copy; {new Date().getFullYear()} Grayscale Realtors. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-xs text-muted-foreground hover:text-white transition-colors">
