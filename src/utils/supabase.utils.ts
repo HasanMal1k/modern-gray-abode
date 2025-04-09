@@ -5,7 +5,7 @@ import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 type TableNames = keyof CustomDatabase['public']['Tables'];
 
 export function supabaseTable<T extends TableNames>(tableName: T) {
-  return supabase.from(tableName as string) as unknown as ReturnType<typeof supabase.from>;
+  return supabase.from(tableName) as ReturnType<typeof supabase.from>;
 }
 
 // Helper for type assertions in query responses

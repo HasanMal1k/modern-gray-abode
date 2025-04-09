@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
 import { 
   Building, 
   FileText, 
@@ -15,11 +14,13 @@ import {
   UserPlus, 
   CreditCard,
   BarChart, 
-  TrendingUp
+  TrendingUp,
+  Clock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { CustomDatabase } from "@/integrations/supabase/client";
 
 interface DashboardStats {
   totalProperties: number;
@@ -161,7 +162,7 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Featured Properties</CardTitle>
-              <StarIcon className="h-4 w-4 text-yellow-500" />
+              <Star className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.featuredProperties}</div>
@@ -197,7 +198,7 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Published Blog Posts</CardTitle>
-              <BarChart3 className="h-4 w-4 text-green-500" />
+              <BarChart className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.publishedBlogPosts}</div>

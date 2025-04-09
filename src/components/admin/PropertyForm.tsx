@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
@@ -364,13 +363,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       
       if (propertyId) {
         const { error } = await supabaseTable('properties')
-          .update(assertType(formData))
+          .update(formData)
           .eq('id', propertyId);
         
         if (error) throw error;
       } else {
         const { data, error } = await supabaseTable('properties')
-          .insert(assertType([formData]))
+          .insert([formData])
           .select();
         
         if (error) throw error;
@@ -393,7 +392,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
                 image_url: publicUrl,
                 is_primary: image.is_primary,
                 display_order: image.display_order
-              }] as any);
+              }]);
             
             if (error) throw error;
           } catch (error) {
@@ -406,7 +405,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .update({
               is_primary: image.is_primary,
               display_order: image.display_order
-            } as any)
+            })
             .eq('id', image.id);
           
           if (error) throw error;
@@ -429,7 +428,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const feature of features) {
         if (feature.id) {
           const { error } = await supabaseTable('property_features')
-            .update({ feature_name: feature.feature_name } as any)
+            .update({ feature_name: feature.feature_name })
             .eq('id', feature.id);
           
           if (error) throw error;
@@ -438,7 +437,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .insert([{
               property_id,
               feature_name: feature.feature_name
-            }] as any);
+            }]);
           
           if (error) throw error;
         }
@@ -460,7 +459,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const service of services) {
         if (service.id) {
           const { error } = await supabaseTable('property_services')
-            .update({ service_name: service.service_name } as any)
+            .update({ service_name: service.service_name })
             .eq('id', service.id);
           
           if (error) throw error;
@@ -469,7 +468,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .insert([{
               property_id,
               service_name: service.service_name
-            }] as any);
+            }]);
           
           if (error) throw error;
         }
@@ -491,7 +490,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       for (const highlight of highlights) {
         if (highlight.id) {
           const { error } = await supabaseTable('property_highlights')
-            .update({ highlight_text: highlight.highlight_text } as any)
+            .update({ highlight_text: highlight.highlight_text })
             .eq('id', highlight.id);
           
           if (error) throw error;
@@ -500,7 +499,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .insert([{
               property_id,
               highlight_text: highlight.highlight_text
-            }] as any);
+            }]);
           
           if (error) throw error;
         }
