@@ -5,8 +5,8 @@ import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 type TableNames = keyof CustomDatabase['public']['Tables'];
 
 export function supabaseTable<T extends TableNames>(tableName: T) {
-  // Using direct type assertion to bypass TypeScript limitations with Supabase types
-  return supabase.from(tableName as string);
+  // Using type assertion to bypass TypeScript limitations with Supabase types
+  return supabase.from(tableName as string) as any;
 }
 
 // Helper for type assertions in query responses

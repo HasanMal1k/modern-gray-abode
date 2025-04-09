@@ -179,14 +179,16 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
       }
       
       if (postId) {
-        const { error } = await supabaseTable('blog_posts')
-          .update(assertType(formData))
+        const { error } = await supabase
+          .from('blog_posts')
+          .update(formData as any)
           .eq('id', postId);
         
         if (error) throw error;
       } else {
-        const { error } = await supabaseTable('blog_posts')
-          .insert(assertType([formData]));
+        const { error } = await supabase
+          .from('blog_posts')
+          .insert([formData] as any);
         
         if (error) throw error;
       }

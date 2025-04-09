@@ -1,30 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
-import { 
-  Building, 
-  Plus, 
-  Search, 
-  Pencil, 
-  Trash2, 
-  Filter, 
-  X, 
-  Check, 
-  Star, 
-  StarOff,
-  Eye
-} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/utils/supabase.utils';
+import { Building, Plus, Pencil, Trash2, Search, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import { CATEGORIES } from '@/types/property.types';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
 import { Property } from '@/types/property.types';
 
 const PropertiesList = () => {
@@ -46,13 +37,20 @@ const PropertiesList = () => {
   const fetchProperties = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabaseTable('properties')
+      
+      const query = supabase
+        .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
-
+      
+      if (searchQuery) {
+        query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
+      
       if (error) throw error;
-
-      setProperties(data as Property[] || []);
+      setProperties(data as any || []);
     } catch (error) {
       console.error('Error fetching properties:', error);
       toast.error('Failed to load properties');
@@ -93,7 +91,8 @@ const PropertiesList = () => {
 
     try {
       setIsLoading(true);
-      const { error } = await supabaseTable('properties')
+      const { error } = await supabase
+        .from('properties')
         .delete()
         .eq('id', propertyId);
 
@@ -112,7 +111,8 @@ const PropertiesList = () => {
   const toggleFeaturedProperty = async (property: Property) => {
     try {
       setIsLoading(true);
-      const { error } = await supabaseTable('properties')
+      const { error } = await supabase
+        .from('properties')
         .update({ featured: !property.featured } as any)
         .eq('id', property.id);
 

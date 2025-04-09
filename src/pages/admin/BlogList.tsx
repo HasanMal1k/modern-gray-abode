@@ -1,40 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
-import { 
-  FileText, 
-  Plus, 
-  Search, 
-  Pencil, 
-  Trash2, 
-  Check, 
-  X,
-  Eye,
-  Calendar,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/utils/supabase.utils';
+import { FileText, Plus, Pencil, Trash2, Search, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { BlogPost } from '@/types/blog.types';
-import { 
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 const BlogList = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -79,20 +61,24 @@ const BlogList = () => {
   const fetchBlogPosts = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabaseTable('blog_posts')
+      
+      const query = supabase
+        .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: false });
       
+      if (searchTerm) {
+        query.ilike('title', `%${searchTerm}%`);
+      }
+      
+      const { data, error } = await query;
+      
       if (error) throw error;
-      
-      const typedData = assertType<BlogPost[]>(data);
-      setPosts(typedData);
-      setFilteredPosts(typedData);
-      
-      setIsLoading(false);
+      setPosts(data as any || []);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast.error('Failed to load blog posts');
+    } finally {
       setIsLoading(false);
     }
   };
