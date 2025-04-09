@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 import { FileText } from 'lucide-react';
 import BlogForm from '@/components/admin/BlogForm';
 import { BlogPostFormData } from '@/types/admin.types';
@@ -22,7 +22,10 @@ const EditBlogPost = () => {
           .from('blog_posts')
           .select('*')
           .eq('id', id)
-          .single();
+          .single() as {
+            data: CustomDatabase['public']['Tables']['blog_posts']['Row'] | null;
+            error: any;
+          };
 
         if (error) throw error;
         if (!data) throw new Error('Blog post not found');

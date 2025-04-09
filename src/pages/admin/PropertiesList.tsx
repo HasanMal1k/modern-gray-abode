@@ -1,37 +1,31 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
-import { 
-  Building, 
-  PlusCircle, 
-  Search, 
-  SlidersHorizontal, 
-  Edit, 
-  Trash2, 
-  ChevronLeft, 
-  ChevronRight, 
-  MapPin,
-  Eye,
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import {
+  Building,
+  PlusCircle,
+  Search,
+  Edit,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  SlidersHorizontal,
   Star,
-  StarOff
+  Bed,
+  Bath,
+  Map,
+  DollarSign
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -40,8 +34,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { CATEGORIES } from '@/types/property.types';
 
 interface Property {
   id: string;
@@ -73,10 +67,8 @@ const PropertiesList = () => {
   }, []);
 
   useEffect(() => {
-    // Apply filters
     let result = properties;
     
-    // Search filter
     if (searchTerm) {
       result = result.filter(property => 
         property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,14 +76,13 @@ const PropertiesList = () => {
       );
     }
     
-    // Category filter
     if (categoryFilter !== 'All Categories') {
       result = result.filter(property => property.category === categoryFilter);
     }
     
     setFilteredProperties(result);
     setTotalPages(Math.ceil(result.length / itemsPerPage));
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [searchTerm, categoryFilter, properties]);
 
   const fetchProperties = async () => {
@@ -100,13 +91,37 @@ const PropertiesList = () => {
       const { data, error } = await supabase
         .from('properties')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }) as {
+          data: CustomDatabase['public']['Tables']['properties']['Row'][] | null;
+          error: any;
+        };
       
       if (error) throw error;
       
-      setProperties(data || []);
-      setFilteredProperties(data || []);
-      setTotalPages(Math.ceil((data?.length || 0) / itemsPerPage));
+      if (data) {
+        const propertiesWithImages = await Promise.all(
+          data.map(async (property) => {
+            const { data: imageData, error: imageError } = await supabase
+              .from('property_images')
+              .select('*')
+              .eq('property_id', property.id)
+              .eq('is_primary', true)
+              .single() as {
+                data: CustomDatabase['public']['Tables']['property_images']['Row'] | null;
+                error: any;
+              };
+            
+            return {
+              ...property,
+              primary_image: imageError ? null : imageData?.image_url
+            };
+          })
+        );
+        
+        setProperties(propertiesWithImages);
+        setFilteredProperties(propertiesWithImages);
+        setTotalPages(Math.ceil(propertiesWithImages.length / itemsPerPage));
+      }
     } catch (error) {
       console.error('Error fetching properties:', error);
       toast.error('Failed to load properties');
@@ -119,12 +134,11 @@ const PropertiesList = () => {
     try {
       const { error } = await supabase
         .from('properties')
-        .update({ featured: !featured })
+        .update({ featured: !featured } as any)
         .eq('id', id);
       
       if (error) throw error;
       
-      // Update local state
       setProperties(properties.map(property => 
         property.id === id ? { ...property, featured: !featured } : property
       ));
@@ -146,48 +160,44 @@ const PropertiesList = () => {
     
     setIsDeleting(true);
     try {
-      // Delete property images first
       const { error: imagesError } = await supabase
         .from('property_images')
         .delete()
-        .eq('property_id', propertyToDelete);
+        .eq('property_id', propertyToDelete) as { error: any };
       
       if (imagesError) throw imagesError;
       
-      // Delete property features
       const { error: featuresError } = await supabase
         .from('property_features')
         .delete()
-        .eq('property_id', propertyToDelete);
+        .eq('property_id', propertyToDelete) as { error: any };
       
       if (featuresError) throw featuresError;
       
-      // Delete property services
       const { error: servicesError } = await supabase
         .from('property_services')
         .delete()
-        .eq('property_id', propertyToDelete);
+        .eq('property_id', propertyToDelete) as { error: any };
       
       if (servicesError) throw servicesError;
       
-      // Delete property highlights
       const { error: highlightsError } = await supabase
         .from('property_highlights')
         .delete()
-        .eq('property_id', propertyToDelete);
+        .eq('property_id', propertyToDelete) as { error: any };
       
       if (highlightsError) throw highlightsError;
       
-      // Finally delete the property
       const { error } = await supabase
         .from('properties')
         .delete()
-        .eq('id', propertyToDelete);
+        .eq('id', propertyToDelete) as { error: any };
       
       if (error) throw error;
       
-      // Update local state
       setProperties(properties.filter(property => property.id !== propertyToDelete));
+      setFilteredProperties(filteredProperties.filter(property => property.id !== propertyToDelete));
+      
       toast.success('Property deleted successfully');
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -199,7 +209,6 @@ const PropertiesList = () => {
     }
   };
 
-  // Pagination
   const paginatedProperties = filteredProperties.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -315,7 +324,7 @@ const PropertiesList = () => {
                       <div>
                         <p className="font-medium">{property.title}</p>
                         <div className="flex items-center text-sm text-gray-500 mt-1">
-                          <MapPin className="w-3 h-3 mr-1" />
+                          <Map className="w-3 h-3 mr-1" />
                           {property.location}
                         </div>
                       </div>
@@ -369,7 +378,6 @@ const PropertiesList = () => {
           )}
         </div>
 
-        {/* Pagination */}
         {filteredProperties.length > 0 && (
           <div className="flex items-center justify-between p-4 border-t">
             <div className="text-sm text-gray-500">
@@ -400,7 +408,6 @@ const PropertiesList = () => {
         )}
       </div>
 
-      {/* Delete confirmation dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>

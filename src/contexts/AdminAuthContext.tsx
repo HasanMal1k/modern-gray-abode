@@ -1,114 +1,160 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
-import bcrypt from 'bcryptjs';
+import { supabase, CustomDatabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import bcrypt from 'bcryptjs';
 
-interface AdminAuthContextProps {
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  isLoading: boolean;
+interface AdminUser {
+  id: string;
+  email: string;
+  created_at: string;
 }
 
-const AdminAuthContext = createContext<AdminAuthContextProps | undefined>(undefined);
+interface AdminAuthContextType {
+  user: AdminUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+}
+
+const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
 export const useAdminAuth = () => {
   const context = useContext(AdminAuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAdminAuth must be used within an AdminAuthProvider');
   }
   return context;
 };
 
 interface AdminAuthProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<AdminUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Check if the user is already authenticated on component mount
+  // Check for existing authentication on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      const storedAuth = localStorage.getItem('adminAuth');
-      if (storedAuth) {
-        try {
-          const { email, timestamp } = JSON.parse(storedAuth);
-          
-          // Simple session expiration check (24 hours)
-          if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
-            setIsAuthenticated(true);
-          } else {
-            localStorage.removeItem('adminAuth');
-          }
-        } catch (error) {
-          localStorage.removeItem('adminAuth');
-        }
+    const storedUser = localStorage.getItem('adminUser');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('adminUser');
       }
-      setIsLoading(false);
-    };
-
-    checkAuth();
+    }
+    setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Query the admin_users table to get the admin with the provided email
-      const { data: adminData, error: adminError } = await supabase
+      // Fetch the user from the database
+      const { data, error } = await supabase
         .from('admin_users')
         .select('*')
-        .eq('email', email.toLowerCase())
-        .single();
+        .eq('email', email)
+        .single() as { 
+          data: CustomDatabase['public']['Tables']['admin_users']['Row'] | null; 
+          error: any 
+        };
 
-      if (adminError || !adminData) {
-        toast.error('Invalid email or password');
-        setIsLoading(false);
-        return false;
-      }
+      if (error) throw new Error('Authentication failed');
+      if (!data) throw new Error('User not found');
 
-      // Verify the password
-      const isPasswordValid = await bcrypt.compare(password, adminData.password_hash);
+      // Compare the passwords
+      const passwordMatch = await bcrypt.compare(password, data.password_hash);
+      if (!passwordMatch) throw new Error('Invalid credentials');
 
-      if (!isPasswordValid) {
-        toast.error('Invalid email or password');
-        setIsLoading(false);
-        return false;
-      }
+      // Set the authenticated user
+      const adminUser: AdminUser = {
+        id: data.id,
+        email: data.email,
+        created_at: data.created_at
+      };
 
-      // Set authentication state
-      setIsAuthenticated(true);
-      
-      // Store auth info in localStorage
-      localStorage.setItem('adminAuth', JSON.stringify({
-        email,
-        timestamp: Date.now()
-      }));
-      
-      toast.success('Logged in successfully');
+      setUser(adminUser);
+      localStorage.setItem('adminUser', JSON.stringify(adminUser));
+      toast.success('Login successful');
+      navigate('/admin');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error(error.message || 'Authentication failed');
+    } finally {
       setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    setUser(null);
+    localStorage.removeItem('adminUser');
+    toast.success('Logged out successfully');
+    navigate('/admin/login');
+  };
+
+  const updatePassword = async (currentPassword: string, newPassword: string) => {
+    if (!user) return false;
+    
+    try {
+      // Fetch the user from the database to get current password hash
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('id', user.id)
+        .single() as {
+          data: CustomDatabase['public']['Tables']['admin_users']['Row'] | null;
+          error: any
+        };
+      
+      if (error) throw error;
+      if (!data) throw new Error('User not found');
+      
+      // Verify current password
+      const isMatch = await bcrypt.compare(currentPassword, data.password_hash);
+      if (!isMatch) {
+        toast.error('Current password is incorrect');
+        return false;
+      }
+      
+      // Hash the new password
+      const salt = await bcrypt.genSalt(10);
+      const newPasswordHash = await bcrypt.hash(newPassword, salt);
+      
+      // Update the password in the database
+      const { error: updateError } = await supabase
+        .from('admin_users')
+        .update({ password_hash: newPasswordHash } as any)
+        .eq('id', user.id);
+      
+      if (updateError) throw updateError;
+      
+      toast.success('Password updated successfully');
       return true;
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('An error occurred during login');
-      setIsLoading(false);
+      console.error('Error updating password:', error);
+      toast.error('Failed to update password');
       return false;
     }
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('adminAuth');
-    navigate('/admin/login');
-    toast.info('Logged out successfully');
-  };
-
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>
+    <AdminAuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        logout,
+        updatePassword
+      }}
+    >
       {children}
     </AdminAuthContext.Provider>
   );

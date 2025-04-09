@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 import { 
   Save, 
   XCircle, 
@@ -51,14 +50,12 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
   
   const navigate = useNavigate();
   
-  // Fetch post data if editing
   useEffect(() => {
     if (postId) {
       fetchPostData();
     }
   }, [postId]);
   
-  // Update formData when publishDate changes
   useEffect(() => {
     if (publishDate) {
       setFormData(prev => ({
@@ -69,7 +66,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
   }, [publishDate]);
   
   const fetchPostData = async () => {
-    setIsLoading(false); // We're already getting the initial data as a prop
+    setIsLoading(false);
   };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -80,7 +77,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
       [name]: value
     });
     
-    // Auto-generate slug from title
     if (name === 'title' && (!postId || !formData.slug)) {
       const slug = value
         .toLowerCase()
@@ -113,11 +109,8 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
     const file = files[0];
     setFeaturedImageFile(file);
     
-    // Create a preview
     const objectUrl = URL.createObjectURL(file);
     setFeaturedImagePreview(objectUrl);
-    
-    // We don't update formData.featured_image here because the actual URL will come after upload
   };
   
   const handleRemoveFeaturedImage = () => {
@@ -179,26 +172,22 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
     setIsSubmitting(true);
     
     try {
-      // Handle featured image upload if there's a new file
       if (featuredImageFile) {
         const imageUrl = await uploadFeaturedImage(featuredImageFile);
         formData.featured_image = imageUrl;
       }
       
-      // Create or update blog post
       if (postId) {
-        // Update existing post
         const { error } = await supabase
           .from('blog_posts')
-          .update(formData)
+          .update(formData as any)
           .eq('id', postId);
         
         if (error) throw error;
       } else {
-        // Create new post
         const { error } = await supabase
           .from('blog_posts')
-          .insert([formData]);
+          .insert([formData as any]);
         
         if (error) throw error;
       }
@@ -342,7 +331,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
         </div>
       </div>
       
-      {/* Featured Image Section */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Featured Image</h2>
@@ -390,7 +378,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
         </div>
       </div>
       
-      {/* Submit buttons */}
       <div className="flex items-center justify-end space-x-4">
         <Button
           type="button"

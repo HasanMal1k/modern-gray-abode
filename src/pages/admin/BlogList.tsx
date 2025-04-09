@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 import { 
   FileText, 
   PlusCircle, 
@@ -97,7 +97,10 @@ const BlogList = () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }) as {
+          data: CustomDatabase['public']['Tables']['blog_posts']['Row'][] | null;
+          error: any;
+        };
       
       if (error) throw error;
       
@@ -119,7 +122,7 @@ const BlogList = () => {
         .update({ 
           published: !published,
           published_at: !published ? new Date().toISOString() : null
-        })
+        } as any)
         .eq('id', id);
       
       if (error) throw error;
@@ -153,7 +156,7 @@ const BlogList = () => {
       const { error } = await supabase
         .from('blog_posts')
         .delete()
-        .eq('id', postToDelete);
+        .eq('id', postToDelete) as { error: any };
       
       if (error) throw error;
       

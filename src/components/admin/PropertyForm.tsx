@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 import { 
   Building, 
   Save, 
@@ -11,7 +10,6 @@ import {
   Plus, 
   X,
   ImagePlus,
-  FileUpload,
   Star,
   GripVertical
 } from 'lucide-react';
@@ -91,7 +89,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   
   const navigate = useNavigate();
   
-  // Fetch property data if editing
   useEffect(() => {
     if (propertyId) {
       fetchPropertyData();
@@ -100,39 +97,46 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   
   const fetchPropertyData = async () => {
     try {
-      // Fetch property images
       const { data: imageData, error: imageError } = await supabase
         .from('property_images')
         .select('*')
-        .eq('property_id', propertyId)
-        .order('display_order', { ascending: true });
+        .eq('property_id', propertyId) as { 
+          data: CustomDatabase['public']['Tables']['property_images']['Row'][] | null; 
+          error: any;
+        };
       
       if (imageError) throw imageError;
       setImages(imageData || []);
       
-      // Fetch property features
       const { data: featureData, error: featureError } = await supabase
         .from('property_features')
         .select('*')
-        .eq('property_id', propertyId);
+        .eq('property_id', propertyId) as {
+          data: CustomDatabase['public']['Tables']['property_features']['Row'][] | null;
+          error: any;
+        };
       
       if (featureError) throw featureError;
       setFeatures(featureData || []);
       
-      // Fetch property services
       const { data: serviceData, error: serviceError } = await supabase
         .from('property_services')
         .select('*')
-        .eq('property_id', propertyId);
+        .eq('property_id', propertyId) as {
+          data: CustomDatabase['public']['Tables']['property_services']['Row'][] | null;
+          error: any;
+        };
       
       if (serviceError) throw serviceError;
       setServices(serviceData || []);
       
-      // Fetch property highlights
       const { data: highlightData, error: highlightError } = await supabase
         .from('property_highlights')
         .select('*')
-        .eq('property_id', propertyId);
+        .eq('property_id', propertyId) as {
+          data: CustomDatabase['public']['Tables']['property_highlights']['Row'][] | null;
+          error: any;
+        };
       
       if (highlightError) throw highlightError;
       setHighlights(highlightData || []);
@@ -148,9 +152,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // Special handling for price_numeric
     if (name === 'price') {
-      // Extract numeric value from price string (remove currency symbols, commas, etc.)
       const numericValue = value.replace(/[^0-9]/g, '');
       setFormData({
         ...formData,
@@ -187,7 +189,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
     const newImages = Array.from(files).map((file, index) => {
       return {
         image_url: URL.createObjectURL(file),
-        is_primary: images.length === 0 && index === 0, // First image is primary by default
+        is_primary: images.length === 0 && index === 0,
         display_order: images.length + index,
         file,
         preview: URL.createObjectURL(file)
@@ -200,20 +202,17 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
   const handleRemoveImage = (index: number) => {
     const newImages = [...images];
     
-    // If removing primary image, set the first remaining image as primary
     if (newImages[index].is_primary && newImages.length > 1) {
       const nextIndex = index === 0 ? 1 : 0;
       newImages[nextIndex].is_primary = true;
     }
     
-    // If it's a new image with a preview URL, revoke the object URL
     if (newImages[index].preview) {
       URL.revokeObjectURL(newImages[index].preview);
     }
     
     newImages.splice(index, 1);
     
-    // Update display order for remaining images
     newImages.forEach((img, i) => {
       img.display_order = i;
     });
@@ -243,13 +242,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       const newImages = [...images];
       const draggedItem = newImages[draggedIndex];
       
-      // Remove item at drag index
       newImages.splice(draggedIndex, 1);
       
-      // Insert at drop index
       newImages.splice(hoveredIndex, 0, draggedItem);
       
-      // Update display order
       newImages.forEach((img, i) => {
         img.display_order = i;
       });
@@ -345,7 +341,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       return false;
     }
     
-    // Make sure at least one image is marked as primary
     if (!images.some(img => img.is_primary)) {
       toast.error('Please select a primary image');
       return false;
@@ -382,36 +377,32 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
     try {
       let property_id = propertyId;
       
-      // Create or update property
       if (propertyId) {
-        // Update existing property
         const { error } = await supabase
           .from('properties')
-          .update(formData)
+          .update(formData as any)
           .eq('id', propertyId);
         
         if (error) throw error;
       } else {
-        // Create new property
         const { data, error } = await supabase
           .from('properties')
-          .insert([formData])
+          .insert([formData as any])
           .select();
         
         if (error) throw error;
-        property_id = data[0].id;
+        if (data && data.length > 0) {
+          property_id = (data[0] as any).id;
+        }
       }
       
-      // Handle image uploads and database entries
       for (let i = 0; i < images.length; i++) {
         const image = images[i];
         
         if (image.file) {
-          // This is a new image that needs to be uploaded
           try {
             const publicUrl = await uploadImage(image.file, property_id!, i);
             
-            // Create new image record
             const { error } = await supabase
               .from('property_images')
               .insert([{
@@ -419,7 +410,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
                 image_url: publicUrl,
                 is_primary: image.is_primary,
                 display_order: image.display_order
-              }]);
+              }] as any);
             
             if (error) throw error;
           } catch (error) {
@@ -427,21 +418,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             // Continue with other images even if one fails
           }
         } else if (image.id) {
-          // This is an existing image that might need to be updated
           const { error } = await supabase
             .from('property_images')
             .update({
               is_primary: image.is_primary,
               display_order: image.display_order
-            })
+            } as any)
             .eq('id', image.id);
           
           if (error) throw error;
         }
       }
       
-      // Handle features
-      // First, delete any removed features
       if (propertyId) {
         const existingFeatureIds = features
           .filter(f => f.id)
@@ -456,30 +444,26 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         if (error) throw error;
       }
       
-      // Then update existing or insert new features
       for (const feature of features) {
         if (feature.id) {
-          // Update existing feature
           const { error } = await supabase
             .from('property_features')
-            .update({ feature_name: feature.feature_name })
+            .update({ feature_name: feature.feature_name } as any)
             .eq('id', feature.id);
           
           if (error) throw error;
         } else {
-          // Insert new feature
           const { error } = await supabase
             .from('property_features')
             .insert([{
               property_id,
               feature_name: feature.feature_name
-            }]);
+            }] as any);
           
           if (error) throw error;
         }
       }
       
-      // Handle services (similar to features)
       if (propertyId) {
         const existingServiceIds = services
           .filter(s => s.id)
@@ -498,7 +482,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         if (service.id) {
           const { error } = await supabase
             .from('property_services')
-            .update({ service_name: service.service_name })
+            .update({ service_name: service.service_name } as any)
             .eq('id', service.id);
           
           if (error) throw error;
@@ -508,13 +492,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .insert([{
               property_id,
               service_name: service.service_name
-            }]);
+            }] as any);
           
           if (error) throw error;
         }
       }
       
-      // Handle highlights (similar to features)
       if (propertyId) {
         const existingHighlightIds = highlights
           .filter(h => h.id)
@@ -533,7 +516,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         if (highlight.id) {
           const { error } = await supabase
             .from('property_highlights')
-            .update({ highlight_text: highlight.highlight_text })
+            .update({ highlight_text: highlight.highlight_text } as any)
             .eq('id', highlight.id);
           
           if (error) throw error;
@@ -543,7 +526,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .insert([{
               property_id,
               highlight_text: highlight.highlight_text
-            }]);
+            }] as any);
           
           if (error) throw error;
         }
@@ -757,7 +740,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         </div>
       </div>
       
-      {/* Images Section */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Property Images</h2>
@@ -847,7 +829,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         </div>
       </div>
       
-      {/* Features Section */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Property Features</h2>
@@ -886,7 +867,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         </div>
       </div>
       
-      {/* Services Section */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Property Services</h2>
@@ -925,7 +905,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         </div>
       </div>
       
-      {/* Highlights Section */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Property Highlights</h2>
@@ -964,7 +943,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         </div>
       </div>
       
-      {/* Submit buttons */}
       <div className="flex items-center justify-end space-x-4">
         <Button
           type="button"

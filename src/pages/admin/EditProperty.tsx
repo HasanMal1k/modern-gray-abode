@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
 import { Building } from 'lucide-react';
 import PropertyForm from '@/components/admin/PropertyForm';
 import { PropertyFormData } from '@/types/admin.types';
@@ -22,7 +22,10 @@ const EditProperty = () => {
           .from('properties')
           .select('*')
           .eq('id', id)
-          .single();
+          .single() as {
+            data: CustomDatabase['public']['Tables']['properties']['Row'] | null;
+            error: any;
+          };
 
         if (error) throw error;
         if (!data) throw new Error('Property not found');

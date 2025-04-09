@@ -1,81 +1,91 @@
-
-import { useState } from 'react';
-import { Settings as SettingsIcon, Save, Key, User, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase, CustomDatabase } from "@/integrations/supabase/client";
+import { Settings as SettingsIcon, Key, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { supabase } from "@/integrations/supabase/client";
-import bcrypt from 'bcryptjs';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+
+const passwordChangeSchema = z.object({
+  currentPassword: z.string().min(1, { message: 'Current password is required' }),
+  newPassword: z.string().min(8, { message: 'Password must be at least 8 characters' })
+    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
+    .regex(/[^A-Za-z0-9]/, { message: 'Password must contain at least one special character' }),
+  confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
+type PasswordChangeForm = z.infer<typeof passwordChangeSchema>;
 
 const Settings = () => {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, updatePassword } = useAdminAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  
+  const form = useForm<PasswordChangeForm>({
+    resolver: zodResolver(passwordChangeSchema),
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    },
+  });
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error('Please fill in all password fields');
-      return;
+  useEffect(() => {
+    if (user) {
+      fetchUserData();
     }
+  }, [user]);
+
+  const fetchUserData = async () => {
+    if (!user) return;
     
-    if (newPassword !== confirmPassword) {
-      toast.error('New passwords do not match');
-      return;
-    }
-    
-    if (newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long');
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
+    setIsLoading(true);
     try {
-      // Get the current admin user
-      const { data: userData, error: userError } = await supabase
+      const { data, error } = await supabase
         .from('admin_users')
         .select('*')
-        .eq('email', 'ceograyscale@gmail.com')
-        .single();
-      
-      if (userError) throw userError;
-      
-      // Verify the current password
-      const isPasswordValid = await bcrypt.compare(currentPassword, userData.password_hash);
-      
-      if (!isPasswordValid) {
-        toast.error('Current password is incorrect');
-        setIsSubmitting(false);
-        return;
-      }
-      
-      // Hash the new password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-      
-      // Update the password
-      const { error } = await supabase
-        .from('admin_users')
-        .update({ password_hash: hashedPassword })
-        .eq('id', userData.id);
+        .eq('id', user.id)
+        .single() as {
+          data: CustomDatabase['public']['Tables']['admin_users']['Row'] | null;
+          error: any;
+        };
       
       if (error) throw error;
-      
-      toast.success('Password updated successfully');
-      
-      // Clear the form
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      setUserData(data);
     } catch (error) {
-      console.error('Error updating password:', error);
-      toast.error('Failed to update password');
+      console.error('Error fetching user data:', error);
+      toast.error('Failed to load user data');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: PasswordChangeForm) => {
+    setIsLoading(true);
+    try {
+      const success = await updatePassword(data.currentPassword, data.newPassword);
+      if (success) {
+        form.reset();
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -121,7 +131,7 @@ const Settings = () => {
           </div>
           
           <div className="p-6">
-            <form onSubmit={handlePasswordChange} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="currentPassword" className="text-base">Current Password</Label>
                 <div className="relative">
@@ -129,8 +139,8 @@ const Settings = () => {
                   <Input
                     id="currentPassword"
                     type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    value={form.watch('currentPassword')}
+                    onChange={form.register('currentPassword')}
                     placeholder="Enter your current password"
                     className="pl-10"
                     required
@@ -145,8 +155,8 @@ const Settings = () => {
                   <Input
                     id="newPassword"
                     type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    value={form.watch('newPassword')}
+                    onChange={form.register('newPassword')}
                     placeholder="Enter your new password"
                     className="pl-10"
                     required
@@ -161,8 +171,8 @@ const Settings = () => {
                   <Input
                     id="confirmPassword"
                     type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    value={form.watch('confirmPassword')}
+                    onChange={form.register('confirmPassword')}
                     placeholder="Confirm your new password"
                     className="pl-10"
                     required
@@ -173,9 +183,9 @@ const Settings = () => {
               <Button
                 type="submit"
                 className="w-full mt-6 bg-orange-500 hover:bg-orange-600"
-                disabled={isSubmitting}
+                disabled={isLoading}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                     Updating...
