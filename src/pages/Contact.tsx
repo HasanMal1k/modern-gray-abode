@@ -204,7 +204,7 @@ const Contact = () => {
                 Get In Touch
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight animate-hero">
-                Contact Grayscale Realtors
+                Contact GrayScale Realtors
               </h1>
               <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto animate-hero">
                 Reach out to us for all your property management service needs. Whether you prefer email, calls, or in-person meetings, we're here to assist you.
@@ -252,7 +252,7 @@ const Contact = () => {
                   Experience Properties from Anywhere with LIVE 360° Viewing
                 </h2>
                 <p className="text-white/70 mb-8">
-                  Grayscale Realtors brings you a revolutionary way to view properties without leaving your home. Our remote LIVE 360° viewing service allows you to experience immersive virtual tours of properties you're interested in, guided by our agents in real-time.
+                  GrayScale Realtors brings you a revolutionary way to view properties without leaving your home. Our remote LIVE 360° viewing service allows you to experience immersive virtual tours of properties you're interested in, guided by our agents in real-time.
                 </p>
                 
                 <div className="space-y-4 mb-8">

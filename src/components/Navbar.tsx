@@ -44,7 +44,7 @@ export const Navbar = () => {
           <h1 className="text-lg md:text-2xl tracking-tighter flex flex-row justify-center items-center gap-2 md:gap-4">
           <img className="h-9 md:h-14" src={grayscaleLogo} alt="" />
             <div>
-              <span className="text-white font-light">Greyscale </span>
+              <span className="text-white font-light">GrayScale </span>
               <span className="text-muted-foreground font-bold">Realtors</span>
             </div>
           </h1>

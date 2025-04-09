@@ -312,10 +312,10 @@ const Services = () => {
                 Comprehensive Property Management Services
               </span>
               <h1 className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
-                Grayscale Realtors<br />Property Management
+                GrayScale Realtors<br />Property Management
               </h1>
               <p className="hero-description text-lg text-white/80 mb-8 max-w-2xl">
-                At Grayscale Realtors, we offer comprehensive property management solutions tailored to meet the unique needs of property owners and investors. From tenant screening and rent collection to financial management and property maintenance to legal compliance and Financial account management to name but a few.
+                At GrayScale Realtors, we offer comprehensive property management solutions tailored to meet the unique needs of property owners and investors. From tenant screening and rent collection to financial management and property maintenance to legal compliance and Financial account management to name but a few.
               </p>
               <Link 
                 to="/contact"

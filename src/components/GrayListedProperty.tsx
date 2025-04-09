@@ -164,7 +164,7 @@ const GrayListedProperty = ({ property }: { property: GrayListedPropertyType }) 
                 <div className="mb-3">
                   {property.category === "Gray Stays~Shortlet Listings" && (
                     <span className="inline-block bg-accent/20 text-accent rounded-full px-3 py-1 text-xs font-medium">
-                      Grayscale™
+                      GrayScale™
                     </span>
                   )}
                 </div>
