@@ -392,7 +392,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
                 image_url: publicUrl,
                 is_primary: image.is_primary,
                 display_order: image.display_order
-              }]);
+              }] as any);
             
             if (error) throw error;
           } catch (error) {
@@ -405,7 +405,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
             .update({
               is_primary: image.is_primary,
               display_order: image.display_order
-            })
+            } as any)
             .eq('id', image.id);
           
           if (error) throw error;
@@ -511,7 +511,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
       console.error('Error saving property:', error);
       toast.error(`Failed to ${propertyId ? 'update' : 'create'} property`);
     } finally {
-      setIsSubmitting(true);
+      setIsSubmitting(false);
     }
   };
   
