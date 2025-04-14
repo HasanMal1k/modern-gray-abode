@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabaseTable, updateTable } from "@/utils/supabase.utils";
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
