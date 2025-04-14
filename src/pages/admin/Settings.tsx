@@ -40,9 +40,14 @@ const Settings = () => {
         return;
       }
       
-      // Save the password hash for use in password change validation
-      const passwordHash = data.password_hash;
-      setPasswordHash(passwordHash);
+      if (data) {
+        // Save the password hash for use in password change validation
+        const passwordHash = data.password_hash;
+        setPasswordHash(passwordHash);
+      } else {
+        toast.error('Admin user data not found');
+      }
+      
       setIsLoading(false);
     } catch (error) {
       console.error('Error getting admin user:', error);

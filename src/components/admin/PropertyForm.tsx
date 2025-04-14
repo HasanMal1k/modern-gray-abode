@@ -338,12 +338,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
     const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
     const filePath = `${property_id}/${fileName}`;
     
-    const { error: uploadError } = await supabaseTable('property-images')
+    const { error: uploadError } = await supabase.storage
+      .from('property-images')
       .upload(filePath, file);
     
     if (uploadError) throw uploadError;
     
-    const { data } = supabaseTable('property-images')
+    const { data } = supabase.storage
+      .from('property-images')
       .getPublicUrl(filePath);
     
     return data.publicUrl;
@@ -379,7 +381,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         
         if (image.file) {
           try {
-            const publicUrl = await uploadImage(image.file, property_id!, i);
+            const publicUrl = await uploadImage(image.file, property_id as string, i);
             
             const { error } = await insertInto('property_images', [{
               property_id,
