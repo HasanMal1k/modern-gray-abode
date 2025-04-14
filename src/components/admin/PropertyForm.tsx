@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabaseTable, insertInto, updateTable, deleteFrom } from "@/utils/supabase.utils";
+import { supabase, supabaseTable, insertInto, updateTable, deleteFrom } from "@/utils/supabase.utils";
 import { 
   Building, 
   Save, 
@@ -372,7 +372,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
         
         if (error) throw error;
         if (data && data.length > 0) {
-          property_id = data[0].id;
+          property_id = (data[0] as any).id;
         }
       }
       

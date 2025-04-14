@@ -42,7 +42,7 @@ const Settings = () => {
       
       if (data) {
         // Save the password hash for use in password change validation
-        const passwordHash = data.password_hash;
+        const passwordHash = (data as any).password_hash;
         setPasswordHash(passwordHash);
       } else {
         toast.error('Admin user data not found');

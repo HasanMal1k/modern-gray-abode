@@ -18,7 +18,7 @@ export function assertType<T>(data: any): T {
  * TypeScript's type checking for table names.
  */
 export function supabaseTable(tableName: string) {
-  return supabase.from(tableName);
+  return supabase.from(tableName as any);
 }
 
 /**
@@ -30,21 +30,21 @@ export function supabaseTable(tableName: string) {
  *   .eq("id", propertyId);
  */
 export function fromTable<T = any>(tableName: string) {
-  return supabase.from(tableName);
+  return supabase.from(tableName as any);
 }
 
 /**
  * Helper for creating records with proper type handling
  */
 export function insertInto<T = any>(tableName: string, data: any) {
-  return supabaseTable(tableName).insert(data);
+  return supabaseTable(tableName).insert(data as any);
 }
 
 /**
  * Helper for updating records with proper type handling
  */
 export function updateTable<T = any>(tableName: string, data: any) {
-  return supabaseTable(tableName).update(data);
+  return supabaseTable(tableName).update(data as any);
 }
 
 /**
