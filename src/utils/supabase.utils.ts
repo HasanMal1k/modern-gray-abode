@@ -9,6 +9,13 @@ export function table<T extends keyof Database['public']['Tables']>(
   return supabase.from(tableName);
 }
 
+// Additional type-safe table helper (alias of table function)
+export function supabaseTable<T extends keyof Database['public']['Tables']>(
+  tableName: T
+) {
+  return supabase.from(tableName);
+}
+
 // Helper function to get typed data from a query
 export function getTypedData<T>(data: T | null) {
   return data as NonNullable<T>;
@@ -21,6 +28,34 @@ export function handleSupabaseError(error: unknown): string {
     return (error as { message: string }).message;
   }
   return 'An unexpected error occurred';
+}
+
+// Type assertion helper function
+export function assertType<T>(data: any): T {
+  return data as T;
+}
+
+// Type-safe insert function
+export function insertTable<T extends keyof Database['public']['Tables']>(
+  tableName: T,
+  data: Database['public']['Tables'][T]['Insert']
+) {
+  return supabase.from(tableName).insert(data);
+}
+
+// Type-safe update function
+export function updateTable<T extends keyof Database['public']['Tables']>(
+  tableName: T,
+  data: Database['public']['Tables'][T]['Update']
+) {
+  return supabase.from(tableName).update(data);
+}
+
+// Type-safe delete function
+export function deleteFromTable<T extends keyof Database['public']['Tables']>(
+  tableName: T
+) {
+  return supabase.from(tableName).delete();
 }
 
 // Export supabase for direct access when needed
