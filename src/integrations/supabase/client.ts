@@ -9,7 +9,7 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-// Adding type assertion to fix TypeScript errors
+// Create the supabase client with proper typing
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // Define custom types for our database tables to use in components
@@ -116,9 +116,9 @@ export interface CustomDatabase {
   };
 }
 
-// Helper function for type assertion with Supabase tables
+// This function is a no-op but provides a type-safe way to reference tables
 export function fromTable<T extends keyof CustomDatabase['public']['Tables']>(
   tableName: T
 ) {
-  return tableName as unknown as T;
+  return tableName;
 }

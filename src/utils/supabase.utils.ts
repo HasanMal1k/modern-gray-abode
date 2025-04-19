@@ -1,7 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { PostgrestFilterBuilder } from "@supabase/postgrest-js";
-import { Database, CustomDatabase } from "@/integrations/supabase/client";
 
 // Export supabase directly for operations where we need the raw client
 export { supabase };
@@ -19,7 +18,9 @@ export function assertType<T>(data: any): T {
  * TypeScript's type checking for table names by using type assertions.
  */
 export function supabaseTable<T = any>(tableName: string) {
-  return supabase.from(tableName) as unknown as PostgrestFilterBuilder<any, any, T>;
+  // Force TypeScript to accept our table name with explicit casting
+  // Using any as intermediate step is necessary to bypass type checking
+  return supabase.from(tableName as any) as PostgrestFilterBuilder<any, any, T[]>;
 }
 
 /**
@@ -31,26 +32,30 @@ export function supabaseTable<T = any>(tableName: string) {
  *   .eq("id", propertyId);
  */
 export function fromTable<T = any>(tableName: string) {
-  return supabase.from(tableName) as unknown as PostgrestFilterBuilder<any, any, T>;
+  // Force TypeScript to accept our table name with explicit casting
+  return supabase.from(tableName as any) as PostgrestFilterBuilder<any, any, T[]>;
 }
 
 /**
  * Helper for creating records with proper type handling
  */
 export function insertInto<T = any>(tableName: string, data: any) {
-  return supabaseTable<T>(tableName).insert(data);
+  // This function returns a PostgrestFilterBuilder type which has insert
+  return (supabase.from(tableName as any) as any).insert(data);
 }
 
 /**
  * Helper for updating records with proper type handling
  */
 export function updateTable<T = any>(tableName: string, data: any) {
-  return supabaseTable<T>(tableName).update(data);
+  // This function returns a PostgrestFilterBuilder type which has update
+  return (supabase.from(tableName as any) as any).update(data);
 }
 
 /**
  * Helper for deleting records with proper type handling
  */
 export function deleteFrom<T = any>(tableName: string) {
-  return supabaseTable<T>(tableName).delete();
+  // This function returns a PostgrestFilterBuilder type which has delete
+  return (supabase.from(tableName as any) as any).delete();
 }

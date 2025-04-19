@@ -31,9 +31,14 @@ const Settings = () => {
   const getAdminUser = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabaseTable('admin_users')
+      if (!currentUser?.id) {
+        setIsLoading(false);
+        return;
+      }
+      
+      const { data, error } = await (supabaseTable('admin_users') as any)
         .select('*')
-        .eq('id', currentUser?.id)
+        .eq('id', currentUser.id)
         .single();
       
       if (error) {
@@ -43,8 +48,8 @@ const Settings = () => {
       
       if (data) {
         // Save the password hash for use in password change validation
-        const passwordHash = data && (data as any).password_hash;
-        setPasswordHash(passwordHash);
+        const passwordHash = data.password_hash;
+        setPasswordHash(passwordHash || '');
       } else {
         toast.error('Admin user data not found');
       }
