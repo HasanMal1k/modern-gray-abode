@@ -12,9 +12,11 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { supabaseTable, assertType, supabase } from "@/utils/supabase.utils";
-import { Property } from '@/types/property.types';
-import { BlogPost } from '@/types/blog.types';
+import { table, supabase } from "@/utils/supabase.utils";
+import type { Tables } from '@/types/supabase';
+
+type Property = Tables<'properties'>;
+type BlogPost = Tables<'blog_posts'>;
 
 const Dashboard = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -33,25 +35,25 @@ const Dashboard = () => {
       setIsLoading(true);
       
       // Fetch properties
-      const { data: propertiesData, error: propertiesError } = await supabaseTable('properties')
+      const { data: propertiesData, error: propertiesError } = await table('properties')
         .select('*')
         .limit(5)
         .order('created_at', { ascending: false });
       
       if (propertiesError) throw propertiesError;
-      setProperties(propertiesData as any || []);
+      setProperties(propertiesData || []);
       
       // Fetch blog posts
-      const { data: blogData, error: blogError } = await supabaseTable('blog_posts')
+      const { data: blogData, error: blogError } = await table('blog_posts')
         .select('*')
         .limit(5)
         .order('created_at', { ascending: false });
       
       if (blogError) throw blogError;
-      setBlogPosts(blogData as any || []);
+      setBlogPosts(blogData || []);
       
       // Count featured properties
-      const { data: featuredData, error: featuredError } = await supabaseTable('properties')
+      const { data: featuredData, error: featuredError } = await table('properties')
         .select('id')
         .eq('featured', true);
       

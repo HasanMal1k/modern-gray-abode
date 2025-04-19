@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { table } from "@/utils/supabase.utils";
 import { Building } from 'lucide-react';
 import PropertyForm from '@/components/admin/PropertyForm';
 import { PropertyFormData } from '@/types/admin.types';
 import { toast } from 'sonner';
+import type { Tables } from '@/types/supabase';
 
 const EditProperty = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +19,7 @@ const EditProperty = () => {
       if (!id) return;
 
       try {
-        const { data, error } = await supabaseTable('properties')
+        const { data, error } = await table('properties')
           .select('*')
           .eq('id', id)
           .single();
@@ -25,7 +27,7 @@ const EditProperty = () => {
         if (error) throw error;
         if (!data) throw new Error('Property not found');
 
-        setProperty(assertType<PropertyFormData>(data));
+        setProperty(data as PropertyFormData);
       } catch (err: any) {
         console.error('Error fetching property:', err);
         setError(err.message);

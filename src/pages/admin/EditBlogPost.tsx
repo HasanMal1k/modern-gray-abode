@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabaseTable, assertType } from "@/utils/supabase.utils";
+import { table } from "@/utils/supabase.utils";
 import { FileText } from 'lucide-react';
 import BlogForm from '@/components/admin/BlogForm';
 import { BlogPostFormData } from '@/types/admin.types';
 import { toast } from 'sonner';
+import type { Tables } from '@/types/supabase';
 
 const EditBlogPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +19,7 @@ const EditBlogPost = () => {
       if (!id) return;
 
       try {
-        const { data, error } = await supabaseTable('blog_posts')
+        const { data, error } = await table('blog_posts')
           .select('*')
           .eq('id', id)
           .single();
@@ -25,7 +27,7 @@ const EditBlogPost = () => {
         if (error) throw error;
         if (!data) throw new Error('Blog post not found');
 
-        setPost(assertType<BlogPostFormData>(data));
+        setPost(data as BlogPostFormData);
       } catch (err: any) {
         console.error('Error fetching blog post:', err);
         setError(err.message);

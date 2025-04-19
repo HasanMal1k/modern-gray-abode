@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, supabaseTable, insertInto, updateTable } from "@/utils/supabase.utils";
+import { supabase, table } from "@/utils/supabase.utils";
 import { 
   Save, 
   XCircle, 
@@ -21,6 +21,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { toast } from 'sonner';
 import { BlogPostFormData } from '@/types/admin.types';
 import { format } from 'date-fns';
+import type { Tables } from '@/types/supabase';
 
 interface BlogFormProps {
   postId?: string;
@@ -66,7 +67,26 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
   }, [publishDate]);
   
   const fetchPostData = async () => {
-    setIsLoading(false);
+    if (!postId) return;
+    try {
+      const { data, error } = await table('blog_posts')
+        .select('*')
+        .eq('id', postId)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setFormData(data as BlogPostFormData);
+        if (data.published_at) {
+          setPublishDate(new Date(data.published_at));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching blog post:', error);
+      toast.error('Failed to load blog post');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -178,12 +198,14 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, initialData }) => {
       }
       
       if (postId) {
-        const { error } = await updateTable('blog_posts', formData)
+        const { error } = await table('blog_posts')
+          .update(formData)
           .eq('id', postId);
         
         if (error) throw error;
       } else {
-        const { error } = await insertInto('blog_posts', [formData]);
+        const { error } = await table('blog_posts')
+          .insert(formData);
         
         if (error) throw error;
       }

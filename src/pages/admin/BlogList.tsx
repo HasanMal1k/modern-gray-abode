@@ -1,159 +1,91 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabaseTable, deleteFrom } from "@/utils/supabase.utils";
+import { table } from "@/utils/supabase.utils";
 import { 
   FileText, 
   Plus, 
   Edit, 
   Trash2, 
   Search,
-  ChevronLeft,
-  ChevronRight,
+  Eye,
   Filter,
-  X, 
-  Check,
-  Calendar
+  Calendar,
+  CheckCircle,
+  XCircle 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import type { Tables } from '@/types/supabase';
 
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  published: boolean;
-  featured_image?: string;
-  author?: string;
-  published_at?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-const ITEMS_PER_PAGE = 10;
+type BlogPost = Tables<'blog_posts'>;
 
 const BlogList = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [publishedFilter, setPublishedFilter] = useState<string | null>(null);
   
   const navigate = useNavigate();
   
   useEffect(() => {
     fetchPosts();
-  }, [currentPage, searchQuery]);
+  }, [searchQuery, publishedFilter]);
   
   const fetchPosts = async () => {
     setIsLoading(true);
     try {
-      // Calculate pagination
-      const from = (currentPage - 1) * ITEMS_PER_PAGE;
-      const to = from + ITEMS_PER_PAGE - 1;
+      let query = table('blog_posts')
+        .select('*');
       
-      let query = supabaseTable('blog_posts')
-        .select('*', { count: 'exact' });
-      
-      // Apply search filter if search query exists
-      if (searchQuery) {
-        query = query.or(`title.ilike.%${searchQuery}%,slug.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`);
+      if (publishedFilter === 'published') {
+        query = query.eq('published', true);
+      } else if (publishedFilter === 'draft') {
+        query = query.eq('published', false);
       }
       
-      // Fetch paginated data
-      const { data, count, error } = await query
-        .order('created_at', { ascending: false })
-        .range(from, to);
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
       
       if (error) throw error;
       
-      setPosts(data as BlogPost[]);
-      
-      if (count !== null) {
-        setTotalPosts(count);
-        setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
-      }
+      setPosts(data || []);
     } catch (error) {
-      console.error('Error fetching blog posts:', error);
+      console.error('Error fetching posts:', error);
       toast.error('Failed to load blog posts');
     } finally {
       setIsLoading(false);
     }
   };
   
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
-  };
-  
-  const handleDeleteClick = (post: BlogPost) => {
-    setPostToDelete(post);
-    setDeleteDialogOpen(true);
-  };
-  
-  const handleDeleteConfirm = async () => {
-    if (!postToDelete) return;
-    
-    setIsDeleting(true);
+  const handleDeletePost = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this blog post? This action cannot be undone.')) {
+      return;
+    }
     
     try {
-      const { error } = await deleteFrom('blog_posts')
-        .eq('id', postToDelete.id);
+      const { error } = await table('blog_posts')
+        .delete()
+        .eq('id', id);
       
       if (error) throw error;
       
-      // Remove deleted post from state
-      setPosts(posts.filter(post => post.id !== postToDelete.id));
-      setTotalPosts(prev => prev - 1);
-      
-      // Update total pages
-      const newTotalPages = Math.ceil((totalPosts - 1) / ITEMS_PER_PAGE);
-      setTotalPages(newTotalPages);
-      
-      // If current page is now empty and not the first page, go to previous page
-      if (
-        currentPage > 1 &&
-        (currentPage - 1) * ITEMS_PER_PAGE >= totalPosts - 1
-      ) {
-        setCurrentPage(currentPage - 1);
-      }
+      setPosts(posts.filter(post => post.id !== id));
       
       toast.success('Blog post deleted successfully');
     } catch (error) {
       console.error('Error deleting blog post:', error);
       toast.error('Failed to delete blog post');
-    } finally {
-      setIsDeleting(false);
-      setDeleteDialogOpen(false);
-      setPostToDelete(null);
     }
   };
   
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
   
   return (
@@ -172,20 +104,42 @@ const BlogList = () => {
           onClick={() => navigate('/admin/blog/new')}
         >
           <Plus className="h-4 w-4 mr-2" />
-          New Post
+          New Blog Post
         </Button>
       </div>
       
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="p-4 border-b">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search blog posts..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search blog posts..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  {publishedFilter === 'published' ? 'Published' : publishedFilter === 'draft' ? 'Draft' : 'All'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setPublishedFilter(null)}>
+                  All Posts
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPublishedFilter('published')}>
+                  Published
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPublishedFilter('draft')}>
+                  Drafts
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         
@@ -194,183 +148,114 @@ const BlogList = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
           </div>
         ) : (
-          <>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Slug</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {posts.length > 0 ? (
-                    posts.map((post) => (
-                      <TableRow key={post.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center space-x-2">
-                            {post.featured_image && (
-                              <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0">
-                                <img src={post.featured_image} alt={post.title} className="w-full h-full object-cover" />
-                              </div>
-                            )}
-                            <span>{post.title}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{post.slug}</TableCell>
-                        <TableCell>
-                          {post.published ? (
-                            <Badge variant="success">
-                              Published
-                            </Badge>
-                          ) : (
-                            <Badge variant="warning">
-                              Draft
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {post.created_at ? format(new Date(post.created_at), 'PP') : '-'}
-                        </TableCell>
-                        <TableCell>
-                          {post.updated_at ? format(new Date(post.updated_at), 'PP') : '-'}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end space-x-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => navigate(`/admin/blog/edit/${post.id}`)}
-                            >
-                              <Edit className="h-4 w-4" />
-                              <span className="sr-only">Edit</span>
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
-                              onClick={() => handleDeleteClick(post)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              <span className="sr-only">Delete</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                        {searchQuery ? (
-                          <>
-                            No blog posts found matching "{searchQuery}"
-                            <Button
-                              variant="link"
-                              className="ml-2 text-orange-500"
-                              onClick={() => setSearchQuery('')}
-                            >
-                              Clear search
-                            </Button>
-                          </>
+          <div className="overflow-x-auto">
+            {posts.length > 0 ? (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3">Post</th>
+                    <th className="px-6 py-3">Status</th>
+                    <th className="px-6 py-3">Published At</th>
+                    <th className="px-6 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {posts.map((post) => (
+                    <tr key={post.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="font-medium text-gray-900">{post.title}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {post.published ? (
+                          <Badge variant="success" className="gap-1.5">
+                            <CheckCircle className="h-4 w-4" />
+                            Published
+                          </Badge>
                         ) : (
-                          <>
-                            No blog posts found. 
-                            <Button
-                              variant="link"
-                              className="ml-2 text-orange-500"
-                              onClick={() => navigate('/admin/blog/new')}
-                            >
-                              Create your first post
-                            </Button>
-                          </>
+                          <Badge variant="secondary" className="gap-1.5">
+                            <XCircle className="h-4 w-4" />
+                            Draft
+                          </Badge>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-            
-            {totalPages > 1 && (
-              <div className="p-4 border-t flex items-center justify-between">
-                <div className="text-sm text-gray-500">
-                  Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-
-                  {Math.min(currentPage * ITEMS_PER_PAGE, totalPosts)} of {totalPosts} posts
-                </div>
-                <div className="flex items-center space-x-2">
+                      </td>
+                      <td className="px-6 py-4">
+                        {post.published_at ? (
+                          <div className="flex items-center space-x-2 text-gray-500">
+                            <Calendar className="h-4 w-4" />
+                            <span>{format(new Date(post.published_at), 'MMM d, yyyy')}</span>
+                          </div>
+                        ) : (
+                          <span className="text-gray-500">Not set</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/admin/blog/edit/${post.id}`)}
+                          >
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
+                            onClick={() => handleDeletePost(post.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center py-12">
+                <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No blog posts found</h3>
+                <p className="text-gray-500 mb-4">
+                  {searchQuery || publishedFilter 
+                    ? 'Try adjusting your search or filter criteria'
+                    : 'Get started by creating your first blog post'}
+                </p>
+                {searchQuery || publishedFilter ? (
                   <Button
                     variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setPublishedFilter(null);
+                    }}
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span className="sr-only">Previous Page</span>
+                    Clear filters
                   </Button>
-                  <div className="text-sm">
-                    Page {currentPage} of {totalPages}
-                  </div>
+                ) : (
                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
+                    className="bg-orange-500 hover:bg-orange-600"
+                    onClick={() => navigate('/admin/blog/new')}
                   >
-                    <ChevronRight className="h-4 w-4" />
-                    <span className="sr-only">Next Page</span>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Blog Post
                   </Button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-      
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Blog Post</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this blog post? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            {postToDelete && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h3 className="font-medium">{postToDelete.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">{postToDelete.slug}</p>
+                )}
               </div>
             )}
           </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-              disabled={isDeleting}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Deleting...
-                </>
-              ) : (
-                'Delete'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        )}
+      </div>
     </div>
   );
 };

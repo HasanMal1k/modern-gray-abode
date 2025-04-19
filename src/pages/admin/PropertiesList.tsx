@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabaseTable, updateTable, deleteFrom } from "@/utils/supabase.utils";
+import { table } from "@/utils/supabase.utils";
 import { 
   Building, 
   Plus, 
@@ -25,20 +25,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import type { Tables } from '@/types/supabase';
 
-interface Property {
-  id: string;
-  title: string;
-  location: string;
-  price: string;
-  price_numeric: number;
-  bedrooms: number;
-  bathrooms: number;
-  category: string;
-  featured: boolean;
-  created_at: string;
-  updated_at: string;
-}
+type Property = Tables<'properties'>;
 
 const PropertiesList = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -55,7 +44,7 @@ const PropertiesList = () => {
   const fetchProperties = async () => {
     setIsLoading(true);
     try {
-      let query = supabaseTable('properties')
+      let query = table('properties')
         .select('*');
       
       if (categoryFilter && categoryFilter !== 'All Properties') {
@@ -70,7 +59,7 @@ const PropertiesList = () => {
       
       if (error) throw error;
       
-      setProperties(data as Property[]);
+      setProperties(data || []);
     } catch (error) {
       console.error('Error fetching properties:', error);
       toast.error('Failed to load properties');
@@ -81,10 +70,9 @@ const PropertiesList = () => {
   
   const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await updateTable('properties', { 
-        featured: !currentStatus
-      })
-      .eq('id', id);
+      const { error } = await table('properties')
+        .update({ featured: !currentStatus })
+        .eq('id', id);
       
       if (error) throw error;
       
@@ -105,7 +93,8 @@ const PropertiesList = () => {
     }
     
     try {
-      const { error } = await deleteFrom('properties')
+      const { error } = await table('properties')
+        .delete()
         .eq('id', id);
       
       if (error) throw error;
