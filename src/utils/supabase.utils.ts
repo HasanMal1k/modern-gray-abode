@@ -31,7 +31,7 @@ export function handleSupabaseError(error: unknown): string {
 }
 
 // Type assertion helper function
-export function assertType<T>(data: any): T {
+export function assertType<T>(data: unknown): T {
   return data as T;
 }
 

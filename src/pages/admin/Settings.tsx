@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabaseTable, updateTable } from "@/utils/supabase.utils";
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -36,7 +35,7 @@ const Settings = () => {
         return;
       }
       
-      const { data, error } = await (supabaseTable('admin_users') as any)
+      const { data, error } = await supabaseTable('admin_users')
         .select('*')
         .eq('id', currentUser.id)
         .single();
@@ -47,7 +46,6 @@ const Settings = () => {
       }
       
       if (data) {
-        // Save the password hash for use in password change validation
         const passwordHash = data.password_hash;
         setPasswordHash(passwordHash || '');
       } else {
@@ -82,7 +80,6 @@ const Settings = () => {
     setIsSubmitting(true);
     
     try {
-      // Check current password
       const isCurrentPasswordValid = await bcrypt.compare(currentPassword, passwordHash);
       
       if (!isCurrentPasswordValid) {
@@ -91,11 +88,9 @@ const Settings = () => {
         return;
       }
       
-      // Hash new password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       
-      // Update password
       const { error: updateError } = await updateTable('admin_users', {
         password_hash: hashedPassword,
       })
