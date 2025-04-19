@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { PostgrestFilterBuilder } from "@supabase/postgrest-js";
+import { Database, CustomDatabase } from "@/integrations/supabase/client";
 
 // Export supabase directly for operations where we need the raw client
 export { supabase };
@@ -15,10 +16,10 @@ export function assertType<T>(data: any): T {
 
 /**
  * A type-safe wrapper for supabase table operations that bypasses
- * TypeScript's type checking for table names.
+ * TypeScript's type checking for table names by using type assertions.
  */
-export function supabaseTable(tableName: string) {
-  return supabase.from(tableName as any);
+export function supabaseTable<T = any>(tableName: string) {
+  return supabase.from(tableName) as unknown as PostgrestFilterBuilder<any, any, T>;
 }
 
 /**
@@ -30,26 +31,26 @@ export function supabaseTable(tableName: string) {
  *   .eq("id", propertyId);
  */
 export function fromTable<T = any>(tableName: string) {
-  return supabase.from(tableName as any);
+  return supabase.from(tableName) as unknown as PostgrestFilterBuilder<any, any, T>;
 }
 
 /**
  * Helper for creating records with proper type handling
  */
 export function insertInto<T = any>(tableName: string, data: any) {
-  return supabaseTable(tableName).insert(data as any);
+  return supabaseTable<T>(tableName).insert(data);
 }
 
 /**
  * Helper for updating records with proper type handling
  */
 export function updateTable<T = any>(tableName: string, data: any) {
-  return supabaseTable(tableName).update(data as any);
+  return supabaseTable<T>(tableName).update(data);
 }
 
 /**
  * Helper for deleting records with proper type handling
  */
-export function deleteFrom(tableName: string) {
-  return supabaseTable(tableName).delete();
+export function deleteFrom<T = any>(tableName: string) {
+  return supabaseTable<T>(tableName).delete();
 }

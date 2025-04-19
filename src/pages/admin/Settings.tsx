@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabaseTable, updateTable } from "@/utils/supabase.utils";
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -42,7 +43,7 @@ const Settings = () => {
       
       if (data) {
         // Save the password hash for use in password change validation
-        const passwordHash = (data as any).password_hash;
+        const passwordHash = data && (data as any).password_hash;
         setPasswordHash(passwordHash);
       } else {
         toast.error('Admin user data not found');
