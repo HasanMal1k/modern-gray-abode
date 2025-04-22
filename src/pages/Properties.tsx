@@ -37,11 +37,7 @@ const Properties = () => {
         .from('properties')
         .select(`
           *,
-          property_images (
-            image_url,
-            is_primary,
-            display_order
-          )
+          property_images (*)
         `)
         .order('created_at', { ascending: false });
 
@@ -51,9 +47,12 @@ const Properties = () => {
 
       const transformedProperties = data.map(property => ({
         ...property,
-        images: property.property_images?.map(img => img.image_url) || [],
+        images: property.property_images
+          ? property.property_images.map(img => img.image_url)
+          : property.image ? [property.image] : [],
         image: property.property_images?.find(img => img.is_primary)?.image_url || 
                property.property_images?.[0]?.image_url || 
+               property.image ||
                '/placeholder.svg'
       }));
 

@@ -190,18 +190,27 @@ const PropertyDetail = ({ property }: { property: Property }) => {
           
           <div className="mt-8 glass-morphism p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Location</h2>
-            <div className="h-[300px] rounded-lg bg-white/5 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-muted-foreground mb-3">Interactive map will be displayed here</p>
-                <a 
-                  href={`https://www.google.com/maps/search/${encodeURIComponent(property.location)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm font-medium hover:underline"
-                >
-                  View on Google Maps <ExternalLink className="ml-1 w-3 h-3" />
-                </a>
-              </div>
+            <div className="h-[300px] rounded-lg overflow-hidden">
+              {property.maps_embed ? (
+                <div 
+                  className="w-full h-full"
+                  dangerouslySetInnerHTML={{ __html: property.maps_embed }} 
+                />
+              ) : (
+                <div className="w-full h-full bg-white/5 flex items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-muted-foreground mb-3">Map not available</p>
+                    <a 
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(property.location)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm font-medium hover:underline"
+                    >
+                      View on Google Maps <ExternalLink className="ml-1 w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

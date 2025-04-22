@@ -76,6 +76,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
     power_supply: '',
     style: '',
     video_url: '',
+    maps_embed: '',
     ...initialData
   });
   
@@ -687,6 +688,21 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ propertyId, initialData }) 
               onChange={handleChange}
               placeholder="e.g. https://youtube.com/watch?v=..."
             />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="maps_embed" className="text-base">Google Maps Embed Code</Label>
+            <Textarea
+              id="maps_embed"
+              name="maps_embed"
+              value={formData.maps_embed || ''}
+              onChange={handleChange}
+              placeholder='Paste the Google Maps embed code here (e.g. <iframe src="https://www.google.com/maps/embed?..." ...></iframe>)'
+              rows={4}
+            />
+            <p className="text-sm text-muted-foreground">
+              Go to Google Maps, click "Share", select "Embed a map" and copy the iframe code
+            </p>
           </div>
           
           <div className="space-y-2">
