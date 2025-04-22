@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MouseFollower from "@/components/MouseFollower";
@@ -9,9 +10,10 @@ import PropertyGrid from "@/components/PropertyGrid";
 import PropertyDetail from "@/components/PropertyDetail";
 import GrayListedProperty from "@/components/GrayListedProperty";
 import PropertyFilterInfo from "@/components/PropertyFilterInfo";
-import { PROPERTIES, GRAY_LISTED_PROPERTIES } from "@/data/properties.data";
 import { filterProperties } from "@/utils/property.utils";
 import { useToast } from "@/components/ui/use-toast";
+import { GRAY_LISTED_PROPERTIES } from "@/data/properties.data";
+import type { Property } from "@/types/property.types";
 
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,26 +23,70 @@ const Properties = () => {
   const [bathroomFilter, setBathroomFilter] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const params = useParams<{ id: string }>();
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select(`
+          *,
+          property_images (
+            image_url,
+            is_primary,
+            display_order
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      // Transform the data to match our Property type
+      const transformedProperties = data.map(property => ({
+        ...property,
+        images: property.property_images?.map(img => img.image_url) || [],
+        image: property.property_images?.find(img => img.is_primary)?.image_url || 
+               property.property_images?.[0]?.image_url
+      }));
+
+      setProperties(transformedProperties);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load properties",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Handle viewing a specific property
   const propertyId = params.id || null;
   
   // Check if we're viewing a regular property or a gray listed property
   const viewingProperty = propertyId ? (
-    PROPERTIES.find(p => p.id === propertyId) ||
+    properties.find(p => p.id === propertyId) ||
     GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId)
   ) : null;
   
   // Determine if we're viewing a gray listed property specifically
   const isGrayListed = viewingProperty && 
-    'services' in viewingProperty && 
     GRAY_LISTED_PROPERTIES.some(p => p.id.toString() === propertyId);
 
   // Filter properties based on all filters
   const filteredProperties = filterProperties(
-    PROPERTIES,
+    properties,
     searchTerm,
     selectedCategory,
     priceRange,
@@ -67,7 +113,7 @@ const Properties = () => {
       return <GrayListedProperty property={grayProperty} />;
     }
   } else if (propertyId && viewingProperty) {
-    return <PropertyDetail property={viewingProperty as any} />;
+    return <PropertyDetail property={viewingProperty} />;
   }
 
   return (
@@ -129,9 +175,23 @@ const Properties = () => {
               setBathroomFilter={setBathroomFilter}
             />
             
-            {/* Properties Grid */}
-            {filteredProperties.length > 0 && (
+            {/* Loading State */}
+            {isLoading ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+              </div>
+            ) : filteredProperties.length > 0 ? (
               <PropertyGrid properties={filteredProperties} />
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-lg text-muted-foreground">No properties found matching your criteria.</p>
+                <button 
+                  onClick={resetAllFilters}
+                  className="mt-4 text-orange-500 hover:text-orange-600"
+                >
+                  Reset filters
+                </button>
+              </div>
             )}
           </div>
         </section>
