@@ -1,3 +1,4 @@
+
 export const CATEGORIES = [
   'All Properties',
   'Residential',
@@ -24,16 +25,17 @@ export interface Property {
   power_supply?: string;
   style?: string;
   video_url?: string;
+  panorama?: string;
   created_at: string;
   updated_at: string;
   image?: string;
   images?: string[];
-  property_images?: { image_url: string; is_primary: boolean; display_order: number }[];
   maps_embed?: string;
+  property_images?: { image_url: string; is_primary: boolean; display_order: number }[];
 }
 
 export interface GrayListedPropertyType {
-  id: number | string;
+  id: string | number;
   title: string;
   subtitle: string;
   location: string;

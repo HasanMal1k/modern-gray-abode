@@ -49,10 +49,9 @@ const Properties = () => {
         ...property,
         images: property.property_images
           ? property.property_images.map(img => img.image_url)
-          : property.image ? [property.image] : [],
+          : [],
         image: property.property_images?.find(img => img.is_primary)?.image_url || 
                property.property_images?.[0]?.image_url || 
-               property.image ||
                '/placeholder.svg'
       }));
 
@@ -77,8 +76,8 @@ const Properties = () => {
   
   const viewingProperty = propertyId 
     ? viewingGrayListed 
-      ? GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId) as GrayListedPropertyType 
-      : properties.find(p => p.id === propertyId) as Property
+      ? GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId) 
+      : properties.find(p => p.id === propertyId)
     : null;
 
   const filteredProperties = filterProperties(
