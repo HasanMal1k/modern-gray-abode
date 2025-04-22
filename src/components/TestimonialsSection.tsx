@@ -13,21 +13,21 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
-    quote: "EstateNoir's expertise and dedication transformed our property search from overwhelming to exhilarating. Their attention to our specific requirements led us to a home that exceeded our expectations.",
+    quote: "Gray Scale's expertise and dedication transformed our property search from overwhelming to exhilarating. Their attention to our specific requirements led us to a home that exceeded our expectations.",
     author: "Alexander Bennett",
     position: "CEO, Bennett Enterprises",
     image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop",
   },
   {
     id: 2,
-    quote: "Working with EstateNoir to sell our family estate was seamless. Their strategic marketing approach and network of high-net-worth individuals ensured we received multiple competitive offers.",
+    quote: "Working with Gray Scale to sell our family estate was seamless. Their strategic marketing approach and network of high-net-worth individuals ensured we received multiple competitive offers.",
     author: "Victoria Chambers",
     position: "Interior Designer",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop",
   },
   {
     id: 3,
-    quote: "As international investors, we needed a team who understood both the market and our vision. EstateNoir provided invaluable insights that guided our portfolio expansion in ways we hadn't considered.",
+    quote: "As international investors, we needed a team who understood both the market and our vision. Gray Scale provided invaluable insights that guided our portfolio expansion in ways we hadn't considered.",
     author: "Jonathan Pierce",
     position: "Investment Director",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",

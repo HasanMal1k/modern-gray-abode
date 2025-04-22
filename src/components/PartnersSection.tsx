@@ -7,36 +7,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PARTNERS = [
   {
-    name: "Lagos Development Corporation",
-    logo: "https://images.unsplash.com/photo-1560179304-6fc1d8749b23?q=80&w=500&auto=format&fit=crop"
+    name: "Dune Atlantis",
+    logo: "../../public/images/partner1.jpg"
   },
   {
-    name: "Nigerian Property Group",
-    logo: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=500&auto=format&fit=crop"
+    name: "Amacuff Limited",
+    logo: "../../public/images/partner2.jpg"
   },
   {
-    name: "Lekki Gardens",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=500&auto=format&fit=crop"
+    name: "Laogs State Real Estate",
+    logo: "../../public/images/partner3.jpg"
   },
   {
-    name: "Banana Island Developers",
-    logo: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740?q=80&w=500&auto=format&fit=crop"
+    name: "Sound Core",
+    logo: "../../public/images/partner4.jpg"
   },
   {
-    name: "Victoria Island Properties",
-    logo: "https://images.unsplash.com/photo-1550565496-f945581629f5?q=80&w=500&auto=format&fit=crop"
+    name: "Jedmoon",
+    logo: "../../public/images/partner5.jpg"
   },
   {
-    name: "Ikoyi Heights",
-    logo: "https://images.unsplash.com/photo-1586075253856-b2754854f02b?q=80&w=500&auto=format&fit=crop"
-  },
-  {
-    name: "Ajah Development Ltd",
-    logo: "https://images.unsplash.com/photo-1516876437184-593fda40c7ce?q=80&w=500&auto=format&fit=crop"
-  },
-  {
-    name: "Premium Homes Nigeria",
-    logo: "https://images.unsplash.com/photo-1553835973-dec43bfddbeb?q=80&w=500&auto=format&fit=crop"
+    name: "Neat",
+    logo: "../../public/images/partner6.jpg"
   }
 ];
 
@@ -85,7 +77,7 @@ const PartnersSection = () => {
   const allPartners = [...PARTNERS, ...PARTNERS];
 
   return (
-    <section className="py-16 px-6 bg-gray-50 overflow-hidden">
+    <section className="py-16 px-6 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Our Trusted Partners</h2>
@@ -96,10 +88,10 @@ const PartnersSection = () => {
         
         <div className="relative" ref={containerRef}>
           {/* Gradient overlay on the left side */}
-          <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
+          <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10"></div>
           
           {/* Gradient overlay on the right side */}
-          <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-gray-50 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10"></div>
           
           {/* Outer container with hidden overflow */}
           <div className="overflow-hidden">

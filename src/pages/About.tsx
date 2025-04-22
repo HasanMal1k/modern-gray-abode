@@ -31,36 +31,37 @@ const valueData = [
 
 const teamData = [
   {
-    name: "David Ogunleye",
-    position: "Founder & CEO",
-    image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1974&auto=format&fit=crop",
-    bio: "With over 15 years in luxury real estate, David founded Gray Scale REALTORS with a vision to transform property management in Lagos."
+    name: "Wale Aroloye",
+    position: "Head~ Business/Client Relations",
+    image: "../../public/images/Wale.jpg",
+    bio: "Wale leads our business and client relations with over a decade of experience, ensuring seamless communication and lasting partnerships."
   },
   {
-    name: "Amara Nwachukwu",
-    position: "Chief Operations Officer",
-    image: "https://images.unsplash.com/photo-1531123414780-f74242c2b052?q=80&w=1974&auto=format&fit=crop",
-    bio: "Amara's exceptional organizational skills and deep understanding of client needs have been instrumental in our company's growth and success."
+    name: "Kolone Kargbo",
+    position: "Sales and Marketing",
+    image: "../../public/images/Kolone.jpg",
+    bio: "Kolone drives sales and marketing with a sharp eye for strategy and a passion for connecting clients with their ideal properties."
   },
   {
-    name: "Emmanuel Adeyemi",
-    position: "Head of Property Management",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
-    bio: "Emmanuel brings extensive experience in property maintenance and tenant relations, ensuring our properties are always in pristine condition."
+    name: "Ayeloja Abdulwakil",
+    position: "I.T",
+    image: "../../public/images/Ayeloja.jpg",
+    bio: "Ayeloja oversees our IT infrastructure, ensuring seamless digital operations and implementing tech solutions that enhance client experience."
   },
   {
-    name: "Ngozi Okafor",
-    position: "Client Relations Director",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
-    bio: "Ngozi's background in hospitality shapes our signature approach, ensuring clients receive personalized attention at every step."
+    name: "Omotola Edeviwe",
+    position: "Sales and Marketing",
+    image: "../../public/images/Omotola.jpg",
+    bio: "Omotola excels in sales and marketing, bringing creativity and strategic insight that amplify our brand and attract the right clientele."
   },
   {
-    name: "Oluwaseun Adebanjo",
-    position: "Sales & Marketing Lead",
-    image: "https://images.unsplash.com/photo-1539701938214-0d9736e1c16b?q=80&w=1974&auto=format&fit=crop",
-    bio: "Oluwaseun's innovative marketing strategies and deep network connections have helped position Gray Scale as a leader in the Lagos real estate market."
+    name: "Anayo Agbo Esq.",
+    position: "Head of Legal",
+    image: "../../public/images/Anayo.jpg",
+    bio: "Anayo leads our legal department with precision and integrity, safeguarding all transactions and ensuring regulatory compliance at every step."
   }
 ];
+
 
 const About = () => {
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
@@ -117,28 +118,28 @@ const About = () => {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1605651202774-7d576e0365f9?q=80&w=1974&auto=format&fit=crop"
+                  src="../../public/images/jakub-zerdzicki-sQMNLkUJi-g-unsplash.jpg"
                   alt="Nigerian business meeting" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1577368211130-4bbd0181dded?q=80&w=2070&auto=format&fit=crop"
+                  src="../../public/images/nupo-deyon-daniel-67ruAEYmp4c-unsplash.jpg"
                   alt="Lagos skyline" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1581349437898-cebbe9831942?q=80&w=1974&auto=format&fit=crop"
+                  src="../../public/images/trust-tru-katsande-sc5TYeefOTI-unsplash.jpg"
                   alt="Young African professionals" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1574110904658-eb5f915c6296?q=80&w=2068&auto=format&fit=crop"
+                  src="../../public/images/todd-kent-178j8tJrNlc-unsplash.jpg"
                   alt="African neighborhood" 
                   className="w-full h-full object-cover"
                 />
