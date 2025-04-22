@@ -52,6 +52,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (!await bcrypt.compare(password, user.password_hash)) {
         toast.error('Invalid email or password');
+        console.log("User data from Supabase:", data);
         return null;
       }
       

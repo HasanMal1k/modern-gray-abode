@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 interface MousePosition {
   x: number;
@@ -19,9 +19,18 @@ const MouseFollower = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [targetElement, setTargetElement] = useState<TargetElement | null>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const location = useLocation();
+  
+  // Check if current page is admin page
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   useEffect(() => {
-    // Add a style to hide the default cursor on the whole page
+    // Skip all mouse follower logic for admin pages
+    if (isAdminPage) {
+      return;
+    }
+    
+    // Add a style to hide the default cursor on public pages
     document.body.style.cursor = 'none';
     
     const handleMouseMove = (e: MouseEvent) => {
@@ -75,15 +84,24 @@ const MouseFollower = () => {
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
-    // Clean up the cursor style when component unmounts
+    // Clean up event listeners when component unmounts
     return () => {
-      document.body.style.cursor = '';
+      // Only reset cursor if we're not on an admin page
+      if (!isAdminPage) {
+        document.body.style.cursor = '';
+      }
+      
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousemove', checkForInteractiveElements);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [isVisible]);
+  }, [isVisible, isAdminPage]);
+
+  // Don't render the mouse follower on admin pages
+  if (isAdminPage) {
+    return null;
+  }
 
   return (
     <>

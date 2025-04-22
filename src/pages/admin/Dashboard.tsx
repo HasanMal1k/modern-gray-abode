@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { 
   Clock,
@@ -7,12 +6,15 @@ import {
   Users,
   BarChart,
   ArrowUpRight,
-  DollarSign
+  DollarSign,
+  Eye,
+  Home
 } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { table, supabase } from "@/utils/supabase.utils";
+import { useNavigate } from "react-router-dom";
 import type { Tables } from '@/types/supabase';
 
 type Property = Tables<'properties'>;
@@ -25,6 +27,17 @@ const Dashboard = () => {
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalLeads, setTotalLeads] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Enable normal mouse cursor for admin pages
+    document.body.style.cursor = '';
+    
+    // Cleanup when component unmounts
+    return () => {
+      document.body.style.cursor = 'none';
+    };
+  }, []);
   
   useEffect(() => {
     fetchDashboardData();
@@ -93,56 +106,67 @@ const Dashboard = () => {
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-gray-800">
               Total Properties
             </CardTitle>
-            <Building className="h-4 w-4 text-muted-foreground" />
+            <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <Building className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{properties.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-gray-900">{properties.length}</div>
+            <p className="text-xs text-gray-600">
               {featuredProperties} featured
             </p>
           </CardContent>
         </Card>
-        <Card>
+        
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-gray-800">
               Total Views
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+              <Eye className="h-4 w-4 text-green-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalViews}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-gray-900">{totalViews}</div>
+            <p className="text-xs text-gray-600">
               +20.1% from last month
             </p>
           </CardContent>
         </Card>
-        <Card>
+        
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-800">Total Leads</CardTitle>
+            <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <Users className="h-4 w-4 text-purple-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalLeads}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-gray-900">{totalLeads}</div>
+            <p className="text-xs text-gray-600">
               +12.5% from last month
             </p>
           </CardContent>
         </Card>
-        <Card>
+        
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-gray-800">
               Conversion Rate
             </CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
+            <div className="h-8 w-8 bg-orange-100 rounded-full flex items-center justify-center">
+              <BarChart className="h-4 w-4 text-orange-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{conversionRate}%</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-gray-900">{conversionRate}%</div>
+            <p className="text-xs text-gray-600">
               +3.2% from last month
             </p>
           </CardContent>
@@ -150,24 +174,34 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Properties */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4">Recent Properties</h2>
+      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Recent Properties</h2>
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/admin/properties')}
+            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          >
+            View All
+          </Button>
+        </div>
+        
         <div className="space-y-4">
           {properties.length > 0 ? (
             properties.slice(0, 5).map((property) => (
               <div key={property.id} className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div className="flex items-center">
                   <div className="h-10 w-10 rounded-md bg-gray-100 flex items-center justify-center">
-                    <Building className="h-5 w-5 text-gray-600" />
+                    <Home className="h-5 w-5 text-gray-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="font-medium">{property.title}</p>
+                    <p className="font-medium text-gray-900">{property.title}</p>
                     <p className="text-sm text-gray-500">{property.location}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <p className="text-sm font-medium">{property.price}</p>
+                    <p className="text-sm font-medium text-gray-900">{property.price}</p>
                     <div className="flex items-center text-xs text-gray-500">
                       <Clock className="h-3 w-3 mr-1" />
                       {new Date(property.created_at).toLocaleDateString()}
@@ -180,24 +214,24 @@ const Dashboard = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No properties found.</p>
-          )}
-          
-          {properties.length > 0 && (
-            <Button 
-              variant="ghost" 
-              className="mt-2 w-full justify-center border border-gray-200 hover:bg-gray-50"
-              onClick={() => window.location.href = '/admin/properties'}
-            >
-              View All Properties
-            </Button>
+            <p className="text-gray-500 text-center py-4">No properties found. <Button variant="link" onClick={() => navigate('/admin/properties/add')} className="text-orange-500 font-medium p-0">Add your first property</Button></p>
           )}
         </div>
       </div>
       
       {/* Recent Blog Posts */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4">Recent Blog Posts</h2>
+      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Recent Blog Posts</h2>
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/admin/blog')}
+            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          >
+            View All
+          </Button>
+        </div>
+        
         <div className="space-y-4">
           {blogPosts.length > 0 ? (
             blogPosts.slice(0, 5).map((post) => (
@@ -207,10 +241,16 @@ const Dashboard = () => {
                     <DollarSign className="h-5 w-5 text-gray-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="font-medium">{post.title}</p>
-                    <p className="text-sm text-gray-500">
-                      {post.published ? 'Published' : 'Draft'}
-                    </p>
+                    <p className="font-medium text-gray-900">{post.title}</p>
+                    <div className="flex items-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        post.published 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {post.published ? 'Published' : 'Draft'}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -222,19 +262,64 @@ const Dashboard = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No blog posts found.</p>
-          )}
-          
-          {blogPosts.length > 0 && (
-            <Button 
-              variant="ghost" 
-              className="mt-2 w-full justify-center border border-gray-200 hover:bg-gray-50"
-              onClick={() => window.location.href = '/admin/blog'}
-            >
-              View All Blog Posts
-            </Button>
+            <p className="text-gray-500 text-center py-4">No blog posts found. <Button variant="link" onClick={() => navigate('/admin/blog/add')} className="text-orange-500 font-medium p-0">Add your first blog post</Button></p>
           )}
         </div>
+      </div>
+      
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Button 
+          className="h-auto p-4 text-left flex items-start bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-700"
+          onClick={() => navigate('/admin/properties/add')}
+        >
+          <div className="mr-4">
+            <Building className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-medium">Add Property</h3>
+            <p className="text-xs mt-1 text-orange-600">Create a new property listing</p>
+          </div>
+        </Button>
+        
+        <Button 
+          className="h-auto p-4 text-left flex items-start bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700"
+          onClick={() => navigate('/admin/blog/add')}
+        >
+          <div className="mr-4">
+            <DollarSign className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-medium">Add Blog Post</h3>
+            <p className="text-xs mt-1 text-blue-600">Create a new blog post</p>
+          </div>
+        </Button>
+        
+        <Button 
+          className="h-auto p-4 text-left flex items-start bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700"
+          onClick={() => navigate('/admin/settings')}
+        >
+          <div className="mr-4">
+            <Users className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-medium">Settings</h3>
+            <p className="text-xs mt-1 text-purple-600">Manage your account</p>
+          </div>
+        </Button>
+        
+        <Button 
+          className="h-auto p-4 text-left flex items-start bg-green-50 hover:bg-green-100 border border-green-200 text-green-700"
+          onClick={() => window.open('/', '_blank')}
+        >
+          <div className="mr-4">
+            <Eye className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-medium">View Website</h3>
+            <p className="text-xs mt-1 text-green-600">See your public website</p>
+          </div>
+        </Button>
       </div>
     </div>
   );

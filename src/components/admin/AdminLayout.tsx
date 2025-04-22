@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { 
@@ -27,6 +26,36 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { logout } = useAdminAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Effect to enable normal mouse cursor on admin pages
+  useEffect(() => {
+    // Enable normal cursor
+    document.body.style.cursor = '';
+    
+    // Override any global cursor: none rules
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      * {
+        cursor: initial !important;
+      }
+      a, button, [role="button"], .clickable {
+        cursor: pointer !important;
+      }
+      input, textarea, select {
+        cursor: text !important;
+      }
+    `;
+    document.head.appendChild(styleElement);
+    
+    // Cleanup function to restore the cursor when leaving admin pages
+    return () => {
+      document.head.removeChild(styleElement);
+      // Only restore 'none' cursor if going back to public pages
+      if (!location.pathname.startsWith('/admin')) {
+        document.body.style.cursor = 'none';
+      }
+    };
+  }, [location]);
 
   const toggleSubmenu = (menu: string) => {
     setOpenSubmenu(openSubmenu === menu ? null : menu);
@@ -300,7 +329,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className={`flex-1 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-20'} pt-[65px] lg:pt-0 transition-all duration-300`}>
-        <main className="p-6">{children}</main>
+        <main className="p-6 bg-gray-50 min-h-screen">{children}</main>
       </div>
     </div>
   );
