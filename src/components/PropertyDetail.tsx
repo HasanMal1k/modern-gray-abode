@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare } from "lucide-react";
+import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare, Link as LinkIcon, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -40,6 +40,15 @@ const PropertyDetail = ({ property }: { property: Property }) => {
   const propertyImages = property.images?.length 
     ? property.images 
     : (property.image ? [property.image] : ['/placeholder.svg']);
+
+  // Check if video is a valid URL
+  const isValidUrl = (url?: string) => {
+    try {
+      return url ? new URL(url) : false;
+    } catch {
+      return false;
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -143,6 +152,10 @@ const PropertyDetail = ({ property }: { property: Property }) => {
               <div className="glass-morphism p-6 rounded-lg h-full flex flex-col">
                 <h1 className="text-2xl font-semibold mb-2">{property.title}</h1>
                 
+                {property.subtitle && (
+                  <p className="text-muted-foreground mb-4">{property.subtitle}</p>
+                )}
+                
                 <div className="flex items-center text-muted-foreground mb-4">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>{property.location}</span>
@@ -165,6 +178,32 @@ const PropertyDetail = ({ property }: { property: Property }) => {
                   </div>
                 </div>
                 
+                <div className="space-y-4 mb-8">
+                  {property.power_supply && (
+                    <div className="flex items-center">
+                      <div className="mr-3 p-2 bg-white/10 rounded-full">
+                        <Video className="w-4 h-4 text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Power Supply</h4>
+                        <p className="text-muted-foreground text-sm">{property.power_supply}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {property.style && (
+                    <div className="flex items-center">
+                      <div className="mr-3 p-2 bg-white/10 rounded-full">
+                        <LinkIcon className="w-4 h-4 text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Style</h4>
+                        <p className="text-muted-foreground text-sm">{property.style}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
                 <div className="mt-auto space-y-3">
                   <Button className="w-full" onClick={handleContact}>
                     <Phone className="mr-2 h-4 w-4" /> WhatsApp Contact
@@ -179,45 +218,68 @@ const PropertyDetail = ({ property }: { property: Property }) => {
             </div>
           </div>
           
-          <div className="mt-8 glass-morphism p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Property Description</h2>
-            <p className="text-muted-foreground">
-              {property.description || `This ${property.bedrooms} bedroom, ${property.bathrooms} bathroom ${property.type?.toLowerCase() || 'property'} 
-              offers ${property.area || 'spacious'} square feet of elegant living space in ${property.location}. 
-              The property showcases luxurious finishes, state-of-the-art amenities, and a prime location.`}
-            </p>
-          </div>
-          
-          <div className="mt-8 glass-morphism p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Location</h2>
-            <div className="h-[300px] rounded-lg overflow-hidden">
-              {property.maps_embed ? (
-                <div 
-                  className="w-full h-full"
-                  dangerouslySetInnerHTML={{
-                    __html: property.maps_embed.replace(
-                      '<iframe',
-                      '<iframe style="width:100%; height:100%; min-height:300px; border:0;"'
-                    ),
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-white/5 flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="text-muted-foreground mb-3">Map not available</p>
-                    <a 
-                      href={`https://www.google.com/maps/search/${encodeURIComponent(property.location)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm font-medium hover:underline"
-                    >
-                      View on Google Maps <ExternalLink className="ml-1 w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Sections with extra details */}
+          {/* Sections with extra details */}
+<div className="mt-8 grid grid-cols-1 gap-6">
+  {/* Description */}
+  {property.description && (
+    <div className="glass-morphism p-6 rounded-lg">
+      <h2 className="text-xl font-semibold mb-4">Property Description</h2>
+      <p className="text-muted-foreground whitespace-pre-line">
+        {property.description}
+      </p>
+    </div>
+  )}
+  
+  
+  {/* Video Section - now full width like map section */}
+  {isValidUrl(property.video_url) && (
+    <div className="glass-morphism p-6 rounded-lg">
+      <h2 className="text-xl font-semibold mb-4">Property Video</h2>
+      <div className="aspect-video bg-white/5 rounded-lg overflow-hidden">
+        <iframe 
+          src={property.video_url} 
+          title="Property Video" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowFullScreen
+          className="w-full h-full"
+        />
+      </div>
+    </div>
+  )}
+</div>
+
+{/* Location Section */}
+<div className="mt-8 glass-morphism p-6 rounded-lg">
+  <h2 className="text-xl font-semibold mb-4">Location</h2>
+  <div className="h-[300px] rounded-lg overflow-hidden">
+    {property.maps_embed ? (
+      <div 
+        className="w-full h-full"
+        dangerouslySetInnerHTML={{
+          __html: property.maps_embed.replace(
+            '<iframe',
+            '<iframe style="width:100%; height:100%; min-height:300px; border:0;"'
+          ),
+        }}
+      />
+    ) : (
+      <div className="w-full h-full bg-white/5 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-3">Map not available</p>
+          <a 
+            href={`https://www.google.com/maps/search/${encodeURIComponent(property.location)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-sm font-medium hover:underline"
+          >
+            View on Google Maps <ExternalLink className="ml-1 w-3 h-3" />
+          </a>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
         </div>
       </main>
       
