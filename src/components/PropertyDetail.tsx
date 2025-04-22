@@ -194,7 +194,12 @@ const PropertyDetail = ({ property }: { property: Property }) => {
               {property.maps_embed ? (
                 <div 
                   className="w-full h-full"
-                  dangerouslySetInnerHTML={{ __html: property.maps_embed }} 
+                  dangerouslySetInnerHTML={{
+                    __html: property.maps_embed.replace(
+                      '<iframe',
+                      '<iframe style="width:100%; height:100%; min-height:300px; border:0;"'
+                    ),
+                  }}
                 />
               ) : (
                 <div className="w-full h-full bg-white/5 flex items-center justify-center">
