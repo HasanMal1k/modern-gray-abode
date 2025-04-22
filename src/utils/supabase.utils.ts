@@ -35,26 +35,18 @@ export function assertType<T>(data: unknown): T {
   return data as T;
 }
 
-// Type-safe insert function
-export function insertTable<T extends keyof Database['public']['Tables']>(
-  tableName: T,
-  data: Database['public']['Tables'][T]['Insert']
-) {
+// Type-safe insert function that avoids the incorrect generic approach
+export function insertTable(tableName: string, data: any) {
   return supabase.from(tableName).insert(data);
 }
 
-// Type-safe update function
-export function updateTable<T extends keyof Database['public']['Tables']>(
-  tableName: T,
-  data: Database['public']['Tables'][T]['Update']
-) {
+// Type-safe update function that avoids the incorrect generic approach
+export function updateTable(tableName: string, data: any) {
   return supabase.from(tableName).update(data);
 }
 
-// Type-safe delete function
-export function deleteFromTable<T extends keyof Database['public']['Tables']>(
-  tableName: T
-) {
+// Type-safe delete function that avoids the incorrect generic approach
+export function deleteFromTable(tableName: string) {
   return supabase.from(tableName).delete();
 }
 

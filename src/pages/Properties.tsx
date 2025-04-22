@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +12,7 @@ import PropertyFilterInfo from "@/components/PropertyFilterInfo";
 import { filterProperties } from "@/utils/property.utils";
 import { useToast } from "@/components/ui/use-toast";
 import { GRAY_LISTED_PROPERTIES } from "@/data/properties.data";
-import type { Property } from "@/types/property.types";
+import type { Property, GrayListedPropertyType } from "@/types/property.types";
 
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,12 +49,12 @@ const Properties = () => {
         throw error;
       }
 
-      // Transform the data to match our Property type
       const transformedProperties = data.map(property => ({
         ...property,
         images: property.property_images?.map(img => img.image_url) || [],
         image: property.property_images?.find(img => img.is_primary)?.image_url || 
-               property.property_images?.[0]?.image_url
+               property.property_images?.[0]?.image_url || 
+               '/placeholder.svg'
       }));
 
       setProperties(transformedProperties);
@@ -71,20 +70,18 @@ const Properties = () => {
     }
   };
 
-  // Handle viewing a specific property
   const propertyId = params.id || null;
   
-  // Check if we're viewing a regular property or a gray listed property
-  const viewingProperty = propertyId ? (
-    properties.find(p => p.id === propertyId) ||
-    GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId)
-  ) : null;
+  const viewingGrayListed = GRAY_LISTED_PROPERTIES.some(p => 
+    p.id.toString() === propertyId
+  );
   
-  // Determine if we're viewing a gray listed property specifically
-  const isGrayListed = viewingProperty && 
-    GRAY_LISTED_PROPERTIES.some(p => p.id.toString() === propertyId);
+  const viewingProperty = propertyId 
+    ? viewingGrayListed 
+      ? GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId) as GrayListedPropertyType 
+      : properties.find(p => p.id === propertyId) as Property
+    : null;
 
-  // Filter properties based on all filters
   const filteredProperties = filterProperties(
     properties,
     searchTerm,
@@ -94,7 +91,6 @@ const Properties = () => {
     bathroomFilter
   );
 
-  // Reset all filters
   const resetAllFilters = () => {
     setSearchTerm("");
     setSelectedCategory("All Properties");
@@ -107,13 +103,10 @@ const Properties = () => {
     setIsVisible(true);
   }, []);
 
-  if (propertyId && isGrayListed) {
-    const grayProperty = GRAY_LISTED_PROPERTIES.find(p => p.id.toString() === propertyId);
-    if (grayProperty) {
-      return <GrayListedProperty property={grayProperty} />;
-    }
+  if (propertyId && viewingGrayListed && viewingProperty) {
+    return <GrayListedProperty property={viewingProperty as GrayListedPropertyType} />;
   } else if (propertyId && viewingProperty) {
-    return <PropertyDetail property={viewingProperty} />;
+    return <PropertyDetail property={viewingProperty as Property} />;
   }
 
   return (
@@ -122,7 +115,6 @@ const Properties = () => {
       <MouseFollower />
 
       <main className="pt-24">
-        {/* Hero Section */}
         <section className="py-16 px-6 bg-gradient-to-b from-black/70 to-background relative">
           <div className="max-w-7xl mx-auto">
             <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
@@ -134,7 +126,6 @@ const Properties = () => {
               </p>
             </div>
             
-            {/* Search & Filters */}
             <div className={`transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
               <PropertyFilters
                 searchTerm={searchTerm}
@@ -154,10 +145,8 @@ const Properties = () => {
           </div>
         </section>
         
-        {/* Property Listings */}
         <section className="py-16 px-6">
           <div className="max-w-7xl mx-auto">
-            {/* Properties Info with Categories and Filters */}
             <PropertyFilterInfo
               filteredProperties={filteredProperties}
               searchTerm={searchTerm}
@@ -175,7 +164,6 @@ const Properties = () => {
               setBathroomFilter={setBathroomFilter}
             />
             
-            {/* Loading State */}
             {isLoading ? (
               <div className="flex items-center justify-center min-h-[400px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>

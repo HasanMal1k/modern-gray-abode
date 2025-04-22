@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BedDouble, Bath, Square, MapPin, ArrowLeft, Share2, Heart, ExternalLink, Phone, MessageSquare } from "lucide-react";
@@ -9,22 +8,7 @@ import Footer from "@/components/Footer";
 import MouseFollower from "@/components/MouseFollower";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Panorama360Viewer from "@/components/Panorama360Viewer";
-
-interface Property {
-  id: number;
-  title: string;
-  location: string;
-  price: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  image: string;
-  images?: string[];
-  featured: boolean;
-  type: string;
-  category: string;
-  panorama?: string;
-}
+import { Property } from "@/types/property.types";
 
 const PropertyDetail = ({ property }: { property: Property }) => {
   const navigate = useNavigate();
@@ -53,7 +37,9 @@ const PropertyDetail = ({ property }: { property: Property }) => {
     window.open("https://wa.me/1234567890?text=I'm interested in " + property.title);
   };
 
-  const propertyImages = property.images?.length ? property.images : [property.image];
+  const propertyImages = property.images?.length 
+    ? property.images 
+    : (property.image ? [property.image] : ['/placeholder.svg']);
 
   return (
     <div className="min-h-screen">
@@ -108,7 +94,7 @@ const PropertyDetail = ({ property }: { property: Property }) => {
                   ) : (
                     <div className="h-[400px] md:h-[500px] relative overflow-hidden rounded-lg">
                       <img 
-                        src={property.image} 
+                        src={propertyImages[0]} 
                         alt={property.title} 
                         className="w-full h-full object-cover"
                       />
@@ -175,7 +161,7 @@ const PropertyDetail = ({ property }: { property: Property }) => {
                   </div>
                   <div className="flex flex-col items-center justify-center p-3 bg-white/5 rounded-lg">
                     <Square className="w-5 h-5 mb-1" />
-                    <span className="text-sm">{property.area} sqft</span>
+                    <span className="text-sm">{property.area || 0} sqft</span>
                   </div>
                 </div>
                 
@@ -196,9 +182,9 @@ const PropertyDetail = ({ property }: { property: Property }) => {
           <div className="mt-8 glass-morphism p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Property Description</h2>
             <p className="text-muted-foreground">
-              This {property.bedrooms} bedroom, {property.bathrooms} bathroom {property.type.toLowerCase()} 
-              offers {property.area} square feet of elegant living space in {property.location}. 
-              The property showcases luxurious finishes, state-of-the-art amenities, and a prime location.
+              {property.description || `This ${property.bedrooms} bedroom, ${property.bathrooms} bathroom ${property.type?.toLowerCase() || 'property'} 
+              offers ${property.area || 'spacious'} square feet of elegant living space in ${property.location}. 
+              The property showcases luxurious finishes, state-of-the-art amenities, and a prime location.`}
             </p>
           </div>
           

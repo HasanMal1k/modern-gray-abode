@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import { Property } from "@/types/property.types";
 
 const PropertyCard = ({ property }: { property: Property }) => {
-  // Use the first image from images array or fallback to the image property
+  // Use the first image from images array or fallback to the image property or a placeholder
   const imageUrl = property.images && property.images.length > 0 
     ? property.images[0] 
-    : (property.image || "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?q=80&w=1984&auto=format&fit=crop");
+    : (property.image || "/placeholder.svg");
   
   return (
     <Link to={`/properties/${property.id}`} className="block">
@@ -20,7 +20,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
           />
           <div className="image-shimmer"></div>
           <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm px-3 py-1 text-xs rounded-full text-white/90">
-            {property.type}
+            {property.type || property.category}
           </div>
         </div>
         <div className="p-6 space-y-4">
@@ -46,7 +46,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
             </div>
             <div className="flex items-center gap-1">
               <Square className="w-4 h-4" />
-              <span className="text-sm">{property.area} <span className="hidden sm:inline">Sq Ft</span></span>
+              <span className="text-sm">{property.area || 'N/A'} <span className="hidden sm:inline">Sq Ft</span></span>
             </div>
           </div>
           

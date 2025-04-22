@@ -27,12 +27,13 @@ export interface Property {
   video_url?: string;
   created_at: string;
   updated_at: string;
-  image?: string; // Added for compatibility with PropertyCard
-  images?: string[]; // Added for multiple images
+  image?: string; // Main image URL for backwards compatibility
+  images?: string[]; // Array of image URLs
+  property_images?: { image_url: string; is_primary: boolean; display_order: number }[];
 }
 
 export interface GrayListedPropertyType {
-  id: number;
+  id: number | string; // Updated to accept both number and string IDs
   title: string;
   subtitle: string;
   location: string;
