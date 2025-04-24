@@ -41,6 +41,9 @@ const Footer = () => {
             <a href="#" className="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08">
               <Tiktok />
             </a>
+            <a href="#" className="https://www.facebook.com/profile.php?id=100076065139029&mibextid=ZbWKwL">
+              <Facebook />
+            </a>
           </div>
         </div>
 
