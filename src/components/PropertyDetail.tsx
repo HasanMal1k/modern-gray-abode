@@ -14,7 +14,7 @@ const PropertyDetail = ({ property }: { property: Property }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
   const [showPanorama, setShowPanorama] = useState(false);
-
+  console.log(property)
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({

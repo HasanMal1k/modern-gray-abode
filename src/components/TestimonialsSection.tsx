@@ -28,9 +28,9 @@ const TESTIMONIALS: Testimonial[] = [
   {
     id: 3,
     quote: "As international investors, we needed a team who understood both the market and our vision. Gray Scale provided invaluable insights that guided our portfolio expansion in ways we hadn't considered.",
-    author: "Jonathan Pierce",
+    author: "Adebayo & Folake Johnson",
     position: "Investment Director",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1974&auto=format&fit=crop",
   },
 ];
 

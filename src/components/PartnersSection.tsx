@@ -29,6 +29,18 @@ const PARTNERS = [
   {
     name: "Neat",
     logo: "../../public/images/partner6.jpg"
+  },
+  {
+    name: "Regent Real Estate",
+    logo: "../../public/images/partner7.jpg"
+  },
+  {
+    name: "Veritasi Homes",
+    logo: "../../public/images/partner8.jpg"
+  },
+  {
+    name: "Dreamfield Nest",
+    logo: "../../public/images/partner9.jpg"
   }
 ];
 

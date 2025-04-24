@@ -18,7 +18,7 @@ const GOOGLE_REVIEWS: GoogleReview[] = [
     name: "Olumide Adeyemi",
     avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=500&auto=format&fit=crop",
     rating: 5,
-    comment: "Gray Listed helped me find my dream home in Ikoyi. Their team was professional and attentive throughout the entire process.",
+    comment: "Gray Scale helped me find my dream home in Ikoyi. Their team was professional and attentive throughout the entire process.",
     date: "3 months ago",
     screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop"
   },
@@ -27,9 +27,9 @@ const GOOGLE_REVIEWS: GoogleReview[] = [
     name: "Amara Okafor",
     avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=500&auto=format&fit=crop",
     rating: 5,
-    comment: "Exceptional service! The team at Gray Listed went above and beyond to ensure we found exactly what we were looking for in Lekki.",
+    comment: "Exceptional service! The team at Gray Scale went above and beyond to ensure we found exactly what we were looking for in Lekki.",
     date: "2 months ago",
-    screenshot: "https://images.unsplash.com/photo-1581488689077-ddb02c613b3c?q=80&w=800&auto=format&fit=crop"
+    screenshot: "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: 3,
@@ -45,9 +45,9 @@ const GOOGLE_REVIEWS: GoogleReview[] = [
     name: "Folake Johnson",
     avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?q=80&w=500&auto=format&fit=crop",
     rating: 5,
-    comment: "Gray Listed made our property search stress-free. Their knowledge of the Lagos luxury market is unmatched.",
+    comment: "Gray Scale made our property search stress-free. Their knowledge of the Lagos luxury market is unmatched.",
     date: "2 weeks ago",
-    screenshot: "https://images.unsplash.com/photo-1610926950565-29bbd4ab29d6?q=80&w=800&auto=format&fit=crop"
+    screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop"
   }
 ];
 
@@ -162,7 +162,7 @@ const GoogleReviewsSection = () => {
         
         <div className="mt-12 text-center animate-on-scroll">
           <a 
-            href="https://g.page/your-business-review-link" 
+            href="https://www.google.com/search?sca_esv=152f6ce784128add&biw=1920&bih=945&sxsrf=AHTn8zqJIILMMF99Z5uRNN-BfxeCHYparg:1745476905803&si=APYL9bs7Hg2KMLB-4tSoTdxuOx8BdRvHbByC_AuVpNyh0x2KzQ1yJ2ei1UYw1OzU3HvqKBWzy7dQvGxkaIT7vYI4azcM0YW6V6tv_ffGrONtQLEhrtMHMh1zbLkZVM5CFtiC5wExHq63IqRcHCRldXxOz-sBuPwSYQ%3D%3D&q=Gray+Scale+Realtors+Reviews&sa=X&ved=2ahUKEwjYoLyXiPCMAxWzfKQEHbK9E4MQ0bkNegQIIhAE" 
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-50 transition-all duration-300 text-sm"

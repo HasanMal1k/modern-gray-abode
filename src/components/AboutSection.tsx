@@ -35,12 +35,12 @@ const AboutSection = () => {
   }, []);
 
   const features = [
-    "Exclusive Property Portfolio",
-    "Personalized Concierge Service",
-    "Private Viewings & Consultations",
-    "Global Network of Luxury Properties",
-    "Investment Advisory Services",
-    "Custom Home Design Solutions"
+    "Property Management",
+    "Facility Management ",
+    "LIVE 360 Remote Presence Home Inspections for Diaspora buyers",
+    "Personalized House Hunting Services",
+    "Real Estate Investment Advisory Services",
+    "Legal & Compliance "
   ];
 
   return (
@@ -84,9 +84,9 @@ const AboutSection = () => {
               <span className="inline-block text-sm tracking-wider uppercase text-gray-500 mb-4 py-1 px-3 border border-gray-300 rounded-full">
                 About Us
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Redefining Luxury Real Estate Since 2005</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Luxury Real Estate, Lagos – A Michelin-Star Experience</h2>
               <p className="text-gray-600 text-balance">
-                Gray Listed is more than a real estate agency—we're curators of exceptional living experiences in Lagos. Our approach combines deep market insight with a profound understanding of architectural excellence to connect discerning individuals with properties that transcend the ordinary.
+              Indulge in an expertly crafted blend of bespoke services—seamless ownership, effortless management, and a refined nightcap of unrivalled peace.
               </p>
             </div>
             

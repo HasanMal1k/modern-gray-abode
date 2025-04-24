@@ -7,8 +7,14 @@ import {
   Mail, 
   Phone, 
   MapPin, 
-  ArrowRight 
+  ArrowRight, 
+  Linkedin,
+  X,
+  LucideTwitter
 } from "lucide-react";
+
+import Tiktok from "../../public/images/tik-tok.png"
+
 
 const Footer = () => {
   return (
@@ -23,14 +29,17 @@ const Footer = () => {
             Premium properties crafted for discerning individuals. We connect extraordinary homes with extraordinary people.
           </p>
           <div className="flex space-x-4 pt-2">
-            <a href="#" className="text-muted-foreground hover:text-white transition-colors">
+            <a href="https://www.instagram.com/grayscalerealtors?igsh=ZGlyOHRmYmZ4NWlj" className="text-muted-foreground hover:text-white transition-colors">
               <Instagram size={18} />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-white transition-colors">
-              <Facebook size={18} />
+            <a href="https://www.linkedin.com/in/gray-scale-realtors-122a93322" className="text-muted-foreground hover:text-white transition-colors">
+              <Linkedin size={18} />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-white transition-colors">
+            <a href="#" className="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08">
               <Twitter size={18} />
+            </a>
+            <a href="#" className="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08">
+              <Tiktok />
             </a>
           </div>
         </div>
