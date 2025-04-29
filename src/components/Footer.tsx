@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { 
   Instagram, 
@@ -8,13 +7,8 @@ import {
   Phone, 
   MapPin, 
   ArrowRight, 
-  Linkedin,
-  X,
-  LucideTwitter
+  Linkedin
 } from "lucide-react";
-
-import Tiktok from "../../public/images/tik-tok.png"
-
 
 const Footer = () => {
   return (
@@ -35,14 +29,14 @@ const Footer = () => {
             <a href="https://www.linkedin.com/in/gray-scale-realtors-122a93322" className="text-muted-foreground hover:text-white transition-colors">
               <Linkedin size={18} />
             </a>
-            <a href="#" className="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08">
+            <a href="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08" className="text-muted-foreground hover:text-white transition-colors">
               <Twitter size={18} />
             </a>
-            <a href="#" className="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08">
-              <Tiktok />
+            <a href="#" className="text-muted-foreground hover:text-white transition-colors">
+              <img src="/images/tik-tok.svg" alt="TikTok" className="w-[18px] h-[18px]" />
             </a>
-            <a href="#" className="https://www.facebook.com/profile.php?id=100076065139029&mibextid=ZbWKwL">
-              <Facebook />
+            <a href="https://www.facebook.com/profile.php?id=100076065139029&mibextid=ZbWKwL" className="text-muted-foreground hover:text-white transition-colors">
+              <Facebook size={18} />
             </a>
           </div>
         </div>

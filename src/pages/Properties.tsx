@@ -14,6 +14,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { GRAY_LISTED_PROPERTIES } from "@/data/properties.data";
 import type { Property, GrayListedPropertyType } from "@/types/property.types";
 
+const PROPERTY_CATEGORIES = [
+  {
+    mainCategory: "All Properties",
+    subCategories: [
+      "Gray Stays - Shortlets",
+      "Gray Sales - Homes for Sale",
+      "Off-Plan units",
+      "Gray Residential - Rental homes",
+      "Gray Commercial - Commercial",
+      "Gray JV's - Joint Venture Partnerships",
+      "Gray Earth - Land parcels for sale"
+    ]
+  }
+];
+
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Properties");
@@ -138,6 +153,7 @@ const Properties = () => {
                 setBathroomFilter={setBathroomFilter}
                 isFilterOpen={isFilterOpen}
                 setIsFilterOpen={setIsFilterOpen}
+                categories={PROPERTY_CATEGORIES}
               />
             </div>
           </div>
@@ -160,6 +176,7 @@ const Properties = () => {
               setBedroomFilter={setBedroomFilter}
               bathroomFilter={bathroomFilter}
               setBathroomFilter={setBathroomFilter}
+              categories={PROPERTY_CATEGORIES}
             />
             
             {isLoading ? (
