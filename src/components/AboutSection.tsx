@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Check, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -56,7 +55,7 @@ const AboutSection = () => {
       
       <div className="max-w-7xl mx-auto relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Image Section - Made smaller by reducing width and aspect ratio */}
+          {/* Image Section */}
           <div className="animate-on-scroll order-2 lg:order-1 max-w-md mx-auto lg:mx-0 w-full">
             <div className="relative">
               <div className="aspect-[3/4] overflow-hidden rounded-xl glass-morphism">
@@ -102,12 +101,14 @@ const AboutSection = () => {
             </div>
             
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/consultation"
+              <a
+                href="https://api.whatsapp.com/send/?phone=+2348066429700"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Get Free Consultation
-              </Link>
+              </a>
               
               <Link
                 to="/about"

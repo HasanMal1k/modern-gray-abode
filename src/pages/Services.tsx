@@ -181,6 +181,20 @@ const Services = () => {
         "Tenant Referral Programs and Property Events"
       ]
     },
+    {
+      title: "360 Live Inspection Service",
+      description: "Experience real-time, immersive property inspections from the comfort of your home or office.",
+      icon: <Clock className="w-5 h-5 text-white" />,  // You can change the icon if you want
+      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", // You can replace with a better image link
+      items: [
+        "Real-time virtual property tours",
+        "Interactive live communication during inspections",
+        "High-definition 360° video walkthroughs",
+        "Instant feedback and Q&A with property agents",
+        "Accessible from mobile and desktop devices"
+      ]
+    },
+    
   ];
 
   useEffect(() => {

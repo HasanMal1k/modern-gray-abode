@@ -1,4 +1,3 @@
-
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -54,12 +53,14 @@ const HeroSection = () => {
             >
               Explore Properties
             </Link>
-            <Link
-              to="/contact"
+            <a
+              href="https://api.whatsapp.com/send/?phone=+2348066429700"
               className="px-8 py-3 rounded-md bg-white/10 backdrop-blur-sm text-white border border-white/10 hover:bg-white/20 transition-all duration-300 text-sm"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Contact Us
-            </Link>
+            </a>
           </div>
         </div>
       </div>
