@@ -54,8 +54,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, ima
           </ul>
         )}
         
-        <Link 
-          to="/#contact-form" 
+        <a 
+          href="https://wa.me/2348066429700" 
+          target="_blank" 
+          rel="noopener noreferrer"
           className="inline-flex items-center mt-4 text-accent hover:text-accent/80 text-sm font-medium"
         >
           Learn More
@@ -68,7 +70,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, ima
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
-        </Link>
+        </a>
       </div>
     </div>
   );
@@ -184,8 +186,8 @@ const Services = () => {
     {
       title: "360 Live Inspection Service",
       description: "Experience real-time, immersive property inspections from the comfort of your home or office.",
-      icon: <Clock className="w-5 h-5 text-white" />,  // You can change the icon if you want
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", // You can replace with a better image link
+      icon: <Clock className="w-5 h-5 text-white" />,
+      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
       items: [
         "Real-time virtual property tours",
         "Interactive live communication during inspections",
@@ -194,7 +196,6 @@ const Services = () => {
         "Accessible from mobile and desktop devices"
       ]
     },
-    
   ];
 
   useEffect(() => {
@@ -331,30 +332,22 @@ const Services = () => {
               <p className="hero-description text-lg text-white/80 mb-8 max-w-2xl">
               At GrayScale Realtors, we deliver end-to-end property solutions—designed for buyers, owners, and investors who demand excellence. We handle every detail from tenant screening and rent collection to maintenance, legal compliance, and financial reporting. In addition, experience cutting-edge LIVE 360° Remote Home Inspections from anywhere you are in the world and hassle-free Facility Management services—all tailored to protect and grow your investments.
               </p>
-              {/* //<Link 
-              
-               to="/contact#contact-form" 
-              
+              <Link 
+                to="/contact" 
+                onClick={() => {
+                  sessionStorage.setItem('scrollToContactForm', 'true');
+                }}
                 className="hero-cta px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
               >
                 Schedule a Consultation
-              </Link> */}
-              <Link 
-                 to="/contact" 
-                 onClick={() => {
-    // Store scroll intent in session storage
-                 sessionStorage.setItem('scrollToContactForm', 'true');
-               }}
-                     className="hero-cta px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
-                >
-                Schedule a Consultation
-                 </Link>
+              </Link>
             </div>
           </div>
           
           {/* Decorative Element */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
         </section>
+        
         {/* Quick Contact Info Section */}
         <section className="py-16 bg-[#151515]" ref={quickInfoRef}>
           <div className="max-w-7xl mx-auto px-6">
@@ -438,7 +431,10 @@ const Services = () => {
               Our team of experts is ready to help you maximize your property's potential. Contact us today to schedule a consultation.
             </p>
             <Link 
-              to="/contact#contact-form"
+              to="/contact"
+              onClick={() => {
+                sessionStorage.setItem('scrollToContactForm', 'true');
+              }}
               className="px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
             >
               Get Started
