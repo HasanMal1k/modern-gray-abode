@@ -62,6 +62,21 @@ const Contact = () => {
       });
     }
   };
+  useEffect(() => {
+    // Check if we came from the Services page wanting to scroll
+    const shouldScroll = sessionStorage.getItem('scrollToContactForm');
+    if (shouldScroll) {
+      const formSection = document.getElementById('contact-form');
+      if (formSection) {
+        // Small timeout ensures page has loaded
+        setTimeout(() => {
+          formSection.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+      // Clear the flag
+      sessionStorage.removeItem('scrollToContactForm');
+    }
+  }, []);
   
   const faqs = [
     {
