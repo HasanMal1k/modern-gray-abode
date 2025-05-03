@@ -73,12 +73,7 @@ const ServicesSection = () => {
       description: "Experience real-time, guided 360° property inspections from the comfort of your home.",
       link: "/services/360-live-inspection"
     },
-    {
-      icon: <Video className="w-6 h-6 text-accent" />,
-      title: "LIVE 360° Property Inspections",
-      description: "Immersive virtual tours with live agents, measurement tools, and detailed property analysis.",
-      link: "/services/360-inspections"
-    },
+    
     {
       icon: <Building className="w-6 h-6 text-accent" />,
       title: "Property Management",

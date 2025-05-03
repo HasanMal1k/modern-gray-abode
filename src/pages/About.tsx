@@ -149,6 +149,9 @@ const About = () => {
             <div className="flex justify-center mt-8">
               <Link 
                 to="/contact"
+                onClick={() => {
+                  sessionStorage.setItem('scrollToContactForm', 'true');
+                }}
                 className="px-8 py-3 rounded-md bg-white text-black font-medium hover:bg-white/90 transition-all duration-300 text-sm"
               >
                 Schedule a Consultation

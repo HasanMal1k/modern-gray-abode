@@ -55,7 +55,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, ima
         )}
         
         <Link 
-          to="/contact" 
+          to="/#contact-form" 
           className="inline-flex items-center mt-4 text-accent hover:text-accent/80 text-sm font-medium"
         >
           Learn More
@@ -329,14 +329,26 @@ const Services = () => {
                 GrayScale Realtors<br />Property Management
               </h1>
               <p className="hero-description text-lg text-white/80 mb-8 max-w-2xl">
-                At GrayScale Realtors, we offer comprehensive property management solutions tailored to meet the unique needs of property owners and investors. From tenant screening and rent collection to financial management and property maintenance to legal compliance and Financial account management to name but a few.
+              At GrayScale Realtors, we deliver end-to-end property solutions—designed for buyers, owners, and investors who demand excellence. We handle every detail from tenant screening and rent collection to maintenance, legal compliance, and financial reporting. In addition, experience cutting-edge LIVE 360° Remote Home Inspections from anywhere you are in the world and hassle-free Facility Management services—all tailored to protect and grow your investments.
               </p>
-              <Link 
-                to="/contact"
+              {/* //<Link 
+              
+               to="/contact#contact-form" 
+              
                 className="hero-cta px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
               >
                 Schedule a Consultation
-              </Link>
+              </Link> */}
+              <Link 
+                 to="/contact" 
+                 onClick={() => {
+    // Store scroll intent in session storage
+                 sessionStorage.setItem('scrollToContactForm', 'true');
+               }}
+                     className="hero-cta px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
+                >
+                Schedule a Consultation
+                 </Link>
             </div>
           </div>
           
@@ -426,7 +438,7 @@ const Services = () => {
               Our team of experts is ready to help you maximize your property's potential. Contact us today to schedule a consultation.
             </p>
             <Link 
-              to="/contact"
+              to="/contact#contact-form"
               className="px-8 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
             >
               Get Started

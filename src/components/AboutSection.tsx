@@ -101,14 +101,15 @@ const AboutSection = () => {
             </div>
             
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <a
-                href="https://api.whatsapp.com/send/?phone=+2348066429700"
+              <Link
+                to="/contact"
+                onClick={() => {
+                  sessionStorage.setItem('scrollToContactForm', 'true');
+                }}
                 className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-accent text-white font-medium hover:bg-accent/90 transition-all duration-300 text-sm orange-glow"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Get Free Consultation
-              </a>
+              </Link>
               
               <Link
                 to="/about"

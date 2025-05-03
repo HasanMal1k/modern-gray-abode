@@ -53,14 +53,15 @@ const HeroSection = () => {
             >
               Explore Properties
             </Link>
-            <a
-              href="https://api.whatsapp.com/send/?phone=+2348066429700"
+            <Link
+              to="/contact"
+              onClick={() => {
+                sessionStorage.setItem('scrollToContactForm', 'true');
+              }}
               className="px-8 py-3 rounded-md bg-white/10 backdrop-blur-sm text-white border border-white/10 hover:bg-white/20 transition-all duration-300 text-sm"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               Contact Us
-            </a>
+            </Link>
           </div>
         </div>
       </div>
