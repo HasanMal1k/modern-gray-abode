@@ -37,6 +37,12 @@ const teamData = [
     bio: "Wale leads our business and client relations with over a decade of experience, ensuring seamless communication and lasting partnerships."
   },
   {
+    name:"Bunmi Olaniyan",
+    position:"HR and corporate strategist",
+    image:"../../public/images/teammember.jpg",
+    bio:" Bunmi Olaniyan brings a wealth of expertise from global giants like Deloitte and Pernod Ricard. Her sharp insights into talent optimization and business growth will help steer GrayScale Realtors toward greater innovation and client excellence."
+ },
+  {
     name: "Kolone Kargbo",
     position: "Sales and Marketing",
     image: "../../public/images/Kolone.jpg",
@@ -59,7 +65,8 @@ const teamData = [
     position: "Head of Legal",
     image: "../../public/images/Anayo.jpg",
     bio: "Anayo leads our legal department with precision and integrity, safeguarding all transactions and ensuring regulatory compliance at every step."
-  }
+  },
+ 
 ];
 
 
