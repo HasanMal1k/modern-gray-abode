@@ -193,7 +193,7 @@ const Contact = () => {
       <Navbar />
       
       <main className="pt-24">
-        #/<section className="relative w-full py-20 lg:py-32" ref={heroRef}>
+        <section className="relative w-full py-20 lg:py-32" ref={heroRef}>
   {/* Background Image Container */}
   <div className="absolute inset-0 z-0 overflow-hidden">
     <img
