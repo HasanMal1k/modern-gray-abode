@@ -45,7 +45,7 @@ const teamData = [
   {
     name: "Kolone Kargbo",
     position: "Sales and Marketing",
-    image: "../../public/images/Kolone.jpg",
+    image: "/images/Kolone.jpg",
     bio: "Kolone drives sales and marketing with a sharp eye for strategy and a passion for connecting clients with their ideal properties."
   },
   {
