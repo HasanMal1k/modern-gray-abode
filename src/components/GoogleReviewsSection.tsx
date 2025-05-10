@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Star } from "lucide-react";
 
@@ -10,44 +9,49 @@ interface GoogleReview {
   comment: string;
   date: string;
   screenshot: string;
+  reviewUrl: string;
 }
 
 const GOOGLE_REVIEWS: GoogleReview[] = [
   {
     id: 1,
-    name: "Olumide Adeyemi",
-    avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=500&auto=format&fit=crop",
+    name: "Charity Ejiro",
+    avatar: "/images/Eijro.png",
     rating: 5,
-    comment: "Gray Scale helped me find my dream home in Ikoyi. Their team was professional and attentive throughout the entire process.",
-    date: "3 months ago",
-    screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop"
+    comment: "I had a fantastic experience staying at this Airbnb. The host was incredibly welcoming and accommodating, making sure every detail was taken care of. The location was perfect, close to amenities and easy to navigate around. The cleanliness of the place was impeccable I highly recommend this Apartment to anyone looking for a cozy and convenient place to stay",
+    date: "2 months ago",
+    screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop",
+    reviewUrl: "https://g.co/kgs/KF3LKTu",
   },
   {
     id: 2,
-    name: "Amara Okafor",
-    avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=500&auto=format&fit=crop",
+    name: "Oneme Metitiri",
+    avatar: "/images/onome.png",
     rating: 5,
-    comment: "Exceptional service! The team at Gray Scale went above and beyond to ensure we found exactly what we were looking for in Lekki.",
-    date: "2 months ago",
-    screenshot: "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?q=80&w=800&auto=format&fit=crop"
+    comment: "Gray Scale Realtors are truly changing the property experience for a lot people with property requirements in Nigeria. My clients were opportune to get an office space lease in the Lekki area through them and the level of professionalism coupled with feedback and followup mechanism they brought to the table was unlike what I had experienced hitherto in the Nigerian property market. Very commendable. We were all very impressed.",
+    date: "3  months ago",
+    screenshot: "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?q=80&w=800&auto=format&fit=crop",
+    reviewUrl: "https://www.google.com/maps/contrib/106166884173393239904/reviews/@6.4333439,3.5413695,17z/data=!3m1!4b1!4m3!8m2!3m1!1e1?hl=en-GB&entry=ttu&g_ep=EgoyMDI1MDUwNi4wIKXMDSoJLDEwMjExNDU1SAFQAw%3D%3D"
   },
   {
     id: 3,
-    name: "Chinedu Eze",
-    avatar: "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?q=80&w=500&auto=format&fit=crop",
-    rating: 4,
-    comment: "Very professional service. They have an excellent selection of luxury properties in Victoria Island. Highly recommend!",
+    name: "Andrea ajogan",
+    avatar: "/images/andrea.png",
+    rating: 5,
+    comment: "I bought an off plan unit in Lekki through Gray Scale its been 5 years, the units interior was finished and it was rented out by G.S.R.. Year in year out, rent comes like clock work all maintenance are done by them too. The trip is I have never physically seen this house.I would recommend GSR to all who wants a trustworthy business to take care of your house, which you know is hard to find.",
     date: "1 month ago",
-    screenshot: "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?q=80&w=800&auto=format&fit=crop"
+    screenshot: "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?q=80&w=800&auto=format&fit=crop",
+    reviewUrl: "https://g.co/kgs/DSeU9pD"
   },
   {
     id: 4,
-    name: "Folake Johnson",
-    avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?q=80&w=500&auto=format&fit=crop",
+    name: "Daddy Oliseh",
+    avatar: "/images/daddy.png",
     rating: 5,
-    comment: "Gray Scale made our property search stress-free. Their knowledge of the Lagos luxury market is unmatched.",
+    comment: "If competency was another word I will call it grayscale realtors . Their level of relationship and delivery is top notch and I recommend anyone willing to Acquire a property to deal with this company without fear as your satisfaction is surely guaranteed. I am glad I did",
     date: "2 weeks ago",
-    screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop"
+    screenshot: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop",
+    reviewUrl: "https://g.co/kgs/VXoD4kk"
   }
 ];
 
@@ -130,12 +134,23 @@ const GoogleReviewsSection = () => {
           <div className="order-1 md:order-2">
             <div className="space-y-6">
               {GOOGLE_REVIEWS.map((review, index) => (
-                <div 
-                  key={review.id} 
-                  className={`p-6 rounded-xl transition-all duration-300 cursor-pointer ${activeIndex === index 
+                <a
+                  key={review.id}
+                  href={review.reviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block p-6 rounded-xl transition-all duration-300 ${activeIndex === index 
                     ? 'bg-gray-100 shadow-md' 
                     : 'hover:bg-gray-50'}`}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={(e) => {
+                    // Prevent default to allow clicking to change the active index
+                    e.preventDefault();
+                    setActiveIndex(index);
+                    // Optional: Open the review URL in a new tab after a slight delay
+                    setTimeout(() => {
+                      window.open(review.reviewUrl, '_blank');
+                    }, 300);
+                  }}
                 >
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0">
@@ -154,7 +169,7 @@ const GoogleReviewsSection = () => {
                       <p className="text-gray-700 text-sm mt-2">{review.comment}</p>
                     </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
