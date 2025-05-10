@@ -125,7 +125,7 @@ const Services = () => {
       title: "Financial Management",
       description: "Expert financial services designed to maximize returns and minimize risks for property owners.",
       icon: <BadgePercent className="w-5 h-5 text-white" />,
-      image: "https://images.unsplash.com/photo-1565514477972-9763946d09f3?q=80&w=1935&auto=format&fit=crop",
+      image: "/images/finance.jpg",
       items: [
         "Detailed income statements",
         "Balance sheets",

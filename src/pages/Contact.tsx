@@ -193,7 +193,40 @@ const Contact = () => {
       <Navbar />
       
       <main className="pt-24">
-        <section className="relative w-full py-20 lg:py-32" ref={heroRef}>
+        #/<section className="relative w-full py-20 lg:py-32" ref={heroRef}>
+  {/* Background Image Container */}
+  <div className="absolute inset-0 z-0 overflow-hidden">
+    <img
+      src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+      alt="Contact Us Background"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-black/70"></div>
+  </div>
+  
+  {/* Content */}
+  <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 text-center">
+    <div className="max-w-3xl mx-auto">
+      <span className="inline-block text-sm tracking-wider uppercase text-white mb-4 py-1 px-3 border border-white/20 rounded-full animate-hero">
+        Get In Touch
+      </span>
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight animate-hero">
+        Contact GrayScale Realtors
+      </h1>
+      <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto animate-hero">
+        Reach out to us for all your property management service needs. Whether you prefer email, calls, or in-person meetings, we're here to assist you.
+      </p>
+      <Button asChild size="lg" className="bg-white text-black hover:bg-white/90 px-8 animate-hero">
+        <a href="#contact-form">
+          Get Free Consultation
+        </a>
+      </Button>
+    </div>
+  </div>
+  
+  <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#111] to-transparent"></div>
+</section>
+        {/* <section className="relative w-full py-20 lg:py-32" ref={heroRef}>
           <div className="absolute inset-0 z-0 overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative w-full max-w-6xl h-full flex items-center">
@@ -233,7 +266,7 @@ const Contact = () => {
           </div>
           
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#111] to-transparent"></div>
-        </section>
+        </section> */}
         
         <section className="py-16 bg-[#111] relative overflow-hidden" ref={liveViewingRef}>
           <div className="absolute inset-0 z-0 opacity-20">
