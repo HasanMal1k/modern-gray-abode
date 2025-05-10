@@ -8,27 +8,27 @@ gsap.registerPlugin(ScrollTrigger);
 const PARTNERS = [
   {
     name: "Dune Atlantis",
-    logo: "../../public/images/partner1.jpg"
+    logo: "/images/partner1.jpg"
   },
   {
     name: "Amacuff Limited",
-    logo: "../../public/images/partner2.jpg"
+    logo: "/images/partner2.jpg"
   },
   {
     name: "Laogs State Real Estate",
-    logo: "../../public/images/partner3.jpg"
+    logo: "/images/partner3.jpg"
   },
   {
     name: "Sound Core",
-    logo: "../../public/images/partner4.jpg"
+    logo: "/images/partner4.jpg"
   },
   {
     name: "Jedmoon",
-    logo: "../../public/images/partner5.jpg"
+    logo: "/images/partner5.jpg"
   },
   {
     name: "Neat",
-    logo: "../../public/images/partner6.jpg"
+    logo: "/images/partner6.jpg"
   },
   
  

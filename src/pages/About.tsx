@@ -33,13 +33,13 @@ const teamData = [
   {
     name: "Wale Aroloye",
     position: "Head~ Business/Client Relations",
-    image: "../../public/images/Wale.jpg",
+    image: "/images/Wale.jpg",
     bio: "Wale leads our business and client relations with over a decade of experience, ensuring seamless communication and lasting partnerships."
   },
   {
     name:"Bunmi Olaniyan",
     position:"HR and corporate strategist",
-    image:"../../public/images/teammember.jpg",
+    image:"/images/teammember.jpg",
     bio:" Bunmi Olaniyan brings a wealth of expertise from global giants like Deloitte and Pernod Ricard. Her sharp insights into talent optimization and business growth will help steer GrayScale Realtors toward greater innovation and client excellence."
  },
   {
@@ -51,19 +51,19 @@ const teamData = [
   {
     name: "Ayeloja Abdulwakil",
     position: "I.T",
-    image: "../../public/images/Ayeloja.jpg",
+    image: "/images/Ayeloja.jpg",
     bio: "Ayeloja oversees our IT infrastructure, ensuring seamless digital operations and implementing tech solutions that enhance client experience."
   },
   {
     name: "Omotola Edeviwe",
     position: "Sales and Marketing",
-    image: "../../public/images/Omotola.jpg",
+    image: "/images/Omotola.jpg",
     bio: "Omotola excels in sales and marketing, bringing creativity and strategic insight that amplify our brand and attract the right clientele."
   },
   {
     name: "Anayo Agbo Esq.",
     position: "Head of Legal",
-    image: "../../public/images/Anayo.jpg",
+    image: "/images/Anayo.jpg",
     bio: "Anayo leads our legal department with precision and integrity, safeguarding all transactions and ensuring regulatory compliance at every step."
   },
  
@@ -125,28 +125,28 @@ const About = () => {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="../../public/images/jakub-zerdzicki-sQMNLkUJi-g-unsplash.jpg"
+                  src="/images/jakub-zerdzicki-sQMNLkUJi-g-unsplash.jpg"
                   alt="Nigerian business meeting" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="../../public/images/nupo-deyon-daniel-67ruAEYmp4c-unsplash.jpg"
+                  src="/images/nupo-deyon-daniel-67ruAEYmp4c-unsplash.jpg"
                   alt="Lagos skyline" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="../../public/images/trust-tru-katsande-sc5TYeefOTI-unsplash.jpg"
+                  src="/images/trust-tru-katsande-sc5TYeefOTI-unsplash.jpg"
                   alt="Young African professionals" 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img 
-                  src="../../public/images/todd-kent-178j8tJrNlc-unsplash.jpg"
+                  src="/images/todd-kent-178j8tJrNlc-unsplash.jpg"
                   alt="African neighborhood" 
                   className="w-full h-full object-cover"
                 />
