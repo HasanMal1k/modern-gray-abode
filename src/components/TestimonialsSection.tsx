@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Quote } from 'lucide-react';
 
@@ -14,15 +13,15 @@ const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
     quote: "Gray Scale's expertise and dedication transformed our property search from overwhelming to exhilarating. Their attention to our specific requirements led us to a home that exceeded our expectations.",
-    author: "Alexander Bennett",
-    position: "CEO, Bennett Enterprises",
+    author: "Gyang ",
+    position: "CEO,Gyang Enterprises  ",
     image: "/images/blackmen.jpg",
   },
   {
     id: 2,
     quote: "Working with Gray Scale to sell our family estate was seamless. Their strategic marketing approach and network of high-net-worth individuals ensured we received multiple competitive offers.",
-    author: "Victoria Chambers",
-    position: "Interior Designer",
+    author: "Njoku ",
+    position: "Interior Designer ",
     image: "/images/blackgirl.jpg",
   },
   {
@@ -81,6 +80,23 @@ const TestimonialsSection = () => {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
+  // Function to get specific image styling for each testimonial
+  const getImageStyle = (index: number) => {
+    switch(index) {
+      case 1: // Njoku (index 1)
+        return {
+          objectPosition: 'center top',
+          objectFit: 'cover',
+          transform: 'scale(0.9)'
+        };
+      default:
+        return {
+          objectPosition: 'center center',
+          objectFit: 'cover'
+        };
+    }
+  };
+
   return (
     <section ref={sectionRef} className="py-24 px-6 relative overflow-hidden backdrop-blur-3xl">
       {/* Background Elements */}
@@ -109,7 +125,8 @@ const TestimonialsSection = () => {
                   <img 
                     src={TESTIMONIALS[currentIndex].image} 
                     alt={TESTIMONIALS[currentIndex].author} 
-                    className="w-full h-full object-cover filter grayscale transition-transform duration-700"
+                    className="w-full h-full filter grayscale transition-transform duration-700"
+                    style={getImageStyle(currentIndex)}
                   />
                   <div className="image-shimmer"></div>
                 </div>

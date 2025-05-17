@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import MouseFollower from "@/components/MouseFollower";
+
+
 import { 
   Building, Shield, Users, FileText, Home, CreditCard, Wrench, BadgePercent, Search, Clock, MapPin
 } from "lucide-react";
@@ -21,6 +23,9 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, image, items }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="glass-morphism rounded-xl overflow-hidden group transition-all duration-500 hover:-translate-y-2">
       <div className="relative h-48 overflow-hidden">
