@@ -47,7 +47,7 @@ const teamData = [
     position: "Sales and Marketing",
     image: "/images/Kolone.jpg",
     bio: "Kolone drives sales and marketing with a sharp eye for strategy and a passion for connecting clients with their ideal properties."
-  },
+  },   
   {
     name: "Ayeloja Abdulwakil",
     position: "I.T",
@@ -255,51 +255,82 @@ const About = () => {
         </section>
         
         {/* Team Section */}
-        <section id="team" className={`py-24 px-6 animate-section ${visibleElements.has("team") ? "animate-slide-up" : "opacity-0"}`}>
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
-                Our Experts
-              </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Meet Our Team</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Exceptional professionals dedicated to providing unparalleled real estate experiences in Lagos.
-              </p>
+<section id="team" className={`py-24 px-6 animate-section ${visibleElements.has("team") ? "animate-slide-up" : "opacity-0"}`}>
+  <div className="max-w-7xl mx-auto">
+    <div className="text-center mb-16">
+      <span className="inline-block text-sm tracking-wider uppercase text-white/70 mb-4 py-1 px-3 border border-white/10 rounded-full">
+        Our Experts
+      </span>
+      <h2 className="text-3xl md:text-4xl font-bold mb-6">Meet Our Team</h2>
+      <p className="text-muted-foreground max-w-2xl mx-auto">
+        Exceptional professionals dedicated to providing unparalleled real estate experiences in Lagos.
+      </p>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {teamData.map((member, index) => {
+        // Individual adjustments for each image
+        let imageStyle = {};
+        
+        // Wale (index 0) - slightly zoomed out
+        if (index === 0) {
+          imageStyle = {
+            objectPosition: 'center 30%',
+            transform: 'scale(0.9)'
+          };
+        } 
+        // Bunmi (index 1) - original position (no special styling)
+        else if (index === 1) {
+          imageStyle = {};
+        }
+        // Kolone (index 2) - slightly zoomed out
+        else if (index === 2) {
+          imageStyle = {
+            objectPosition: 'center 30%',
+            transform: 'scale(0.9)'
+          };
+        }
+        // All others - original position
+        else {
+          imageStyle = {};
+        }
+        
+        return (
+          <div key={index} className="glass-morphism rounded-xl overflow-hidden group">
+            <div className="relative h-80 overflow-hidden">
+              <img 
+                src={member.image} 
+                alt={member.name} 
+                className="w-full h-full object-cover object-center"
+                style={imageStyle}
+              />
+              <div className="image-shimmer"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-6">
+                <h3 className="text-xl font-medium text-white mb-1">{member.name}</h3>
+                <p className="text-white/70 text-sm">{member.position}</p>
+              </div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamData.map((member, index) => (
-                <div key={index} className="glass-morphism rounded-xl overflow-hidden group">
-                  <div className="relative h-80 overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="image-shimmer"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <h3 className="text-xl font-medium text-white mb-1">{member.name}</h3>
-                      <p className="text-white/70 text-sm">{member.position}</p>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-muted-foreground text-sm">{member.bio}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-16 text-center">
-              <Link 
-                to="/contact"
-                className="px-8 py-3 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-300 text-white text-sm"
-              >
-                Work With Our Team
-              </Link>
+            <div className="p-6">
+              <p className="text-muted-foreground text-sm">{member.bio}</p>
             </div>
           </div>
-        </section>
+        );
+      })}
+    </div>
+    
+    <div className="mt-16 text-center">
+      <Link 
+        to="/contact"
+        className="px-8 py-3 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-300 text-white text-sm"
+      >
+        Work With Our Team
+      </Link>
+    </div>
+  </div>
+</section>
+
+        
       </main>
       
       <Footer />

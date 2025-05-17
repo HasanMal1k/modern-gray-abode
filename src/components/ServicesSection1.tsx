@@ -25,12 +25,17 @@ const ServiceCard = ({
       </div>
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
       <p className="text-muted-foreground mb-6">{description}</p>
-      <Link to={link} className="inline-flex items-center text-sm text-white group-hover:text-accent transition-colors">
+      <a 
+        href="https://wa.me/2348066429700" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="inline-flex items-center text-sm text-white group-hover:text-accent transition-colors"
+      >
         Learn More
         <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
         </svg>
-      </Link>
+      </a>
     </div>
   );
 };
@@ -66,6 +71,19 @@ const ServicesSection = () => {
     };
   }, []);
 
+  const handleViewAllClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Scroll to top before navigating
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+    // Wait for scroll to complete before navigating
+    setTimeout(() => {
+      window.location.href = "/services";
+    }, 500);
+  };
+
   const services = [
     {
       icon: <Video className="w-6 h-6 text-accent" />,
@@ -73,7 +91,6 @@ const ServicesSection = () => {
       description: "Experience real-time, guided 360° property inspections from the comfort of your home.",
       link: "/services/360-live-inspection"
     },
-    
     {
       icon: <Building className="w-6 h-6 text-accent" />,
       title: "Property Management",
@@ -134,9 +151,13 @@ const ServicesSection = () => {
         </div>
 
         <div className="mt-12 text-center animate-on-scroll">
-          <Link to="/services" className="px-8 py-3 rounded-md border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 text-white text-sm">
+          <a
+            href="/services"
+            onClick={handleViewAllClick}
+            className="px-8 py-3 rounded-md border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 text-white text-sm cursor-pointer"
+          >
             View All Services
-          </Link>
+          </a>
         </div>
       </div>
     </section>

@@ -9,6 +9,7 @@ import {
   ArrowRight, 
   Linkedin
 } from "lucide-react";
+import TiktokIcon from "./ui/TiktokIcon";
 
 const Footer = () => {
   return (
@@ -32,10 +33,7 @@ const Footer = () => {
             <a href="https://x.com/GSRealtorsNaija?t=G9eJovXr0zdFnvRv77DXZQ&s=08" className="text-muted-foreground hover:text-white transition-colors">
               <Twitter size={18} />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-white transition-colors">
-              <img src="/images/tik-tok.svg" alt="TikTok" className="w-[18px] h-[18px]" />
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=100076065139029&mibextid=ZbWKwL" className="text-muted-foreground hover:text-white transition-colors">
+             <a href="https://www.facebook.com/profile.php?id=100076065139029&mibextid=ZbWKwL" className="text-muted-foreground hover:text-white transition-colors">
               <Facebook size={18} />
             </a>
           </div>
